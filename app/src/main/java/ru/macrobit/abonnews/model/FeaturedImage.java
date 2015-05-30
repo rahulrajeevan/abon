@@ -39,12 +39,22 @@ public class FeaturedImage {
     private Meta meta;
     @SerializedName("featured_image")
     private FeaturedImage featuredImage;
-    private ImageTerms terms;
+//    private ImageTerms[] terms;
+//    @SerializedName("terms")
+//    private ImageTerms term;
     private String source;
     @SerializedName("is_image")
     private boolean isImage;
     @SerializedName("attachment_meta")
     private AttachmentMeta attachmentMeta;
+
+//    public ImageTerms getTerm() {
+//        return term;
+//    }
+//
+//    public void setTerm(ImageTerms term) {
+//        this.term = term;
+//    }
 
     public String getGuid() {
         return guid;
@@ -238,13 +248,13 @@ public class FeaturedImage {
         this.featuredImage = featuredImage;
     }
 
-    public ImageTerms getTerms() {
-        return terms;
-    }
-
-    public void setTerms(ImageTerms terms) {
-        this.terms = terms;
-    }
+//    public ImageTerms[] getTerms() {
+//        return terms;
+//    }
+//
+//    public void setTerms(ImageTerms[] terms) {
+//        this.terms = terms;
+//    }
 
     public String getSource() {
         return source;
