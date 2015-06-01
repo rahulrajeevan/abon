@@ -8,17 +8,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
 import java.util.ArrayList;
 
 import ru.macrobit.abonnews.model.ShortNews;
 
-/**
- * Created by Comp on 30.05.2015.
- */
 public class NewsAdapter extends ArrayAdapter<ShortNews> {
 
     private Context mContext;
     private ArrayList<ShortNews> mNews;
+    ImageLoader mImageLoader = ImageLoader.getInstance();
 
     public NewsAdapter(Context context, int resource, ArrayList<ShortNews> arrayList )  {
         super(context, resource, arrayList);
@@ -42,8 +44,8 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     }
 
     class ViewHolder {
-        TextView textBody;
-        TextView time;
+        TextView title;
+        TextView date;
         ImageView image;
     }
 
@@ -54,15 +56,17 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.news_item, parent, false);
-            viewHolder.textBody = ((TextView) convertView.findViewById(R.id.textBody));
-            viewHolder.time= ((TextView) convertView.findViewById(R.id.time));
+            viewHolder.title = ((TextView) convertView.findViewById(R.id.textBody));
+            viewHolder.date = ((TextView) convertView.findViewById(R.id.date));
             viewHolder.image = ((ImageView) convertView.findViewById(R.id.imageView));
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.textBody.setText(mNews.get(position).getTitle());
-        viewHolder.time.setText(mNews.get(position).getDate());
+        viewHolder.title.setText(mNews.get(position).getTitle());
+        viewHolder.date.setText(mNews.get(position).getDate());
+        mImageLoader.init(new ImageLoaderConfiguration.Builder(mContext).build());
+        mImageLoader.displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
         return convertView;
     }
 }
