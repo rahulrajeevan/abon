@@ -16,8 +16,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import ru.macrobit.abonnews.OnTaskCompleted;
+
 public class GetRequest extends AsyncTask<String, String, String> {
     private String result;
+    private OnTaskCompleted callback;
+
+    public GetRequest(OnTaskCompleted callback) {
+        this.callback = callback;
+    }
 
     @Override
     protected String doInBackground(String... urls) {
@@ -35,10 +42,8 @@ public class GetRequest extends AsyncTask<String, String, String> {
             }
             result = sb.toString();
         } catch (ClientProtocolException e) {
-
             e.printStackTrace();
         } catch (IOException e) {
-
             e.printStackTrace();
         }
 
@@ -51,6 +56,9 @@ public class GetRequest extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        if (callback != null) {
+            callback.onTaskCompleted(result);
+        }
         super.onPostExecute(result);
     }
 }

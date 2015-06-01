@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui;
+package ru.macrobit.abonnews.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,23 +6,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.concurrent.ExecutionException;
-
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.Utils.GsonUtils;
-import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.loader.GetRequest;
-import ru.macrobit.abonnews.model.News;
+import ru.macrobit.abonnews.ui.fragment.NavigationDrawerFragment;
+import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends Env
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -33,29 +28,20 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        add(new NewsFragment());
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        try {
-            String s = new GetRequest().execute(Values.GET_POST).get();
-            News[] news = GsonUtils.fromJson(s, News[].class);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.fragment_container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
     }
 
@@ -79,7 +65,6 @@ public class MainActivity extends ActionBarActivity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

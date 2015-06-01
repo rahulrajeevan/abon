@@ -4,24 +4,40 @@ package ru.macrobit.abonnews.model;
  * Created by Comp on 30.05.2015.
  */
 public class ShortNews {
-    String body;
-    String time;
+    String title;
+    String date;
     String imageUrl;
+    String id;
 
-    public String getBody() {
-        return body;
+    public ShortNews(String title, String date, String imageUrl, String id) {
+        this.title = title;
+        this.date = date;
+        this.imageUrl = imageUrl;
+        this.id = id;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public String getId() {
+        return id;
     }
 
-    public String getTime() {
-        return time;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getImageUrl() {

@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.Utils;
+package ru.macrobit.abonnews.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
