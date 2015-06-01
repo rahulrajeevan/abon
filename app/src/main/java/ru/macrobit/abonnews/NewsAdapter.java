@@ -61,8 +61,8 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.textBody.setText(mNews.get(position).getBody());
-        viewHolder.time.setText(mNews.get(position).getTime());
+        viewHolder.textBody.setText(mNews.get(position).getTitle());
+        viewHolder.time.setText(mNews.get(position).getDate());
         return convertView;
     }
 }
