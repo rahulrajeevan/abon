@@ -1,10 +1,10 @@
 package ru.macrobit.abonnews.ui.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -17,13 +17,15 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
+import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
 
 
-public class NewsFragment extends Fragment implements OnTaskCompleted{
+public class NewsFragment extends EnvFragment implements OnTaskCompleted{
 
     ListView mListView;
+    News[] mNews;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +44,17 @@ public class NewsFragment extends Fragment implements OnTaskCompleted{
         NewsAdapter adapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
         mListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
+                News news = mNews[position];
+                FullNews fullNews = new FullNews(shortNews, news.getContent());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("data", fullNews);
+                add(new DetailNewsFragment(), bundle);
+            }
+        });
     }
 
     private void getNewsFromServer() {
@@ -55,8 +68,8 @@ public class NewsFragment extends Fragment implements OnTaskCompleted{
 
     @Override
     public void onTaskCompleted(String result) {
-        News[] news = GsonUtils.fromJson(result, News[].class);
-        ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
+        mNews = GsonUtils.fromJson(result, News[].class);
+        ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(mNews);
         listViewInit(newsList);
     }
 }
