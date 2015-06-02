@@ -8,19 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
 import java.util.ArrayList;
 
+import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.model.ShortNews;
 
 public class NewsAdapter extends ArrayAdapter<ShortNews> {
 
     private Context mContext;
     private ArrayList<ShortNews> mNews;
-    ImageLoader mImageLoader = ImageLoader.getInstance();
 
     public NewsAdapter(Context context, int resource, ArrayList<ShortNews> arrayList )  {
         super(context, resource, arrayList);
@@ -65,8 +61,7 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         }
         viewHolder.title.setText(mNews.get(position).getTitle());
         viewHolder.date.setText(mNews.get(position).getDate());
-        mImageLoader.init(new ImageLoaderConfiguration.Builder(mContext).build());
-        mImageLoader.displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
+        ImageUtils.getUIL(mContext).displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
         return convertView;
     }
 }
