@@ -1,9 +1,9 @@
 package ru.macrobit.abonnews.model;
 
-/**
- * Created by Comp on 30.05.2015.
- */
-public class ShortNews {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ShortNews implements Parcelable{
     String title;
     String date;
     String imageUrl;
@@ -14,6 +14,13 @@ public class ShortNews {
         this.date = date;
         this.imageUrl = imageUrl;
         this.id = id;
+    }
+
+    public ShortNews(Parcel in) {
+        this.title = in.readString();
+        this.date = in.readString();
+        this.imageUrl = in.readString();
+        this.id = in.readString();
     }
 
     public String getId() {
@@ -47,4 +54,30 @@ public class ShortNews {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(date);
+        dest.writeString(imageUrl);
+        dest.writeString(id);
+
+    }
+
+    public static final Parcelable.Creator<ShortNews> CREATOR
+            = new Parcelable.Creator<ShortNews>() {
+        public ShortNews createFromParcel(Parcel in) {
+            return new ShortNews(in);
+        }
+
+        public ShortNews[] newArray(int size) {
+            return new ShortNews[size];
+        }
+    };
+
 }
