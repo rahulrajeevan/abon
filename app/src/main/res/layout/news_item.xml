@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:id="@+id/imageView"
+        android:id="@+id/det_imageView"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -20,17 +20,17 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:id="@+id/textBody"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
+        android:layout_alignTop="@+id/det_imageView"
+        android:layout_toRightOf="@+id/det_imageView"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_toEndOf="@+id/det_imageView" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10sp"
-        android:id="@+id/date"
+        android:id="@+id/det_date"
         android:layout_marginRight="10dp"
         android:layout_below="@+id/textBody"
         android:layout_alignLeft="@+id/textBody"
