@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import ru.macrobit.abonnews.NewsAdapter;
+import ru.macrobit.abonnews.adapter.NewsAdapter;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
