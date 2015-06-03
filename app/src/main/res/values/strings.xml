@@ -4,6 +4,7 @@
     <string name="title_section1">Профиль</string>
     <string name="title_section2">Мои комментарии</string>
     <string name="title_section3">О программе</string>
+    <string name="comments">Комментарии</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
