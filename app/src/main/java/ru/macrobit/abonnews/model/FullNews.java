@@ -6,13 +6,13 @@ import android.os.Parcelable;
 public class FullNews extends ShortNews implements Parcelable {
     private String body;
 
-    public FullNews(String title, String date, String imageUrl, String id, String body) {
-        super(title, date, imageUrl, id);
+    public FullNews(String title, String date, String imageUrl, String id, String body, boolean sticky) {
+        super(title, date, imageUrl, id, sticky);
         this.body = body;
     }
 
     public FullNews(ShortNews news, String body){
-        super(news.getTitle(), news.getDate(), news.getImageUrl(), news.getId());
+        super(news.getTitle(), news.getDate(), news.getImageUrl(), news.getId(), news.isSticky());
         this.body = body;
     }
 

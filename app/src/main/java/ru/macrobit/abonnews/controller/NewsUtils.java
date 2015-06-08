@@ -18,7 +18,7 @@ public class NewsUtils {
     public static ArrayList<ShortNews> generateShortNews(News[] news) {
         ArrayList<ShortNews> arrayList = new ArrayList<ShortNews>();
         for (News n:news) {
-            ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()));
+            ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
             arrayList.add(shortNews);
         }
         return arrayList;
