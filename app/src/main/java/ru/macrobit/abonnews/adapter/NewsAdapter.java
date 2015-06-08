@@ -1,6 +1,7 @@
 package ru.macrobit.abonnews.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.controller.ImageUtils;
@@ -47,26 +52,46 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (getItem(position).isSticky()){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            if (position != 0) {
+            if (getItemViewType(position) != 0) {
                 convertView = inflater.inflate(R.layout.news_item, parent, false);
             } else {
                 convertView = inflater.inflate(R.layout.main_news_item, parent, false);
             }
-            viewHolder.title = ((TextView) convertView.findViewById(R.id.textBody));
-            viewHolder.date = ((TextView) convertView.findViewById(R.id.det_date));
-            viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.title = ((TextView) convertView.findViewById(R.id.textBody));
+        viewHolder.date = ((TextView) convertView.findViewById(R.id.det_date));
+        viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
         viewHolder.title.setText(mNews.get(position).getTitle());
         viewHolder.date.setText(mNews.get(position).getDate());
-        ImageUtils.getUIL(mContext).displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
+        List<Bitmap> bmp = MemoryCacheUtils.findCachedBitmapsForImageUri(mNews.get(position).getImageUrl(), ImageLoader.getInstance().getMemoryCache());
+        if (bmp.get(0) != null) {
+            viewHolder.image.setImageBitmap(bmp.get(0));
+        } else {
+            viewHolder.image.setImageBitmap(null);
+            ImageUtils.getUIL(mContext).displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
+        }
         return convertView;
     }
 }

@@ -72,9 +72,7 @@ public class CommentsAdapter extends BaseExpandableListAdapter {
         }
 
         if (isExpanded) {
-            //Изменяем что-нибудь, если текущая Group раскрыта
         } else {
-            //Изменяем что-нибудь, если текущая Group скрыта
         }
 
         TextView textGroup = (TextView) convertView.findViewById(R.id.textGroup);
