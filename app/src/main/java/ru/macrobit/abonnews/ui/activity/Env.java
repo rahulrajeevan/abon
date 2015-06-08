@@ -18,7 +18,7 @@ public class Env extends AppCompatActivity {
         mManager = getSupportFragmentManager();
     }
 
-    void add(Fragment fragment) {
+    void add(Fragment fragment, String tag) {
         mTransaction = mManager.beginTransaction();
         mTransaction.add(R.id.fragment_container, fragment);
         mTransaction.commit();
@@ -31,7 +31,7 @@ public class Env extends AppCompatActivity {
         mTransaction.commit();
     }
 
-    void replace(Fragment fragment) {
+    void replace(Fragment fragment, String tag) {
         mTransaction = mManager.beginTransaction();
         mTransaction.replace(R.id.fragment_container, fragment);
         mTransaction.commit();
