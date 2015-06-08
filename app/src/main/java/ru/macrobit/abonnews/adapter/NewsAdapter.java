@@ -1,7 +1,6 @@
 package ru.macrobit.abonnews.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.controller.ImageUtils;
@@ -24,7 +19,7 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     private Context mContext;
     private ArrayList<ShortNews> mNews;
 
-    public NewsAdapter(Context context, int resource, ArrayList<ShortNews> arrayList )  {
+    public NewsAdapter(Context context, int resource, ArrayList<ShortNews> arrayList) {
         super(context, resource, arrayList);
         mContext = context;
         mNews = arrayList;
@@ -53,9 +48,9 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).isSticky()){
+        if (getItem(position).isSticky()) {
             return 0;
-        }else{
+        } else {
             return 1;
         }
     }
@@ -85,13 +80,8 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
         viewHolder.title.setText(mNews.get(position).getTitle());
         viewHolder.date.setText(mNews.get(position).getDate());
-        List<Bitmap> bmp = MemoryCacheUtils.findCachedBitmapsForImageUri(mNews.get(position).getImageUrl(), ImageLoader.getInstance().getMemoryCache());
-        if (bmp.get(0) != null) {
-            viewHolder.image.setImageBitmap(bmp.get(0));
-        } else {
-            viewHolder.image.setImageBitmap(null);
-            ImageUtils.getUIL(mContext).displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
-        }
+        viewHolder.image.setImageBitmap(null);
+        ImageUtils.getUIL(mContext).displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
         return convertView;
     }
 }
