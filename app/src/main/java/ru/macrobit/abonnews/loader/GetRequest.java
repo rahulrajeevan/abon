@@ -46,7 +46,6 @@ public class GetRequest extends AsyncTask<String, String, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
