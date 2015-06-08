@@ -1,8 +1,14 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -10,10 +16,10 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import ru.macrobit.abonnews.adapter.NewsAdapter;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.adapter.NewsAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -43,7 +49,30 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         return view;
     }
 
-    private void UiInit(ArrayList<ShortNews> newsList) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.news_search, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+                SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        searchNews(query);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
+        }
+
+    }
+
+    private void listViewInit(ArrayList<ShortNews> newsList) {
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(android.R.color.holo_blue_light);
         NewsAdapter adapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
@@ -62,12 +91,17 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         });
     }
 
+    private void searchNews(String searchWord) {
+        new GetRequest(NewsFragment.this).execute(Values.SEARCH + searchWord);
+    }
+
     private void getNewsFromServer() {
         new GetRequest(NewsFragment.this).execute(Values.GET_POST);
     }
 
     @Override
     public void onCreate(Bundle arg0) {
+        setHasOptionsMenu(true);
         super.onCreate(arg0);
     }
 
@@ -75,7 +109,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     public void onTaskCompleted(String result) {
         mNews = GsonUtils.fromJson(result, News[].class);
         ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(mNews);
-        UiInit(newsList);
+        listViewInit(newsList);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
