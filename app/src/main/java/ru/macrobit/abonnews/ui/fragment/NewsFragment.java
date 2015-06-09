@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -33,6 +34,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     ListView mListView;
     News[] mNews;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    int mPage=0;
+    boolean isEndNewsList = false;
+    NewsAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,9 +79,14 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private void listViewInit(ArrayList<ShortNews> newsList) {
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(android.R.color.holo_blue_light);
-        NewsAdapter adapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
-        mListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        if (mAdapter == null) {
+            mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
+            mListView.setAdapter(mAdapter);
+        } else {
+            for(ShortNews s:newsList)
+                mAdapter.add(s);
+        }
+        mAdapter.notifyDataSetChanged();
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -89,6 +98,20 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 add(new DetailNewsFragment(), bundle);
             }
         });
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {}
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                int lastInScreen = firstVisibleItem + visibleItemCount;
+                if((lastInScreen == totalItemCount) && !(isEndNewsList)){
+                    mPage++;
+                    getNewsFromServer();
+                }
+            }
+        });
     }
 
     private void searchNews(String searchWord) {
@@ -96,7 +119,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void getNewsFromServer() {
-        new GetRequest(NewsFragment.this).execute(Values.GET_POST);
+        new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
     }
 
     @Override
@@ -108,9 +131,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     @Override
     public void onTaskCompleted(String result) {
         mNews = GsonUtils.fromJson(result, News[].class);
-        ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(mNews);
-        listViewInit(newsList);
-        mSwipeRefreshLayout.setRefreshing(false);
+        if (mNews.length>0) {
+            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(mNews);
+            listViewInit(newsList);
+            mSwipeRefreshLayout.setRefreshing(false);
+        } else {
+            isEndNewsList = true;
+        }
     }
 
     @Override
