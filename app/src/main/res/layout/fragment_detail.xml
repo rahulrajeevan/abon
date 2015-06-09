@@ -39,16 +39,15 @@
                 android:textColor="@android:color/holo_orange_dark"
                 android:textSize="12sp" />
 
-            <ImageView
+            <ru.macrobit.abonnews.ui.view.DynamicImageView
                 android:id="@+id/det_imageView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/det_date"
                 android:layout_alignStart="@+id/det_date"
                 android:layout_below="@+id/det_date"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:scaleType="fitXY"/>
+                android:layout_marginRight="10dp"/>
 
             <TextView
                 android:id="@+id/det_body"
