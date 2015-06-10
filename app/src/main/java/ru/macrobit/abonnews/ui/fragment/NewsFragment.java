@@ -34,7 +34,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     ListView mListView;
     News[] mNews;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    int mPage=0;
+    int mPage = 1;
     boolean isEndNewsList = false;
     NewsAdapter mAdapter;
 
@@ -78,7 +78,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     private void listViewInit(ArrayList<ShortNews> newsList) {
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(android.R.color.holo_blue_light);
+        mSwipeRefreshLayout.setColorSchemeColors(R.color.abc_search_url_text, R.color.ulogin_provider_diviter);
         if (mAdapter == null) {
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
             mListView.setAdapter(mAdapter);
