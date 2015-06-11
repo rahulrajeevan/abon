@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.adapter.CommentsAdapter;
+import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -74,9 +75,16 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted{
     public void onTaskCompleted(String result) {
         Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
         ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
-        group.add(arrayList);
-        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
+        ArrayList<String> group = new ArrayList<>();
+        group.add("Комментарии");
+//        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
+//        group.add(arrayList);
+//        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
+        MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE),getActivity());
+
+//        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
+
         mListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

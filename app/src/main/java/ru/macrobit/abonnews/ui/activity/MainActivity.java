@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +43,12 @@ public class MainActivity extends Env
                 .commit();
     }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.news_search, menu);
+//        return true;
+//    }
+
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
@@ -56,12 +61,6 @@ public class MainActivity extends Env
                 mTitle = getString(R.string.title_section3);
                 break;
         }
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
     }
 
 //    @Override

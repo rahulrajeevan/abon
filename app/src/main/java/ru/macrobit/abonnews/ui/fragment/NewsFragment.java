@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -32,7 +33,7 @@ import ru.macrobit.abonnews.model.ShortNews;
 public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     ListView mListView;
-    News[] mNews;
+    ArrayList<News> mNews = new ArrayList<>();
     SwipeRefreshLayout mSwipeRefreshLayout;
     int mPage = 1;
     boolean isEndNewsList = false;
@@ -54,24 +55,24 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.news_search, menu);
         super.onCreateOptionsMenu(menu, inflater);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-                SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        searchNews(query);
-                        return false;
-                    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+            SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    searchNews(query);
+                    return false;
+                }
 
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        return false;
-                    }
-                });
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
         }
 
     }
@@ -83,7 +84,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
             mListView.setAdapter(mAdapter);
         } else {
-            for(ShortNews s:newsList)
+            for (ShortNews s : newsList)
                 mAdapter.add(s);
         }
         mAdapter.notifyDataSetChanged();
@@ -91,7 +92,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
-                News news = mNews[position];
+                News news = mNews.get(position);
                 FullNews fullNews = new FullNews(shortNews, news.getContent());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("data", fullNews);
@@ -100,7 +101,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         });
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {}
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+            }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
@@ -130,9 +132,10 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     @Override
     public void onTaskCompleted(String result) {
-        mNews = GsonUtils.fromJson(result, News[].class);
-        if (mNews.length>0) {
-            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(mNews);
+        News[] news = GsonUtils.fromJson(result, News[].class);
+        mNews.addAll(Arrays.asList(news));
+        if (mNews.size() > 0) {
+            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
             listViewInit(newsList);
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
