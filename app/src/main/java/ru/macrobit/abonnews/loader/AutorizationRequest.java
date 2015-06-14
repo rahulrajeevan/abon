@@ -33,6 +33,7 @@ import java.util.List;
 import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.Utils;
 
 public class AutorizationRequest extends AsyncTask<String, String, CookieStore> {
@@ -120,6 +121,7 @@ public class AutorizationRequest extends AsyncTask<String, String, CookieStore> 
         if (callback != null) {
             callback.onAutorizationTaskCompleted(result);
         }
+
 //        super.onPostExecute(result);
     }
 }

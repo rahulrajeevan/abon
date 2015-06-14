@@ -13,7 +13,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
@@ -35,9 +38,15 @@ public class GetRequest extends AsyncTask<String, String, String> {
         this.callback = callback;
     }
 
-    public GetRequest(OnTaskCompleted callback, CookieStore cookieStore) {
+    public GetRequest(OnTaskCompleted callback, BasicClientCookie[] basicClientCookies) {
         this.callback = callback;
-        this.mCookies = cookieStore;
+        if (basicClientCookies != null && basicClientCookies.length > 0) {
+            mCookies = new BasicCookieStore();
+            for (int i = 0; i<basicClientCookies.length; i++) {
+                mCookies.addCookie(basicClientCookies[i]);
+            }
+        }
+//        this.mCookies = cookieStore;
     }
 
     @Override

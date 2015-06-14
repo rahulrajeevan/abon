@@ -10,16 +10,20 @@ import android.widget.EditText;
 
 import org.apache.http.Header;
 import org.apache.http.client.CookieStore;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AutorizationRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -76,7 +80,7 @@ public class AutorizationFragment extends EnvFragment implements OnAutorizationT
 
     @Override
     public void onAutorizationTaskCompleted(CookieStore result) {
-//               Utils.saveToSharedPreferences(Values.COOKIES, cookies, Utils.getPrefs(getActivity()));
-        new GetRequest(null, result).execute(Values.PROFILE);
+        Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(getActivity()));
+        new GetRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES, Utils.getPrefs(getActivity()))).execute(Values.PROFILE);
     }
 }
