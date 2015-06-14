@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -31,12 +34,13 @@ import ru.macrobit.abonnews.model.ShortNews;
 
 public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
-    ListView mListView;
-    News[] mNews;
-    SwipeRefreshLayout mSwipeRefreshLayout;
-    int mPage = 1;
-    boolean isEndNewsList = false;
-    NewsAdapter mAdapter;
+    private ListView mListView;
+    private ArrayList<News> mNews = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private int mPage = 0;
+    private boolean isEndNewsList = false;
+    private boolean isSearchList = false;
+    private NewsAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,29 +53,36 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
         mListView = (ListView) view.findViewById(R.id.listView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.float_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                replace(new AutorizationFragment());
+            }
+        });
         getNewsFromServer();
         return view;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.news_search, menu);
         super.onCreateOptionsMenu(menu, inflater);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-                SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        searchNews(query);
-                        return false;
-                    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+            SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    searchNews(query);
+                    return false;
+                }
 
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        return false;
-                    }
-                });
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
         }
 
     }
@@ -83,7 +94,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
             mListView.setAdapter(mAdapter);
         } else {
-            for(ShortNews s:newsList)
+            for (ShortNews s : newsList)
                 mAdapter.add(s);
         }
         mAdapter.notifyDataSetChanged();
@@ -91,7 +102,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
-                News news = mNews[position];
+                News news = mNews.get(position);
                 FullNews fullNews = new FullNews(shortNews, news.getContent());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("data", fullNews);
@@ -100,26 +111,33 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         });
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {}
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+            }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                if((lastInScreen == totalItemCount) && !(isEndNewsList)){
-                    mPage++;
+                if ((lastInScreen == totalItemCount) && !(isEndNewsList)) {
                     getNewsFromServer();
+                }
+                if ((lastInScreen == totalItemCount) && !(isEndNewsList)) {
+
                 }
             }
         });
     }
 
     private void searchNews(String searchWord) {
+        isSearchList = true;
         new GetRequest(NewsFragment.this).execute(Values.SEARCH + searchWord);
     }
 
     private void getNewsFromServer() {
-        new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
+        if (!isEndNewsList && !isSearchList) {
+            mPage++;
+            new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
+        }
     }
 
     @Override
@@ -130,9 +148,10 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     @Override
     public void onTaskCompleted(String result) {
-        mNews = GsonUtils.fromJson(result, News[].class);
-        if (mNews.length>0) {
-            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(mNews);
+        News[] news = GsonUtils.fromJson(result, News[].class);
+        mNews.addAll(Arrays.asList(news));
+        if (mNews.size() > 0) {
+            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
             listViewInit(newsList);
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
@@ -142,6 +161,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     @Override
     public void onRefresh() {
+        isSearchList = false;
+        mPage = 0;
         mSwipeRefreshLayout.setRefreshing(true);
         getNewsFromServer();
     }

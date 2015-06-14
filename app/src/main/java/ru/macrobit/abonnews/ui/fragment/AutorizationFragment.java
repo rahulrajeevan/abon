@@ -8,15 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import org.apache.http.Header;
+import org.apache.http.client.CookieStore;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
+import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AutorizationRequest;
+import ru.macrobit.abonnews.loader.GetRequest;
 import ru.ulogin.sdk.UloginAuthActivity;
 
-public class AutorizationFragment extends EnvFragment {
+public class AutorizationFragment extends EnvFragment implements OnAutorizationTaskCompleted {
     public final int REQUEST_ULOGIN = 1;
     EditText mLogin;
     EditText mPass;
@@ -36,7 +45,7 @@ public class AutorizationFragment extends EnvFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AutorizationRequest(mLogin.getText().toString(), mPass.getText().toString()).execute(Values.AUTORIZATION);
+                new AutorizationRequest(AutorizationFragment.this, mLogin.getText().toString(), mPass.getText().toString()).execute(Values.AUTORIZATION);
             }
         });
         return view;
@@ -63,5 +72,11 @@ public class AutorizationFragment extends EnvFragment {
                 new ArrayList(Arrays.asList(optional_fields))
         );
         startActivityForResult(intent, REQUEST_ULOGIN);
+    }
+
+    @Override
+    public void onAutorizationTaskCompleted(CookieStore result) {
+//               Utils.saveToSharedPreferences(Values.COOKIES, cookies, Utils.getPrefs(getActivity()));
+        new GetRequest(null, result).execute(Values.PROFILE);
     }
 }

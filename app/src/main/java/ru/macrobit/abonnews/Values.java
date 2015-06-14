@@ -9,4 +9,8 @@ public class Values {
     public static final String PUSH = URL + "/push";
     public static final String SEARCH = URL + "wp-json/posts?filter[s]=";
     public static final String GET_PAGE_POSTS = URL + "/wp-json/posts?filter[posts_per_page]=10&page=";
+    public static final String REGISTRY = URL + "wp-login.php?action=register";
+    public static final String PREF = "Abon news preferences";
+    public static final String COOKIES = "cookies";
+    public static final String PROFILE = URL + "wp-json/users/me";
 }

@@ -34,32 +34,32 @@ public class CommentsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return mGroups.get(groupPosition).size();
+        return mGroups.get(0).size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return mGroups.get(groupPosition);
+        return null;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return mGroups.get(groupPosition).get(childPosition);
+        return null;
     }
 
     @Override
     public long getGroupId(int groupPosition) {
-        return groupPosition;
+        return 0;
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
+        return 0;
     }
 
     @Override
     public boolean hasStableIds() {
-        return true;
+        return false;
     }
 
     @Override
@@ -71,9 +71,9 @@ public class CommentsAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.group_view, null);
         }
 
-        if (isExpanded) {
-        } else {
-        }
+//        if (isExpanded) {
+//        } else {
+//        }
 
         TextView textGroup = (TextView) convertView.findViewById(R.id.textGroup);
         textGroup.setText(mContext.getString(R.string.comments));
