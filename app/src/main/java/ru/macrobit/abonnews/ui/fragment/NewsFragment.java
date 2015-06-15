@@ -182,6 +182,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     public void onRefresh() {
         isSearchList = false;
         mPage = 0;
+        mAdapter = null;
+        isEndNewsList = false;
         mSwipeRefreshLayout.setRefreshing(true);
         getNewsFromServer();
     }
