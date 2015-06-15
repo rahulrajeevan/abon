@@ -7,8 +7,6 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -58,7 +56,7 @@ public class Utils {
         List<Cookie> list = cookieStore.getCookies();
         Set<ShortCookie> cookies = new HashSet<>();
         for (Cookie c:list) {
-            cookies.add(new ShortCookie(c.getName(), c.getValue()));
+            cookies.add(new ShortCookie(c.getName(), c.getValue(), c.getDomain(), c.getExpiryDate()));
         }
         SharedPreferences.Editor edit = pref.edit();
         String s = GsonUtils.toJson(cookies);
@@ -69,10 +67,12 @@ public class Utils {
     public static BasicClientCookie[] loadCookieFromSharedPreferences(String key,
                                                      SharedPreferences pref) {
         String s = pref.getString(key, null);
-        ShortCookie[] cookies = GsonUtils.fromJson(s, ShortCookie.class);
+        ShortCookie[] cookies = GsonUtils.fromJson(s, ShortCookie[].class);
         BasicClientCookie[] basicClientCookies = new BasicClientCookie[cookies.length];
         for (int i = 0; i<cookies.length; i++) {
             basicClientCookies[i] = new BasicClientCookie(cookies[i].getKey(), cookies[i].getValue());
+            basicClientCookies[i].setDomain(cookies[i].getDomain());
+            basicClientCookies[i].setExpiryDate(cookies[i].getExpiryDate());
         }
         return basicClientCookies;
     }
