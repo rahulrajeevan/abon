@@ -1,7 +1,5 @@
 package ru.macrobit.abonnews.ui.fragment;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -72,8 +70,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         inflater.inflate(R.menu.news_search, menu);
         super.onCreateOptionsMenu(menu, inflater);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
             SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+            search.setQueryHint(getString(R.string.menu_search));
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -91,18 +89,21 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void listViewInit(ArrayList<ShortNews> newsList) {
+        createFooter();
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(R.color.abc_search_url_text, R.color.ulogin_provider_diviter);
+        mSwipeRefreshLayout.setColorSchemeColors(R.color.primary_dark, R.color.accent);
         if (mAdapter == null) {
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
-            createFooter();
             mListView.addFooterView(mFooter);
             mListView.setAdapter(mAdapter);
         } else {
             for (ShortNews s : newsList)
                 mAdapter.add(s);
         }
-//        mListView.removeFooterView(mFooter);
+        if (isSearchList) {
+            mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
+            mListView.setAdapter(mAdapter);
+        }
         mAdapter.notifyDataSetChanged();
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -168,7 +169,12 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     @Override
     public void onTaskCompleted(String result) {
         News[] news = GsonUtils.fromJson(result, News[].class);
-        mNews.addAll(Arrays.asList(news));
+        if (!isSearchList) {
+            mNews.addAll(Arrays.asList(news));
+        } else {
+            mNews.clear();
+            mNews.addAll(Arrays.asList(news));
+        }
         if (news.length > 0) {
             ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
             listViewInit(newsList);
@@ -183,6 +189,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         isSearchList = false;
         mPage = 0;
         mAdapter = null;
+        isLastItemVisible = false;
         isEndNewsList = false;
         mSwipeRefreshLayout.setRefreshing(true);
         getNewsFromServer();
