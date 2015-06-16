@@ -13,7 +13,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/det_title"
@@ -24,8 +26,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp" />
 
@@ -46,18 +46,26 @@
                 android:layout_alignLeft="@+id/det_date"
                 android:layout_alignStart="@+id/det_date"
                 android:layout_below="@+id/det_date"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginTop="10dp" />
 
-            <TextView
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/det_imageView"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center" />
+
+            <WebView
                 android:id="@+id/det_body"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/det_imageView"
                 android:layout_alignStart="@+id/det_imageView"
                 android:layout_below="@+id/det_imageView"
-                android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:layout_marginTop="10dp" />
+
 
             <ExpandableListView
                 android:id="@+id/det_listView"
@@ -66,7 +74,6 @@
                 android:layout_alignLeft="@+id/det_body"
                 android:layout_alignStart="@+id/det_body"
                 android:layout_below="@+id/det_body"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp" />
         </RelativeLayout>
     </ScrollView>
