@@ -1,14 +1,18 @@
 package ru.macrobit.abonnews.ui.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
+import ru.macrobit.abonnews.controller.AudioInterface;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -25,13 +30,14 @@ import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 
 
-public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted{
+public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     TextView mTitle;
     TextView mDate;
-    TextView mBody;
+    WebView mBody;
     ImageView mImage;
     ExpandableListView mListView;
+    ProgressBar mProgressBar;
 
 
     @Override
@@ -48,18 +54,34 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted{
 
     private void initFragment(View parent) {
         Bundle bundle = this.getArguments();
+        mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         mTitle = (TextView) parent.findViewById(R.id.det_title);
         mDate = (TextView) parent.findViewById(R.id.det_date);
-        mBody = (TextView) parent.findViewById(R.id.det_body);
+        mBody = (WebView) parent.findViewById(R.id.det_body);
         mImage = (ImageView) parent.findViewById(R.id.det_imageView);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
         FullNews news = bundle.getParcelable("data");
         mTitle.setText(news.getTitle());
         mDate.setText(news.getDate());
-        Spanned spanned = Html.fromHtml(news.getBody());
-        mBody.setText(spanned);
+        initWebView(news.getBody());
         getComments(news.getId() + "/comments/");
         ImageUtils.getUIL(getActivity()).displayImage(news.getImageUrl(), mImage);
+    }
+
+    private void initWebView(String data) {
+        mBody.setWebChromeClient(new WebChromeClient());
+        mBody.setWebViewClient(new ProgressWebClient());
+        mBody.getSettings().setJavaScriptEnabled(true);
+        mBody.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
+        mBody.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        mBody.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mBody.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        mBody.addJavascriptInterface(new AudioInterface(getActivity()), "Aud");
+    }
+
+    private String getHtmlData(String bodyHTML) {
+        String head = "<head><style>img{max-width: 100%; width:100% !important; height: auto;} iframe{max-width: 100%; width:100% !important; height: auto;}</style></head>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
     private void getComments(String url) {
@@ -81,12 +103,34 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted{
 //        group.add(arrayList);
 //        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
         MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE),getActivity());
+        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
 
 //        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
 
         mListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    public class ProgressWebClient extends WebViewClient
+    {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            view.loadUrl(url);
+            return true;
+
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 }
 
