@@ -12,18 +12,18 @@
     <style name="MyTheme" parent="Base.MyTheme"></style>
 
     <style name="Base.MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/background</item>
+        <item name="colorPrimary">@color/primary_light</item>
         <item name="colorPrimaryDark">#000</item>
-        <item name="colorAccent">@color/background</item>
-        <!--<item name="windowActionBar">false</item>-->
-        <item name="windowNoTitle">true</item>
+        <item name="colorAccent">@color/accent</item>
+        <!--<item name="android:windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
         <item name="android:windowBackground">@color/background_material_light</item>
     </style>
 
     <style name="MyAppDialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/background</item>
+        <item name="colorPrimary">@color/primary_light</item>
         <item name="colorPrimaryDark">#000</item>
-        <item name="colorAccent">@color/background</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
     <style name="Widget.MyApp.HeaderBar.Spinner" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
@@ -33,15 +33,4 @@
         <item name="overlapAnchor">true</item>
     </style>
 
-    <style name="MyTheme.Detail" parent="MyTheme"></style>
-
-
-    <color name="winBackground">#fff</color>
-    <color name="background">#fff</color>
-
-    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/background</item>
-        <item name="colorPrimaryDark">#000</item>
-        <item name="colorAccent">@color/background</item>
-    </style>
 </resources>
