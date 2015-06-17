@@ -11,4 +11,8 @@
     <string name="info_abon">Северо-Осетинский информационный портал</string>
     <string name="login">Логин</string>
     <string name="pass">Пароль</string>
+    <string name="username">Юзернейм</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="id">ID</string>
 </resources>
