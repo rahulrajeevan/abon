@@ -51,7 +51,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         }
         View view = inflater.inflate(R.layout.fragment_newslist,
                 container, false);
-
         mListView = (ListView) view.findViewById(R.id.listView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.float_button);
@@ -72,6 +71,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
             search.setQueryHint(getString(R.string.menu_search));
+            search.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    getNewNewsList();
+                    return false;
+                }
+            });
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -148,7 +154,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private void searchNews(String searchWord) {
         isSearchList = true;
         new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + searchWord);
-        mFooter.setVisibility(View.GONE);
+        mListView.removeFooterView(mFooter);
     }
 
     private void getNewsFromServer() {
@@ -184,8 +190,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         }
     }
 
-    @Override
-    public void onRefresh() {
+    private void getNewNewsList() {
         isSearchList = false;
         mPage = 0;
         mAdapter = null;
@@ -193,5 +198,11 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         isEndNewsList = false;
         mSwipeRefreshLayout.setRefreshing(true);
         getNewsFromServer();
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        getNewNewsList();
     }
 }
