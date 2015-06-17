@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
+import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 
 
 public class MainActivity extends Env implements
@@ -49,7 +50,7 @@ public class MainActivity extends Env implements
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.profile:
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                add(new ProfileFragment(), "Profile");
                 break;
             case R.id.comments:
                 Toast.makeText(this, "Comments", Toast.LENGTH_SHORT).show();
