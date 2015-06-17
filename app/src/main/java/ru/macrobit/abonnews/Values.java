@@ -13,4 +13,8 @@ public class Values {
     public static final String PREF = "Abon news preferences";
     public static final String COOKIES = "cookies";
     public static final String PROFILE = URL + "wp-json/users/me";
+    public static final int REQUEST_ULOGIN = 1;
+    public static final String TOKEN = "token";
+    public static final String ULOGIN = URL + "?ulogin=";
+    public static final String SOC_AUTORIZATION = "&backurl=http://abon-news.ru/wp-login.php?loggedout=true";
 }

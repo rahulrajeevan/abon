@@ -20,8 +20,7 @@ import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AutorizationRequest;
 import ru.ulogin.sdk.UloginAuthActivity;
 
-public class AutorizationFragment extends EnvFragment implements OnAutorizationTaskCompleted {
-    public final int REQUEST_ULOGIN = 1;
+public class AutorizationFragment extends EnvFragment implements OnAutorizationTaskCompleted, View.OnClickListener {
     EditText mLogin;
     EditText mPass;
 
@@ -33,8 +32,15 @@ public class AutorizationFragment extends EnvFragment implements OnAutorizationT
         }
         View view = inflater.inflate(R.layout.fragment_autorization,
                 container, false);
-//        runUlogin();
+//
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.auto_button);
+        FloatingActionButton button1 = (FloatingActionButton) view.findViewById(R.id.auto_soc_button);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                runUlogin();
+            }
+        });
         mLogin = (EditText) view.findViewById(R.id.auto_login);
         mPass = (EditText) view.findViewById(R.id.auto_pass);
         button.setOnClickListener(new View.OnClickListener() {
@@ -66,11 +72,16 @@ public class AutorizationFragment extends EnvFragment implements OnAutorizationT
                 UloginAuthActivity.OPTIONAL,
                 new ArrayList(Arrays.asList(optional_fields))
         );
-        startActivityForResult(intent, REQUEST_ULOGIN);
+        getActivity().startActivityForResult(intent, Values.REQUEST_ULOGIN);
     }
 
     @Override
     public void onAutorizationTaskCompleted(CookieStore result) {
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(getActivity()));
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }

@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,15 +12,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.apache.http.client.CookieStore;
+
+import java.util.HashMap;
+
+import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.loader.GetCookiesFromTokenRequest;
+import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
+import ru.ulogin.sdk.UloginAuthActivity;
 
 
 public class MainActivity extends Env implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, OnAutorizationTaskCompleted {
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
@@ -110,4 +119,31 @@ public class MainActivity extends Env implements
         outState.putInt(NAV_ITEM_ID, mNavItemId);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == Values.REQUEST_ULOGIN) {
+            HashMap userdata =
+                    (HashMap) intent.getSerializableExtra (UloginAuthActivity.USERDATA);
+
+            switch (resultCode) {
+                case RESULT_OK:
+                    String token = userdata.get(Values.TOKEN).toString();
+                    Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
+                    new GetCookiesFromTokenRequest(MainActivity.this).execute(Values.ULOGIN + token + Values.SOC_AUTORIZATION);
+                    break;
+                case RESULT_CANCELED:
+                    if(userdata.get("error").equals("canceled")) {
+                        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Error: "+userdata.get("error"),
+                                Toast.LENGTH_SHORT).show();
+                    }
+            }
+        }
+    }
+
+    @Override
+    public void onAutorizationTaskCompleted(CookieStore result) {
+        Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
+    }
 }
