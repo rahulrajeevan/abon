@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import ru.macrobit.abonnews.R;
+import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 
@@ -50,7 +52,9 @@ public class MainActivity extends Env implements
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.profile:
-                add(new ProfileFragment(), "Profile");
+                if (Utils.loadCookieFromSharedPreferences(Values.COOKIES, Utils.getPrefs(MainActivity.this)) != null) {
+                    add(new ProfileFragment(), "Profile");
+                }
                 break;
             case R.id.comments:
                 Toast.makeText(this, "Comments", Toast.LENGTH_SHORT).show();
