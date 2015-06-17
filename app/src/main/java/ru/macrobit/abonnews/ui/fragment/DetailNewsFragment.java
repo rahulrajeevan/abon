@@ -22,7 +22,6 @@ import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
-import ru.macrobit.abonnews.controller.AudioInterface;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -71,16 +70,26 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     private void initWebView(String data) {
         mBody.setWebChromeClient(new WebChromeClient());
         mBody.setWebViewClient(new ProgressWebClient());
-        mBody.getSettings().setJavaScriptEnabled(true);
+
         mBody.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
         mBody.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        mBody.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        WebSettings webSettings = mBody.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setPluginState(WebSettings.PluginState.ON);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setAllowFileAccess(true);
         mBody.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        mBody.addJavascriptInterface(new AudioInterface(getActivity()), "Aud");
+//        mBody.addJavascriptInterface(new AudioInterface(getActivity()), "Aud");
     }
 
     private String getHtmlData(String bodyHTML) {
-        String head = "<head><style>img{max-width: 100%; width:100% !important; height: auto;} iframe{max-width: 100%; width:100% !important; height: auto;}</style></head>";
+        String head = "<head><style>img{max-width: 100%; width:100% !important; height: auto;}" +
+                " iframe{max-width: 100%; width:100% !important; height: auto;} " +
+                "video{max-width: 100%; width:100% !important; height: auto;} " +
+                "wp-video{max-width: 100%; width:100% !important; height: auto;}" +
+                "</style></head>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
@@ -132,5 +141,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
             mProgressBar.setVisibility(View.GONE);
         }
     }
+
 }
 
