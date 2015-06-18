@@ -4,6 +4,6 @@ import org.apache.http.Header;
 import org.apache.http.client.CookieStore;
 
 
-public interface OnAutorizationTaskCompleted{
+public interface OnAuthorizationTaskCompleted {
     void onAutorizationTaskCompleted(CookieStore result);
 }

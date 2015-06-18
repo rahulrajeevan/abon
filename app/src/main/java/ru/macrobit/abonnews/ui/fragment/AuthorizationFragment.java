@@ -13,14 +13,14 @@ import org.apache.http.client.CookieStore;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
+import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.AutorizationRequest;
+import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.ulogin.sdk.UloginAuthActivity;
 
-public class AutorizationFragment extends EnvFragment implements OnAutorizationTaskCompleted, View.OnClickListener {
+public class AuthorizationFragment extends EnvFragment implements OnAuthorizationTaskCompleted, View.OnClickListener {
     EditText mLogin;
     EditText mPass;
 
@@ -46,7 +46,7 @@ public class AutorizationFragment extends EnvFragment implements OnAutorizationT
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AutorizationRequest(AutorizationFragment.this, mLogin.getText().toString(), mPass.getText().toString()).execute(Values.AUTORIZATION);
+                new AuthorizationRequest(AuthorizationFragment.this, mLogin.getText().toString(), mPass.getText().toString()).execute(Values.AUTHORIZATION);
             }
         });
         return view;
@@ -58,7 +58,7 @@ public class AutorizationFragment extends EnvFragment implements OnAutorizationT
         String[] providers = getResources()
                 .getStringArray(ru.ulogin.sdk.R.array.ulogin_providers);
         String[] mandatory_fields = new String[]{"first_name", "last_name"};
-        String[] optional_fields = new String[]{"nickname", "photo"};
+        String[] optional_fields = new String[]{"nickname", "photo", "email"};
 
         intent.putExtra(
                 UloginAuthActivity.PROVIDERS,
