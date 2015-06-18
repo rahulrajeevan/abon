@@ -1,12 +1,10 @@
 package ru.macrobit.abonnews.ui.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,17 +13,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
-import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
-import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 
 
@@ -68,14 +60,14 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     }
 
     private void initWebView(String data) {
-        mBody.setWebChromeClient(new WebChromeClient());
+//        mBody.setWebChromeClient(new WebChromeClient());
         mBody.setWebViewClient(new ProgressWebClient());
 
         mBody.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
         mBody.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         mBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         WebSettings webSettings = mBody.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        webSettings.setJavaScriptEnabled(false);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setPluginState(WebSettings.PluginState.ON);
         webSettings.setDomStorageEnabled(true);
@@ -86,9 +78,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     private String getHtmlData(String bodyHTML) {
         String head = "<head><style>img{max-width: 100%; width:100% !important; height: auto;}" +
-                " iframe{max-width: 100%; width:100% !important; height: auto;} " +
-                "video{max-width: 100%; width:100% !important; height: auto;} " +
-                "wp-video{max-width: 100%; width:100% !important; height: auto;}" +
+                " iframe{max-width: 0%; width:0% !important; height: 0%;} " +
+                "video{max-width: 0%; width:0% !important; height: 0%;} " +
+                "wp-video{max-width: 0%; width:0% !important; height: 0%;}" +
                 "</style></head>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
@@ -104,20 +96,20 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
-        Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
-        ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-        ArrayList<String> group = new ArrayList<>();
-        group.add("comments");
-//        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
-//        group.add(arrayList);
-//        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
-        MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-
-//        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
-
-        mListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
+//        ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+//        ArrayList<String> group = new ArrayList<>();
+//        group.add("comments");
+////        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
+////        group.add(arrayList);
+////        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
+//        MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+//        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+//
+////        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
+//
+//        mListView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
     }
 
     public class ProgressWebClient extends WebViewClient
