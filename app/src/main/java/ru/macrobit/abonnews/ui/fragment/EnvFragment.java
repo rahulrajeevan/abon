@@ -13,7 +13,7 @@ import ru.macrobit.abonnews.R;
 
 
 public class EnvFragment extends Fragment {
-    static FragmentTransaction ft;
+    static FragmentTransaction mTransaction;
     FragmentManager mManager;
 
     @Override
@@ -22,32 +22,39 @@ public class EnvFragment extends Fragment {
         mManager = getActivity().getSupportFragmentManager();
     }
 
-    void add(Fragment fragment) {
-        ft = mManager.beginTransaction();
-        ft.add(R.id.fragment_container, fragment);
-        ft.addToBackStack(null);
-        ft.commit();
+    void add(Fragment fragment, String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        mTransaction.add(R.id.fragment_container, fragment, tag);
+        mTransaction.addToBackStack(tag);
+        mTransaction.commit();
     }
 
-    void add(Fragment fragment, Bundle bundle) {
-        ft = mManager.beginTransaction();
-        ft.add(R.id.fragment_container, fragment);
+    void add(Fragment fragment, Bundle bundle, String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.add(R.id.fragment_container, fragment, tag);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragment.setArguments(bundle);
-        ft.addToBackStack(null);
-        ft.commit();
+        mTransaction.addToBackStack(tag);
+        mTransaction.commit();
     }
 
-    void remove(Fragment fragment) {
-        ft = mManager.beginTransaction();
-        ft.remove(fragment);
-        ft.addToBackStack(null);
-        ft.commit();
+    void remove(String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+        mTransaction.remove(getFragmentByTag(tag));
+        mTransaction.commit();
     }
 
-    void replace(Fragment fragment) {
-        ft = mManager.beginTransaction();
-        ft.replace(R.id.fragment_container, fragment);
-        ft.addToBackStack(null);
-        ft.commit();
+    Fragment getFragmentByTag(String tag) {
+        return mManager.findFragmentByTag(tag);
+    }
+
+    void replace(Fragment fragment, String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.replace(R.id.fragment_container, fragment, tag);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        mTransaction.addToBackStack(tag);
+        mTransaction.commit();
     }
 }

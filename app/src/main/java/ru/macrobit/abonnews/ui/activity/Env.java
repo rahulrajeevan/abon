@@ -20,38 +20,46 @@ public class Env extends AppCompatActivity {
 
     void add(Fragment fragment, String tag) {
         mTransaction = mManager.beginTransaction();
-        mTransaction.add(R.id.fragment_container, fragment);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        mTransaction.add(R.id.fragment_container, fragment, tag);
         mTransaction.commit();
     }
 
-    void addHiding(Fragment fragment) {
+    void addHiding(Fragment fragment, String tag) {
         mTransaction = mManager.beginTransaction();
-        mTransaction.add(R.id.fragment_container, fragment);
+        mTransaction.add(R.id.fragment_container, fragment, tag);
         mTransaction.hide(fragment);
         mTransaction.commit();
     }
 
     void replace(Fragment fragment, String tag) {
         mTransaction = mManager.beginTransaction();
-        mTransaction.replace(R.id.fragment_container, fragment);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        mTransaction.replace(R.id.fragment_container, fragment, tag);
         mTransaction.commit();
     }
 
-    void remove(Fragment fragment) {
+    void remove(String tag) {
         mTransaction = mManager.beginTransaction();
-        mTransaction.remove(fragment);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+        mTransaction.remove(getFragmentByTag(tag));
         mTransaction.commit();
     }
 
-    void hide(Fragment fragment) {
+    void hide(String tag) {
         mTransaction = mManager.beginTransaction();
-        mTransaction.hide(fragment);
+        mTransaction.hide(getFragmentByTag(tag));
         mTransaction.commit();
     }
 
-    void show(Fragment fragment) {
+    void show(String tag) {
         mTransaction = mManager.beginTransaction();
-        mTransaction.show(fragment);
+        mTransaction.show(getFragmentByTag(tag));
         mTransaction.commit();
     }
+
+    Fragment getFragmentByTag(String tag) {
+        return mManager.findFragmentByTag(tag);
+    }
+
 }
