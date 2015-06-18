@@ -57,7 +57,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                replace(new AutorizationFragment());
+                add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
             }
         });
         getNewsFromServer();
@@ -100,7 +100,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mSwipeRefreshLayout.setColorSchemeColors(R.color.primary_dark, R.color.accent);
         if (mAdapter == null) {
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
-            mListView.addFooterView(mFooter);
+            if (mListView.getFooterViewsCount() == 0) {
+                mListView.addFooterView(mFooter, "footer", false);
+            }
             mListView.setAdapter(mAdapter);
         } else {
             for (ShortNews s : newsList)
@@ -119,7 +121,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 FullNews fullNews = new FullNews(shortNews, news.getContent());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("data", fullNews);
-                add(new DetailNewsFragment(), bundle);
+                add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
             }
         });
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -140,7 +142,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                         isLastItemVisible = true;
                         Toast.makeText(getActivity(), getActivity().getString(R.string.list_end), Toast.LENGTH_LONG).show();
                         mListView.removeFooterView(mFooter);
-                        mFooter.setVisibility(View.INVISIBLE);
+                        mAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -187,6 +189,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
             isEndNewsList = true;
+            mListView.removeFooterView(mFooter);
         }
     }
 
