@@ -41,8 +41,8 @@ public class Media {
     private String source;
     @SerializedName("is_image")
     private boolean isImage;
-    @SerializedName("attachment_meta")
-    private AttachmentMeta attachmentMeta;
+//    @SerializedName("attachment_meta")
+//    private AttachmentMeta attachmentMeta;
 
     public int getId() {
         return id;
@@ -252,11 +252,11 @@ public class Media {
         this.isImage = isImage;
     }
 
-    public AttachmentMeta getAttachmentMeta() {
-        return attachmentMeta;
-    }
-
-    public void setAttachmentMeta(AttachmentMeta attachmentMeta) {
-        this.attachmentMeta = attachmentMeta;
-    }
+//    public AttachmentMeta getAttachmentMeta() {
+//        return attachmentMeta;
+//    }
+//
+//    public void setAttachmentMeta(AttachmentMeta attachmentMeta) {
+//        this.attachmentMeta = attachmentMeta;
+//    }
 }
