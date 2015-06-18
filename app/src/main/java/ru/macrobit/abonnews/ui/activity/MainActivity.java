@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,21 +15,23 @@ import android.widget.Toast;
 
 import org.apache.http.client.CookieStore;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
+import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.GetCookiesFromTokenRequest;
-import ru.macrobit.abonnews.loader.GetRequest;
+import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.ulogin.sdk.UloginAuthActivity;
 
 
 public class MainActivity extends Env implements
-        NavigationView.OnNavigationItemSelectedListener, OnAutorizationTaskCompleted {
+        NavigationView.OnNavigationItemSelectedListener, OnAuthorizationTaskCompleted {
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
@@ -37,12 +40,13 @@ public class MainActivity extends Env implements
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mNavItemId;
+    List<WeakReference<Fragment>> mFragList = new ArrayList<WeakReference<Fragment>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        add(new NewsFragment(), "NEWS");
+        add(new NewsFragment(), Values.NEWS_TAG);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -62,7 +66,7 @@ public class MainActivity extends Env implements
         switch (itemId) {
             case R.id.profile:
                 if (Utils.loadCookieFromSharedPreferences(Values.COOKIES, Utils.getPrefs(MainActivity.this)) != null) {
-                    add(new ProfileFragment(), "Profile");
+                    add(new ProfileFragment(), Values.PROFILE_TAG);
                 }
                 break;
             case R.id.comments:
@@ -109,7 +113,15 @@ public class MainActivity extends Env implements
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            List<Fragment> fragments = getActiveFragments();
+            if (fragments.size() == 1) {
+                super.onBackPressed();
+            } else {
+                for (Fragment f: fragments) {
+                    if (!f.getTag().equals(Values.NEWS_TAG))
+                        remove(f.getTag());
+                }
+            }
         }
     }
 
@@ -129,7 +141,7 @@ public class MainActivity extends Env implements
                 case RESULT_OK:
                     String token = userdata.get(Values.TOKEN).toString();
                     Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
-                    new GetCookiesFromTokenRequest(MainActivity.this).execute(Values.ULOGIN + token + Values.SOC_AUTORIZATION);
+                    new AuthorizationRequest(MainActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
                     if(userdata.get("error").equals("canceled")) {
@@ -140,6 +152,24 @@ public class MainActivity extends Env implements
                     }
             }
         }
+    }
+
+    public List<Fragment> getActiveFragments() {
+        ArrayList<Fragment> ret = new ArrayList<Fragment>();
+        for(WeakReference<Fragment> ref : mFragList) {
+            Fragment f = ref.get();
+            if(f != null) {
+                if(f.isVisible()) {
+                    ret.add(f);
+                }
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public void onAttachFragment (Fragment fragment) {
+        mFragList.add(new WeakReference(fragment));
     }
 
     @Override
