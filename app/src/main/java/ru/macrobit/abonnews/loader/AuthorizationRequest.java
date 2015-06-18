@@ -1,6 +1,5 @@
 package ru.macrobit.abonnews.loader;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import org.apache.http.Header;
@@ -30,28 +29,25 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.macrobit.abonnews.OnAutorizationTaskCompleted;
-import ru.macrobit.abonnews.OnTaskCompleted;
-import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 
-public class AutorizationRequest extends AsyncTask<String, String, CookieStore> {
+public class AuthorizationRequest extends AsyncTask<String, String, CookieStore> {
     String mLogin;
     String mPass;
-    private OnAutorizationTaskCompleted callback;
+    private OnAuthorizationTaskCompleted callback;
     Header[] mHeaders;
     CookieStore mCookieStore;
+    String mToken;
 
-    public AutorizationRequest(OnAutorizationTaskCompleted callback, String login, String pass) {
+    public AuthorizationRequest(OnAuthorizationTaskCompleted callback, String login, String pass) {
         this.callback = callback;
         mLogin = login;
         mPass = pass;
     }
 
-    public AutorizationRequest(String login, String pass) {
-        mLogin = login;
-        mPass = pass;
+    public AuthorizationRequest(OnAuthorizationTaskCompleted callback, String token) {
+        this.callback = callback;
+        mToken = token;
     }
 
     @Override
@@ -82,8 +78,13 @@ public class AutorizationRequest extends AsyncTask<String, String, CookieStore> 
             post.setHeader("Content-type",
                     "application/x-www-form-urlencoded; charset=UTF-8");
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("log", mLogin));
-            nameValuePairs.add(new BasicNameValuePair("pwd", mPass));
+            if (mLogin != null && mPass != null) {
+                nameValuePairs.add(new BasicNameValuePair("log", mLogin));
+                nameValuePairs.add(new BasicNameValuePair("pwd", mPass));
+            } else {
+                nameValuePairs.add(new BasicNameValuePair("token", mToken));
+            }
+
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             mCookieStore = new BasicCookieStore();
