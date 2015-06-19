@@ -51,6 +51,15 @@ public class Utils {
         return context.getSharedPreferences(Values.PREF, Context.MODE_PRIVATE);
     }
 
+    public static boolean isCookiesExist(Context context) {
+        SharedPreferences prefs = getPrefs(context);
+        if (loadCookieFromSharedPreferences(Values.COOKIES, prefs) != null && loadFromSharedPreferences(Values.TOKEN, prefs) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static void saveCookieToSharedPreferences(String key, CookieStore cookieStore,
                                                           SharedPreferences pref) {
         List<Cookie> list = cookieStore.getCookies();
@@ -67,13 +76,25 @@ public class Utils {
     public static BasicClientCookie[] loadCookieFromSharedPreferences(String key,
                                                      SharedPreferences pref) {
         String s = pref.getString(key, null);
-        ShortCookie[] cookies = GsonUtils.fromJson(s, ShortCookie[].class);
-        BasicClientCookie[] basicClientCookies = new BasicClientCookie[cookies.length];
-        for (int i = 0; i<cookies.length; i++) {
-            basicClientCookies[i] = new BasicClientCookie(cookies[i].getKey(), cookies[i].getValue());
-            basicClientCookies[i].setDomain(cookies[i].getDomain());
-            basicClientCookies[i].setExpiryDate(cookies[i].getExpiryDate());
+        if (s != null) {
+            ShortCookie[] cookies = GsonUtils.fromJson(s, ShortCookie[].class);
+            BasicClientCookie[] basicClientCookies = new BasicClientCookie[cookies.length];
+            for (int i = 0; i < cookies.length; i++) {
+                basicClientCookies[i] = new BasicClientCookie(cookies[i].getKey(), cookies[i].getValue());
+                basicClientCookies[i].setDomain(cookies[i].getDomain());
+                basicClientCookies[i].setExpiryDate(cookies[i].getExpiryDate());
+            }
+            return basicClientCookies;
+        } else {
+            return null;
         }
-        return basicClientCookies;
+    }
+
+    public static void deleteCookies(Context context) {
+        SharedPreferences prefs = getPrefs(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(Values.COOKIES);
+        editor.remove(Values.TOKEN);
+        editor.commit();
     }
 }
