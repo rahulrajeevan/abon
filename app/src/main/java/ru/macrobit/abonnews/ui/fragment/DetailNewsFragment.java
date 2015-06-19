@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,16 +17,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
-import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.loader.GetRequest;
+import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
-import ru.macrobit.abonnews.model.Media;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
@@ -58,48 +60,40 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     }
 
     private void initVideo(View parent, String data) {
-        webView = (VideoEnabledWebView)parent.findViewById(R.id.webView);
+        webView = (VideoEnabledWebView) parent.findViewById(R.id.webView);
 
         // Initialize the VideoEnabledWebChromeClient and set event handlers
         View nonVideoLayout = parent.findViewById(R.id.nonVideoLayout); // Your own view, read class comments
-        ViewGroup videoLayout = (ViewGroup)parent.findViewById(R.id.videoLayout); // Your own view, read class comments
+        ViewGroup videoLayout = (ViewGroup) parent.findViewById(R.id.videoLayout); // Your own view, read class comments
         //noinspection all
         View loadingView = getActivity().getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
         webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView) // See all available constructors...
         {
             // Subscribe to standard events, such as onProgressChanged()...
             @Override
-            public void onProgressChanged(WebView view, int progress)
-            {
+            public void onProgressChanged(WebView view, int progress) {
                 // Your code...
             }
         };
-        webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback()
-        {
+        webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
             @Override
-            public void toggledFullscreen(boolean fullscreen)
-            {
+            public void toggledFullscreen(boolean fullscreen) {
                 // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
-                if (fullscreen)
-                {
+                if (fullscreen) {
                     WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
                     attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
                     attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                     getActivity().getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14)
-                    {
+                    if (android.os.Build.VERSION.SDK_INT >= 14) {
                         //noinspection all
                         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
                     }
-                }
-                else
-                {
+                } else {
                     WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
                     attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
                     attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                     getActivity().getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14)
-                    {
+                    if (android.os.Build.VERSION.SDK_INT >= 14) {
                         //noinspection all
                         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                     }
@@ -124,9 +118,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         mDate.setText(news.getDate());
         mId = news.getId();
 //        initWebView(news.getBody());
-//        getComments(news.getId() + "/comments/");
+        getComments(news.getId() + "/comments/");
         initVideo(parent, news.getBody());
-        getMedia();
+//        getMedia();
         ImageUtils.getUIL(getActivity()).displayImage(news.getImageUrl(), mImage);
     }
 
@@ -147,12 +141,15 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     }
 
     private String getHtmlData(String bodyHTML) {
-        String head = "<head><style>img{max-width: 100%; width:100% !important; height: auto;}" +
-                " iframe{width:100%% !important; height: auto !important;} " +
-                "video{ idth:100%% !important; height: auto !important;} " +
-                "wp-video{ width:100%% !important; height: auto !important;}" +
-                "audio{visibility: visible !important}" +
-                "</style></head>";
+        String head = "<html><head> " +
+                "<style> " +
+                "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
+                ".wp-video {height:auto !important; width:100%% !important; visibility: visible !important;} " +
+                ".wp-video-shortcode {height:auto !important; width:100% !important; visibility: visible !important;} " +
+                "audio {visibility: visible !important;} " +
+                "iframe {height:auto !important; width:100%% !important; visibility: visible !important;} " +
+                "</style>" +
+                "</head><body style='margin:0; '>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
@@ -163,7 +160,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     private void getComments(String url) {
         mode = 2;
-        new GetRequest(DetailNewsFragment.this).execute(Values.GET_POST + url);
+        new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + url);
     }
 
     @Override
@@ -173,52 +170,44 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
-        if (mode == 1) {
-            Media[] media = GsonUtils.fromJson(result, Media[].class);
-            ArrayList<Media> arrayList = NewsUtils.getMediaById(mId, media);
-            if (arrayList.size() > 0) {
-                for (int i = 0; i<arrayList.size(); i++) {
-                    String source = arrayList.get(i).getSource();
-                }
-            }
+            Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
+            ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+            ArrayList<String> group = new ArrayList<>();
+            group.add("comments");
+            //        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
+//        group.add(arrayList);
+//        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
+            MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+            adapter.setInflater((LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+
+//        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
+
+            mListView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+
+    }
+
+
+    public class ProgressWebClient extends WebViewClient {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            view.loadUrl(url);
+            return true;
+
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            mProgressBar.setVisibility(View.GONE);
         }
     }
-//        Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
-//        ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-//        ArrayList<String> group = new ArrayList<>();
-//        group.add("comments");
-////        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
-////        group.add(arrayList);
-////        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
-//        MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-//        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-//
-////        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
-//
-//        mListView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-
-
-public class ProgressWebClient extends WebViewClient {
-    @Override
-    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        super.onPageStarted(view, url, favicon);
-    }
-
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        mProgressBar.setVisibility(View.VISIBLE);
-        view.loadUrl(url);
-        return true;
-
-    }
-
-    @Override
-    public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
-        mProgressBar.setVisibility(View.GONE);
-    }
-}
 
 }
 
