@@ -95,7 +95,7 @@ public class CommentsAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.title.setText(mGroups.get(groupPosition).get(childPosition).getAuthor().getName());
+        viewHolder.title.setText(mGroups.get(groupPosition).get(childPosition).getAuthorName());
         viewHolder.body.setText(mGroups.get(groupPosition).get(childPosition).getContent());
         return convertView;
     }

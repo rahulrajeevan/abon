@@ -51,7 +51,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.title.setText(childtems.get(childPosition).getAuthor().getName());
+//        viewHolder.title.setText(childtems.get(childPosition).getAuthor().getName());
         viewHolder.body.setText(childtems.get(childPosition).getContent());
         return convertView;
     }
@@ -70,7 +70,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return null;
+        return childtems.get(childPosition);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return null;
+        return parentItems.get(groupPosition);
     }
 
     @Override
