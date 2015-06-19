@@ -13,13 +13,23 @@ public class Comments {
     private String status;
     private String type;
     private int parent;
-    private Author author;
+//    private int author;
+    @SerializedName("author_name")
+    private String authorName;
     private String date;
     @SerializedName("date_tz")
     private String dateTz;
     @SerializedName("date_gmt")
     private String dateGmt;
     private Meta meta;
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
     public int getId() {
         return id;
@@ -67,14 +77,6 @@ public class Comments {
 
     public void setParent(int parent) {
         this.parent = parent;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
     }
 
     public String getDate() {
