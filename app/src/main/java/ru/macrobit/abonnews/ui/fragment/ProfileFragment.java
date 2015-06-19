@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted{
     TextView mFirstName;
     TextView mLastName;
     TextView mUserId;
+    Button mLogout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,8 +45,14 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted{
         mLastName= (TextView) v.findViewById(R.id.last_name);
         mUsername = (TextView) v.findViewById(R.id.username);
         mUserId = (TextView) v.findViewById(R.id.user_id);
-
-
+        mLogout = (Button) v.findViewById(R.id.button);
+        mLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.deleteCookies(getActivity());
+                remove(Values.PROFILE_TAG);
+            }
+        });
     }
 
     @Override
