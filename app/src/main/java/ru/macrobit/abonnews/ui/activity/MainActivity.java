@@ -25,6 +25,7 @@ import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
+import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.ulogin.sdk.UloginAuthActivity;
@@ -65,8 +66,14 @@ public class MainActivity extends Env implements
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.profile:
-                if (Utils.loadCookieFromSharedPreferences(Values.COOKIES, Utils.getPrefs(MainActivity.this)) != null) {
+                if (Utils.isCookiesExist(this)) {
                     add(new ProfileFragment(), Values.PROFILE_TAG);
+                } else {
+                    if (getFragmentByTag(Values.AUTHORIZATION_TAG) == null) {
+                        add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
+                    } else {
+                        getSupportFragmentManager().popBackStack(Values.AUTHORIZATION_TAG, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+                    }
                 }
                 break;
             case R.id.comments:
@@ -74,6 +81,9 @@ public class MainActivity extends Env implements
                 break;
             case R.id.about:
                 Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.home:
+
                 break;
             default:
                 break;
@@ -124,6 +134,8 @@ public class MainActivity extends Env implements
             }
         }
     }
+
+
 
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
