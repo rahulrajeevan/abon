@@ -17,84 +17,84 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
 
-        <TextView
-            android:id="@+id/det_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/det_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/det_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/det_title"
-            android:layout_alignStart="@+id/det_title"
-            android:layout_below="@+id/det_title"
-            android:textColor="@android:color/holo_orange_dark"
-            android:textSize="12sp" />
+            <TextView
+                android:id="@+id/det_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/det_title"
+                android:layout_alignStart="@+id/det_title"
+                android:layout_below="@+id/det_title"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="12sp" />
 
-        <ru.macrobit.abonnews.ui.view.DynamicImageView
-            android:id="@+id/det_imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/det_date"
-            android:layout_alignStart="@+id/det_date"
-            android:layout_below="@+id/det_date"
-            android:layout_marginTop="10dp" />
+            <ru.macrobit.abonnews.ui.view.DynamicImageView
+                android:id="@+id/det_imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/det_date"
+                android:layout_alignStart="@+id/det_date"
+                android:layout_below="@+id/det_date"
+                android:layout_marginTop="10dp" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/det_imageView"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/det_imageView"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp" />
 
-        <!--<WebView-->
-        <!--android:id="@+id/det_body"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignLeft="@+id/det_imageView"-->
-        <!--android:layout_alignStart="@+id/det_imageView"-->
-        <!--android:layout_below="@+id/det_imageView"-->
-        <!--android:layout_marginTop="10dp" />-->
+            <!--<WebView-->
+            <!--android:id="@+id/det_body"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignLeft="@+id/det_imageView"-->
+            <!--android:layout_alignStart="@+id/det_imageView"-->
+            <!--android:layout_below="@+id/det_imageView"-->
+            <!--android:layout_marginTop="10dp" />-->
 
-        <RelativeLayout
-            android:id="@+id/nonVideoLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignLeft="@+id/det_imageView"
-            android:layout_alignStart="@+id/det_imageView"
-            android:layout_below="@+id/det_imageView">
+            <RelativeLayout
+                android:id="@+id/nonVideoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignLeft="@+id/det_imageView"
+                android:layout_alignStart="@+id/det_imageView"
+                android:layout_below="@+id/det_imageView">
 
-            <ru.macrobit.abonnews.ui.view.VideoEnabledWebView
-                android:id="@+id/webView"
+                <ru.macrobit.abonnews.ui.view.VideoEnabledWebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <!-- View where the video will be shown when video goes fullscreen -->
+            <RelativeLayout
+                android:id="@+id/videoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-        </RelativeLayout>
-
-        <!-- View where the video will be shown when video goes fullscreen -->
-        <RelativeLayout
-            android:id="@+id/videoLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
 
             <ExpandableListView
                 android:id="@+id/det_listView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/videoLayout"
-                android:layout_alignStart="@+id/videoLayout"
-                android:layout_below="@+id/videoLayout"
+                android:layout_alignLeft="@+id/nonVideoLayout"
+                android:layout_alignStart="@+id/nonVideoLayout"
+                android:layout_below="@+id/nonVideoLayout"
                 android:layout_marginTop="10dp" />
         </RelativeLayout>
     </ScrollView>

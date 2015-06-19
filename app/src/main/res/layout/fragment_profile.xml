@@ -55,5 +55,13 @@
             android:layout_below="@+id/username"
             android:layout_marginTop="10dp"
             android:text="New Text" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_id"
+            android:layout_marginTop="10dp"
+            android:text="logout" />
     </RelativeLayout>
 </RelativeLayout>
