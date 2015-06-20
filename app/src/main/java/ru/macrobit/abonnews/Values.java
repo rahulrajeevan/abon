@@ -25,4 +25,5 @@ public class Values {
     public static final String AUTHORIZATION_TAG = "authorization";
     public static final String NEWS_TAG = "news";
     public static final String PROFILE_TAG = "profile";
+    public static final String ADS = URL +  "/wp-json/ads";
 }

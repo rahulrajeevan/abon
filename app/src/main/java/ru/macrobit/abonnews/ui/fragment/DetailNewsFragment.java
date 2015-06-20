@@ -45,7 +45,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     private VideoEnabledWebView webView;
     private VideoEnabledWebChromeClient webChromeClient;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -170,21 +169,19 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
-            Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
-            ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-            ArrayList<String> group = new ArrayList<>();
-            group.add("comments");
-            //        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
+        Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
+        ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+        ArrayList<String> group = new ArrayList<>();
+        group.add("comments");
+        //        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
 //        group.add(arrayList);
 //        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
-            MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-            adapter.setInflater((LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+        MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
 
 //        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
-
-            mListView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-
+        mListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
 

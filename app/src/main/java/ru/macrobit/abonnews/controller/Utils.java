@@ -15,9 +15,6 @@ import java.util.Set;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.model.ShortCookie;
 
-/**
- * Created by Ghost Surfer on 14.06.2015.
- */
 public class Utils {
     public static void saveToSharedPreferences(String key, String[] array, SharedPreferences pref) {
         SharedPreferences.Editor edit = pref.edit();
