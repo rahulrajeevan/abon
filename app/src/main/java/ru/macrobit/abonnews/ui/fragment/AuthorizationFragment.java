@@ -2,10 +2,10 @@ package ru.macrobit.abonnews.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import org.apache.http.client.CookieStore;
@@ -33,8 +33,8 @@ public class AuthorizationFragment extends EnvFragment implements OnAuthorizatio
         View view = inflater.inflate(R.layout.fragment_autorization,
                 container, false);
 //
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.auto_button);
-        FloatingActionButton button1 = (FloatingActionButton) view.findViewById(R.id.auto_soc_button);
+        Button button = (Button) view.findViewById(R.id.auto_button);
+        Button button1 = (Button) view.findViewById(R.id.auto_soc_button);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
