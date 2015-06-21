@@ -15,5 +15,11 @@
     <string name="first_name">Имя</string>
     <string name="last_name">Фамилия</string>
     <string name="id">ID</string>
-    <string name="loading_video">Loading video…</string>
+    <string name="loading_video">Загрузка видео…</string>
+    <string name="add_comment">Добавить комментарий</string>
+    <string name="send">Отпр.</string>
+    <string name="enter_comment">Введите комментарий</string>
+    <string name="title">Заголовок</string>
+    <string name="content">Текст новости</string>
+    <string name="add_news">Добавить новость</string>
 </resources>
