@@ -23,6 +23,10 @@ public class Comments {
     private String dateGmt;
     private Meta meta;
 
+    public Comments(String content) {
+        this.content = content;
+    }
+
     public String getAuthorName() {
         return authorName;
     }
