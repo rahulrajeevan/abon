@@ -22,4 +22,6 @@
     <string name="title">Заголовок</string>
     <string name="content">Текст новости</string>
     <string name="add_news">Добавить новость</string>
+    <string name="authorization">Авторизация</string>
+    <string name="social_authorization">Авторизация через соц. сеть</string>
 </resources>
