@@ -7,10 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,6 +25,8 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
+import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
@@ -34,16 +36,17 @@ import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
 public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
-    TextView mTitle;
-    TextView mDate;
-    WebView mBody;
-    ImageView mImage;
-    ExpandableListView mListView;
-    ProgressBar mProgressBar;
-    int mode;
-    String mId;
+    private TextView mTitle;
+    private TextView mDate;
+    private WebView mBody;
+    private ImageView mImage;
+    private ExpandableListView mListView;
+    private ProgressBar mProgressBar;
+    private String mId;
     private VideoEnabledWebView webView;
     private VideoEnabledWebChromeClient webChromeClient;
+    private FullNews mNews;
+    private View mFooter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +56,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         }
         View view = inflater.inflate(R.layout.fragment_detail,
                 container, false);
-
         initFragment(view);
         return view;
     }
@@ -109,34 +111,29 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         mTitle = (TextView) parent.findViewById(R.id.det_title);
         mDate = (TextView) parent.findViewById(R.id.det_date);
-//        mBody = (WebView) parent.findViewById(R.id.det_body);
         mImage = (ImageView) parent.findViewById(R.id.det_imageView);
+        mFooter = parent.findViewById(R.id.det_footer);
+        mFooter.setVisibility(View.GONE);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
-        FullNews news = bundle.getParcelable("data");
-        mTitle.setText(news.getTitle());
-        mDate.setText(news.getDate());
-        mId = news.getId();
-//        initWebView(news.getBody());
-        getComments(news.getId() + "/comments/");
-        initVideo(parent, news.getBody());
-//        getMedia();
-        ImageUtils.getUIL(getActivity()).displayImage(news.getImageUrl(), mImage);
-    }
-
-    private void initWebView(String data) {
-        mBody.setWebChromeClient(new WebChromeClient());
-        mBody.setWebViewClient(new ProgressWebClient());
-
-        mBody.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
-        mBody.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        mBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        WebSettings webSettings = mBody.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        webSettings.setPluginState(WebSettings.PluginState.ON);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setAllowFileAccess(true);
-        mBody.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        mNews = bundle.getParcelable("data");
+        mTitle.setText(mNews.getTitle());
+        mDate.setText(mNews.getDate());
+        mId = mNews.getId();
+        getComments(mNews.getId() + "/comments/");
+        initVideo(parent, mNews.getBody());
+        ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
+        Button addComment = (Button) parent.findViewById(R.id.addComment);
+        final EditText commentEdit = (EditText) parent.findViewById(R.id.comment);
+        addComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Comments comments = new Comments(commentEdit.getText().toString());
+                String json = GsonUtils.toJson(comments);
+                new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                        Utils.getPrefs(getActivity())), json)
+                        .execute(Values.POSTS + mNews.getId() + "/comments/");
+            }
+        });
     }
 
     private String getHtmlData(String bodyHTML) {
@@ -152,13 +149,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
-    private void getMedia() {
-        mode = 1;
-        new GetRequest(DetailNewsFragment.this).execute(Values.MEDIA);
-    }
-
     private void getComments(String url) {
-        mode = 2;
         new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + url);
     }
 
@@ -173,14 +164,20 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
         ArrayList<String> group = new ArrayList<>();
         group.add("comments");
-        //        ArrayList<ArrayList<Comments>> group = new ArrayList<ArrayList<Comments>>();
-//        group.add(arrayList);
-//        CommentsAdapter adapter = new CommentsAdapter(getActivity(), group);
         MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
         adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-
-//        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
+//        mListView.addFooterView(mFooter);
         mListView.setAdapter(adapter);
+        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                mFooter.setVisibility(View.VISIBLE);
+                setListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
         adapter.notifyDataSetChanged();
     }
 
@@ -202,8 +199,47 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            mListView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
         }
+    }
+
+    private void setListViewHeight(ExpandableListView listView,
+                                   int group) {
+        MyExpandableAdapter listAdapter = (MyExpandableAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.setLayoutParams(new ViewGroup.LayoutParams(0,0));
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight();
+
+                }
+            }
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        mFooter.setLayoutParams(new ViewGroup.LayoutParams(0,0));
+//        mFooter.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//        int footHeight = mFooter.getMeasuredHeight();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
 }
