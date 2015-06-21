@@ -41,6 +41,14 @@ public class News {
     private FeaturedImage featuredImage;
     private Terms terms;
 
+    public News (String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public News () {
+    }
+
     public int getId() {
         return id;
     }
