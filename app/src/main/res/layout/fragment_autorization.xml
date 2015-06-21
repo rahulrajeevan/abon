@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_login"
+        android:id="@+id/input_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -27,10 +27,10 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_pass"
+        android:id="@+id/input_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/input_login"
+        android:layout_below="@+id/input_title"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -45,19 +45,20 @@
             android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/auto_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/input_pass"
+        android:text="@string/authorization"
+        android:layout_below="@+id/input_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp"></android.support.design.widget.FloatingActionButton>
+        android:layout_marginTop="41dp"></Button>
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/auto_soc_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/social_authorization"
         android:layout_below="@+id/auto_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp"></android.support.design.widget.FloatingActionButton>
+        android:layout_centerHorizontal="true"></Button>
 </RelativeLayout>
