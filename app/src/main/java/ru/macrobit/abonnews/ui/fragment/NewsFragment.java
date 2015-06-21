@@ -25,6 +25,7 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.NewsAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
+import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
@@ -57,7 +58,11 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
+                if (Utils.isCookiesExist(getActivity())) {
+                    add(new AddPostFragment(), Values.ADD_TAG);
+                } else {
+                    add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
+                }
             }
         });
         getNewsFromServer();
