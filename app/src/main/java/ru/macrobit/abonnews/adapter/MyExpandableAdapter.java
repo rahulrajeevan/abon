@@ -1,6 +1,8 @@
 package ru.macrobit.abonnews.adapter;
 
 import android.app.Activity;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +53,9 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-//        viewHolder.title.setText(childtems.get(childPosition).getAuthor().getName());
-        viewHolder.body.setText(childtems.get(childPosition).getContent());
+        Spanned span = Html.fromHtml(childtems.get(childPosition).getContent());
+        viewHolder.title.setText(childtems.get(childPosition).getAuthorName());
+        viewHolder.body.setText(span);
         return convertView;
     }
 
