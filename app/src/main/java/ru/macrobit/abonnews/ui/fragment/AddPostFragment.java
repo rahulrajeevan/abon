@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,8 @@ public class AddPostFragment extends EnvFragment {
 
     private EditText mTitle;
     private EditText mContent;
-    private Button mButton;
+    private Button mPostButton;
+    private Button mPickMedia;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,14 +37,23 @@ public class AddPostFragment extends EnvFragment {
     private void initFragment(View parent) {
         mTitle = (EditText) parent.findViewById(R.id.addTitle);
         mContent = (EditText) parent.findViewById(R.id.addContent);
-        mButton = (Button) parent.findViewById(R.id.addNewsButton);
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mPostButton = (Button) parent.findViewById(R.id.addNewsButton);
+        mPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 News news = new News(mTitle.getText().toString(), mContent.getText().toString());
                 String json = GsonUtils.toJson(news);
                 new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                        Utils.getPrefs(getActivity())),json).execute(Values.POSTS);
+                        Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
+            }
+        });
+        mPickMedia = (Button) parent.findViewById(R.id.button2);
+        mPickMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                photoPickerIntent.setType("image/*");
+                getActivity().startActivityForResult(photoPickerIntent, Values.MEDIA_RESULT);
             }
         });
     }

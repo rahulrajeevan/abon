@@ -27,7 +27,6 @@ import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
