@@ -27,4 +27,5 @@ public class Values {
     public static final String PROFILE_TAG = "profile";
     public static final String ADS = URL +  "/wp-json/ads";
     public static final String ADD_TAG = "add";
+    public static final int MEDIA_RESULT = 121;
 }
