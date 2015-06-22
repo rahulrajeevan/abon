@@ -2,8 +2,11 @@ package ru.macrobit.abonnews.ui.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +27,7 @@ import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
@@ -144,10 +148,10 @@ public class MainActivity extends Env implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Values.REQUEST_ULOGIN) {
             HashMap userdata =
-                    (HashMap) intent.getSerializableExtra (UloginAuthActivity.USERDATA);
+                    (HashMap) data.getSerializableExtra (UloginAuthActivity.USERDATA);
 
             switch (resultCode) {
                 case RESULT_OK:
@@ -162,7 +166,19 @@ public class MainActivity extends Env implements
                         Toast.makeText(this, "Error: "+userdata.get("error"),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    break;
             }
+        }
+        if (requestCode == Values.MEDIA_RESULT && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+//            new AddMediaRequest(null, ).execute();
         }
     }
 
