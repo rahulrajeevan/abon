@@ -2,7 +2,6 @@ package ru.macrobit.abonnews.loader;
 
 import android.os.AsyncTask;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -11,7 +10,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -25,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 
@@ -59,11 +59,10 @@ public class AddMediaRequest extends AsyncTask<String, String, String> {
             if (mCookies != null) {
                 client.setCookieStore(mCookies);
             }
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            MultipartEntity ent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+            URI uri = new File(mFile).toURI();
             FileBody fileBody = new FileBody(new File(mFile));
-            builder.addPart("file", fileBody);
-            HttpEntity ent = builder.build();
+            ent.addPart("file", fileBody);
             HttpPost post = new HttpPost(urls[0]);
             int portOfProxy = android.net.Proxy.getDefaultPort();
             if (portOfProxy > 0) {

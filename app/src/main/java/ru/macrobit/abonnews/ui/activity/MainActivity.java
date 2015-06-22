@@ -27,6 +27,7 @@ import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
@@ -171,13 +172,16 @@ public class MainActivity extends Env implements
         if (requestCode == Values.MEDIA_RESULT && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            String fileSrc = cursor.getString(idx);
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
+            String filePath = cursor.getString(columnIndex);
             cursor.close();
 
-//            new AddMediaRequest(null, ).execute();
+            new AddMediaRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                    Utils.getPrefs(this)), filePath).execute(Values.MEDIA_ADD);
         }
     }
 
