@@ -24,4 +24,9 @@
     <string name="add_news">Добавить новость</string>
     <string name="authorization">Авторизация</string>
     <string name="social_authorization">Авторизация через соц. сеть</string>
+    <string name="about">О программе</string>
+    <string name="url">http://abon-news.ru</string>
+    <string name="copyright">2015 © ABON</string>
+    <string name="rights">Все материалы, находящиеся на сайте, охраняются в соответствии с законодательством РФ, в том числе об авторском праве и смежных правах</string>
+    <string name="logout">Выйти</string>
 </resources>
