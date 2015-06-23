@@ -5,15 +5,18 @@ import android.os.Parcelable;
 
 public class FullNews extends ShortNews implements Parcelable {
     private String body;
+    private String url;
 
-    public FullNews(String title, String date, String imageUrl, String id, String body, boolean sticky) {
+    public FullNews(String title, String date, String imageUrl, String id, String body, boolean sticky, String url) {
         super(title, date, imageUrl, id, sticky);
         this.body = body;
+        this.url = url;
     }
 
-    public FullNews(ShortNews news, String body){
+    public FullNews(ShortNews news, String body, String url){
         super(news.getTitle(), news.getDate(), news.getImageUrl(), news.getId(), news.isSticky());
         this.body = body;
+        this.url = url;
     }
 
     public String getBody() {
@@ -27,6 +30,15 @@ public class FullNews extends ShortNews implements Parcelable {
     protected FullNews(Parcel in) {
         super(in);
         body = in.readString();
+        url = in.readString();
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
@@ -37,6 +49,7 @@ public class FullNews extends ShortNews implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(body);
+        dest.writeString(url);
     }
 
     public static final Parcelable.Creator<FullNews> CREATOR = new Parcelable.Creator<FullNews>() {
