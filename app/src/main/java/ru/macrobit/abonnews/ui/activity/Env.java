@@ -19,10 +19,18 @@ public class Env extends AppCompatActivity {
     }
 
     void add(Fragment fragment, String tag) {
-        mTransaction = mManager.beginTransaction();
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        mTransaction.add(R.id.fragment_container, fragment, tag);
-        mTransaction.commit();
+        if (!isFragmentExist(tag)) {
+            mTransaction = mManager.beginTransaction();
+            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            mTransaction.add(R.id.fragment_container, fragment, tag);
+            mTransaction.commit();
+        } else {
+            popBackStack(tag);
+        }
+    }
+
+    void popBackStack (String tag) {
+        mManager.popBackStack(tag, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
     }
 
     void addHiding(Fragment fragment, String tag) {
@@ -56,6 +64,10 @@ public class Env extends AppCompatActivity {
         mTransaction = mManager.beginTransaction();
         mTransaction.show(getFragmentByTag(tag));
         mTransaction.commit();
+    }
+
+    boolean isFragmentExist(String tag) {
+        return (getFragmentByTag(tag) != null)? true: false;
     }
 
     Fragment getFragmentByTag(String tag) {
