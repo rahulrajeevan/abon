@@ -1,9 +1,14 @@
 package ru.macrobit.abonnews.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -14,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -113,7 +119,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         mDate = (TextView) parent.findViewById(R.id.det_date);
         mImage = (ImageView) parent.findViewById(R.id.det_imageView);
         mFooter = parent.findViewById(R.id.det_footer);
-        mFooter.setVisibility(View.GONE);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
         mNews = bundle.getParcelable("data");
         mTitle.setText(mNews.getTitle());
@@ -155,6 +160,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onCreate(Bundle arg0) {
+        setHasOptionsMenu(true);
         super.onCreate(arg0);
     }
 
@@ -173,7 +179,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
-                mFooter.setVisibility(View.VISIBLE);
                 setListViewHeight(parent, groupPosition);
                 return false;
             }
@@ -181,6 +186,27 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         adapter.notifyDataSetChanged();
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.global, menu);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, mNews.getUrl());
+            MenuItem item = menu.findItem(R.id.menu_item_share);
+
+            // Get its ShareActionProvider
+            ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+            // Connect the dots: give the ShareActionProvider its Share Intent
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(intent);
+            }
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     public class ProgressWebClient extends WebViewClient {
         @Override
