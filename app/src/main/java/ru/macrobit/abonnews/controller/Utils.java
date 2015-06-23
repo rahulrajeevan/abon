@@ -50,7 +50,7 @@ public class Utils {
 
     public static boolean isCookiesExist(Context context) {
         SharedPreferences prefs = getPrefs(context);
-        if (loadCookieFromSharedPreferences(Values.COOKIES, prefs) != null && loadFromSharedPreferences(Values.TOKEN, prefs) != null) {
+        if (loadCookieFromSharedPreferences(Values.COOKIES, prefs) != null || loadFromSharedPreferences(Values.TOKEN, prefs) != null) {
             return true;
         } else {
             return false;
