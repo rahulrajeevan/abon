@@ -36,12 +36,12 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="75dp"
             android:layout_alignParentBottom="false">
 
             <include
-                layout="@layout/drawer_footer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                layout="@layout/drawer_footer" />
         </RelativeLayout>
 
     </android.support.design.widget.NavigationView>
