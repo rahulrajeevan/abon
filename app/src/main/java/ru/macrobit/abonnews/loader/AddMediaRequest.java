@@ -10,7 +10,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 
@@ -59,10 +58,15 @@ public class AddMediaRequest extends AsyncTask<String, String, String> {
             if (mCookies != null) {
                 client.setCookieStore(mCookies);
             }
-            MultipartEntity ent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            URI uri = new File(mFile).toURI();
-            FileBody fileBody = new FileBody(new File(mFile));
-            ent.addPart("file", fileBody);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            File f = new File(mFile);
+            if (f.exists()) {
+                builder.addPart("file", new FileBody(f, "image/jpeg", null));
+            }
+//            MultipartEntity ent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+//            FileBody fileBody = new FileBody(new File(mFile));
+//            ent.addPart("name", fileBody);
             HttpPost post = new HttpPost(urls[0]);
             int portOfProxy = android.net.Proxy.getDefaultPort();
             if (portOfProxy > 0) {
@@ -71,8 +75,8 @@ public class AddMediaRequest extends AsyncTask<String, String, String> {
                 client.getParams().setParameter(
                         ConnRoutePNames.DEFAULT_PROXY, proxy);
             }
-            post.setEntity(ent);
-            post.setHeader("Content-type", "multipart/form-data");
+            post.setHeader("Content-type", "multipart/form-data; boundary=----");
+            post.setEntity(builder.build());
             HttpResponse response = client.execute(post);
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(response.getEntity()
