@@ -29,6 +29,7 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
+import ru.macrobit.abonnews.ui.fragment.AboutFragment;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
@@ -76,7 +77,7 @@ public class MainActivity extends Env implements
                     if (getFragmentByTag(Values.AUTHORIZATION_TAG) == null) {
                         add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
                     } else {
-                        getSupportFragmentManager().popBackStack(Values.AUTHORIZATION_TAG, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+                        popBackStack(Values.AUTHORIZATION_TAG);
                     }
                 }
                 break;
@@ -84,7 +85,7 @@ public class MainActivity extends Env implements
                 Toast.makeText(this, "Comments", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.about:
-                Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                add(new AboutFragment(), Values.ABOUT_TAG);
                 break;
             case R.id.home:
 
@@ -205,6 +206,7 @@ public class MainActivity extends Env implements
 
     @Override
     public void onAutorizationTaskCompleted(CookieStore result) {
+        remove(Values.AUTHORIZATION_TAG);
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
     }
 }
