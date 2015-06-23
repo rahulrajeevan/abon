@@ -19,11 +19,10 @@ import ru.macrobit.abonnews.model.Author;
 
 public class ProfileFragment extends EnvFragment implements OnTaskCompleted{
 
-    ImageView mImage;
-    TextView mUsername;
-    TextView mFirstName;
-    TextView mLastName;
-    TextView mUserId;
+    ImageView mAvatar;
+    TextView mUrl;
+    TextView mName;
+    TextView mEmail;
     Button mLogout;
 
     @Override
@@ -40,12 +39,11 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted{
     }
 
     private void initFragment(View v) {
-        mImage = (ImageView) v.findViewById(R.id.imageView);
-        mFirstName = (TextView) v.findViewById(R.id.first_name);
-        mLastName= (TextView) v.findViewById(R.id.last_name);
-        mUsername = (TextView) v.findViewById(R.id.username);
-        mUserId = (TextView) v.findViewById(R.id.user_id);
-        mLogout = (Button) v.findViewById(R.id.button);
+        mAvatar = (ImageView) v.findViewById(R.id.profile_avatar);
+        mName = (TextView) v.findViewById(R.id.profile_name);
+        mEmail = (TextView) v.findViewById(R.id.profile_email);
+        mUrl = (TextView) v.findViewById(R.id.profile_url);
+        mLogout = (Button) v.findViewById(R.id.profile_logout);
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,10 +56,9 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted{
     @Override
     public void onTaskCompleted(String result) {
         Author author = GsonUtils.fromJson(result, Author.class);
-        ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mImage);
-        mFirstName.setText(getString(R.string.first_name) + ": " + author.getFirstName());
-        mUserId.setText(getString(R.string.id) + ": " + String.valueOf(author.getId()));
-        mUsername.setText(getString(R.string.username) + ": " + author.getName());
-        mLastName.setText(getString(R.string.last_name) + ": " + author.getLastName());
+        ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
+        mName.setText(author.getFirstName());
+        mUrl.setText(author.getUrl());
+        mEmail.setText(author.getUrl());
     }
 }
