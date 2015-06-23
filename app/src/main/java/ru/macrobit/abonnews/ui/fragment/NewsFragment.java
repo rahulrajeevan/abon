@@ -106,7 +106,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         if (mAdapter == null) {
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
             if (mListView.getFooterViewsCount() == 0) {
-                mListView.addFooterView(mFooter, "footer", false);
+                mListView.addFooterView(mFooter, null, false);
             }
             mListView.setAdapter(mAdapter);
         } else {
@@ -123,12 +123,15 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
                 News news = mNews.get(position);
-                FullNews fullNews = new FullNews(shortNews, news.getContent());
+                FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("data", fullNews);
                 add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
             }
         });
+//        if( isEndNewsList)
+//            mListView.removeFooterView(mFooter);
+//        mListView.getFooterViewsCount()
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -161,7 +164,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private void searchNews(String searchWord) {
         isSearchList = true;
         new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + searchWord);
-        mListView.removeFooterView(mFooter);
     }
 
     private void getNewsFromServer() {
@@ -194,7 +196,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
             isEndNewsList = true;
-            mListView.removeFooterView(mFooter);
         }
     }
 
