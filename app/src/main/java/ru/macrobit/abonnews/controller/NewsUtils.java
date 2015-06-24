@@ -1,7 +1,5 @@
 package ru.macrobit.abonnews.controller;
 
-import android.content.Context;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.Media;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
@@ -28,7 +25,12 @@ public class NewsUtils {
         return arrayList;
     }
 
-    private static String parseDate(String s) {
+    public static ShortNews generateShortNews(News n) {
+        ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
+        return shortNews;
+    }
+
+    public static String parseDate(String s) {
         s = s.replaceAll("T", " ");
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         Date date = null;
