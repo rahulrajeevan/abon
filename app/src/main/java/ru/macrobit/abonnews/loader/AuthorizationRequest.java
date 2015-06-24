@@ -2,7 +2,6 @@ package ru.macrobit.abonnews.loader;
 
 import android.os.AsyncTask;
 
-import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -13,7 +12,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,12 +30,11 @@ import java.util.List;
 import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 
 public class AuthorizationRequest extends AsyncTask<String, String, CookieStore> {
-    String mLogin;
-    String mPass;
+    private String mLogin;
+    private String mPass;
     private OnAuthorizationTaskCompleted callback;
-    Header[] mHeaders;
-    CookieStore mCookieStore;
-    String mToken;
+    private CookieStore mCookieStore;
+    private String mToken;
 
     public AuthorizationRequest(OnAuthorizationTaskCompleted callback, String login, String pass) {
         this.callback = callback;
@@ -92,17 +89,10 @@ public class AuthorizationRequest extends AsyncTask<String, String, CookieStore>
             ctx.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);
 
             HttpResponse response = client.execute(post, ctx);
-            mHeaders = response.getHeaders("Set-Cookie");
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     response.getEntity().getContent(), "UTF-8"));
             StringBuilder sb = new StringBuilder();
             String line = null;
-            List<Cookie> cookies = mCookieStore.getCookies();
-            if( !cookies.isEmpty() ){
-                for (Cookie cookie : cookies){
-                    String cookieString = cookie.getName() + " : " + cookie.getValue();
-                }
-            }
             while ((line = reader.readLine()) != null) {
                 sb.append(line + System.getProperty("line.separator"));
             }
