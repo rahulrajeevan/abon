@@ -47,18 +47,22 @@
 
     <Button
         android:id="@+id/auto_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/authorization"
         android:layout_below="@+id/input_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="41dp"></Button>
 
     <Button
         android:id="@+id/auto_soc_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/social_authorization"
         android:layout_below="@+id/auto_button"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_centerHorizontal="true"></Button>
 </RelativeLayout>
