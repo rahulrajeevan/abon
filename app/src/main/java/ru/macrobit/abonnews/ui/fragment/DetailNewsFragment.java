@@ -155,7 +155,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     }
 
     private void getComments(String url) {
-        new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + url);
+        if (Utils.isConnected(getActivity())) {
+            new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + url);
+        }
     }
 
     @Override
@@ -167,23 +169,27 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(String result) {
         Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
-        ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-        ArrayList<String> group = new ArrayList<>();
-        group.add("comments");
-        MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-        adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+        if (comments.length > 0) {
+            ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+            ArrayList<String> group = new ArrayList<>();
+            group.add("comments");
+            MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+            adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
 //        mListView.addFooterView(mFooter);
-        mListView.setAdapter(adapter);
-        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            mListView.setAdapter(adapter);
+            mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id) {
-                setListViewHeight(parent, groupPosition);
-                return false;
-            }
-        });
-        adapter.notifyDataSetChanged();
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v,
+                                            int groupPosition, long id) {
+                    setListViewHeight(parent, groupPosition);
+                    return false;
+                }
+            });
+            adapter.notifyDataSetChanged();
+        } else {
+            mListView.setVisibility(View.GONE);
+        }
     }
 
 

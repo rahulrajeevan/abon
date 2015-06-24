@@ -52,7 +52,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         }
         View view = inflater.inflate(R.layout.fragment_newslist,
                 container, false);
+        createFooter();
         mListView = (ListView) view.findViewById(R.id.listView);
+        mListView.addFooterView(mFooter, null, false);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.float_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -100,14 +102,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void listViewInit(ArrayList<ShortNews> newsList) {
-        createFooter();
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(R.color.primary_dark, R.color.accent);
         if (mAdapter == null) {
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
-            if (mListView.getFooterViewsCount() == 0) {
-                mListView.addFooterView(mFooter, null, false);
-            }
+//            if (mListView.getFooterViewsCount() == 0) {
+//
+//            }
             mListView.setAdapter(mAdapter);
         } else {
             for (ShortNews s : newsList)
@@ -145,7 +146,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                     isLastItemVisible = false;
                     getNewsFromServer();
                 }
-                if ((lastInScreen == totalItemCount) && isEndNewsList) {
+                if ((lastInScreen >= totalItemCount - 5) && isEndNewsList) {
                     if (!isLastItemVisible) {
                         isLastItemVisible = true;
                         Toast.makeText(getActivity(), getActivity().getString(R.string.list_end), Toast.LENGTH_LONG).show();
@@ -167,11 +168,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void getNewsFromServer() {
-        if (!isEndNewsList && !isSearchList) {
-            mPage++;
-            new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
-        } else {
+        if (Utils.isConnected(getActivity())) {
+            if (!isEndNewsList && !isSearchList) {
+                mPage++;
+                new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
+            } else {
 
+            }
         }
     }
 

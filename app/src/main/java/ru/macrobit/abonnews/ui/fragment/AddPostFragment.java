@@ -43,8 +43,10 @@ public class AddPostFragment extends EnvFragment {
             public void onClick(View view) {
                 News news = new News(mTitle.getText().toString(), mContent.getText().toString());
                 String json = GsonUtils.toJson(news);
-                new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                        Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
+                if (Utils.isConnected(getActivity())) {
+                    new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                            Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
+                }
             }
         });
         mPickMedia = (Button) parent.findViewById(R.id.button2);
@@ -53,7 +55,9 @@ public class AddPostFragment extends EnvFragment {
             public void onClick(View v) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 photoPickerIntent.setType("image/*");
-                getActivity().startActivityForResult(photoPickerIntent, Values.MEDIA_RESULT);
+                if (Utils.isConnected(getActivity())) {
+                    getActivity().startActivityForResult(photoPickerIntent, Values.MEDIA_RESULT);
+                }
             }
         });
     }

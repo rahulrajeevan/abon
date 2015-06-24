@@ -2,6 +2,9 @@ package ru.macrobit.abonnews.controller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
@@ -12,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.model.ShortCookie;
 
@@ -93,5 +97,21 @@ public class Utils {
         editor.remove(Values.COOKIES);
         editor.remove(Values.TOKEN);
         editor.commit();
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return true;
+
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return true;
+        }
+        Toast.makeText(context, context.getString(R.string.not_connect), Toast.LENGTH_LONG).show();
+        return false;
     }
 }

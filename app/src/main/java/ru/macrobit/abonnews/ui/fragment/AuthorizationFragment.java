@@ -38,7 +38,8 @@ public class AuthorizationFragment extends EnvFragment implements OnAuthorizatio
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                runUlogin();
+                if (Utils.isConnected(getActivity()))
+                    runUlogin();
             }
         });
         mLogin = (EditText) view.findViewById(R.id.auto_login);
@@ -46,7 +47,8 @@ public class AuthorizationFragment extends EnvFragment implements OnAuthorizatio
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AuthorizationRequest(AuthorizationFragment.this, mLogin.getText().toString(), mPass.getText().toString()).execute(Values.AUTHORIZATION);
+                if (Utils.isConnected(getActivity()))
+                    new AuthorizationRequest(AuthorizationFragment.this, mLogin.getText().toString(), mPass.getText().toString()).execute(Values.AUTHORIZATION);
             }
         });
         return view;

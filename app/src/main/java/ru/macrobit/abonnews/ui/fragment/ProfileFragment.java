@@ -33,8 +33,10 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted{
         }
         View view = inflater.inflate(R.layout.fragment_profile,
                 container, false);
-        new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES, Utils.getPrefs(getActivity()))).execute(Values.PROFILE);
-        initFragment(view);
+        if (Utils.isConnected(getActivity())) {
+            new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES, Utils.getPrefs(getActivity()))).execute(Values.PROFILE);
+            initFragment(view);
+        }
         return view;
     }
 
