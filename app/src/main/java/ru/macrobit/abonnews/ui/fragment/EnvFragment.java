@@ -1,13 +1,10 @@
 package ru.macrobit.abonnews.ui.fragment;
 
-/**
- * Created by Comp on 02.06.2015.
- */
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import ru.macrobit.abonnews.R;
 
@@ -23,6 +20,7 @@ public class EnvFragment extends Fragment {
     }
 
     void add(Fragment fragment, String tag) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTransaction = mManager.beginTransaction();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mTransaction.add(R.id.fragment_container, fragment, tag);
@@ -31,6 +29,7 @@ public class EnvFragment extends Fragment {
     }
 
     void add(Fragment fragment, Bundle bundle, String tag) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTransaction = mManager.beginTransaction();
         mTransaction.add(R.id.fragment_container, fragment, tag);
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

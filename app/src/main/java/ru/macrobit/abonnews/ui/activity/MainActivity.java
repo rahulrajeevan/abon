@@ -14,12 +14,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import org.apache.http.client.CookieStore;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,7 +45,6 @@ public class MainActivity extends Env implements
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mNavItemId;
-    List<WeakReference<Fragment>> mFragList = new ArrayList<WeakReference<Fragment>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,18 +52,35 @@ public class MainActivity extends Env implements
         setContentView(R.layout.activity_main);
         add(new NewsFragment(), Values.NEWS_TAG);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        initNavigationView();
+
+//        navigate(mNavItemId);
+    }
+
+    private void initNavigationView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-        navigate(mNavItemId);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActiveFragments().size() > 1) {
+                    onBackPressed();
+                } else {
+                    if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        mDrawerLayout.openDrawer(GravityCompat.START);
+                    }
+                }
+            }
+
+        });
     }
 
     private void navigate(final int itemId) {
@@ -88,7 +103,7 @@ public class MainActivity extends Env implements
                 add(new AboutFragment(), Values.ABOUT_TAG);
                 break;
             case R.id.home:
-
+                onBackPressed();
                 break;
             default:
                 break;
@@ -97,7 +112,7 @@ public class MainActivity extends Env implements
 
     @Override
     public boolean onNavigationItemSelected(final MenuItem menuItem) {
-        menuItem.setChecked(true);
+//        menuItem.setChecked(true);
         mNavItemId = menuItem.getItemId();
         mDrawerLayout.closeDrawer(GravityCompat.START);
         mDrawerActionHandler.postDelayed(new Runnable() {
@@ -118,6 +133,10 @@ public class MainActivity extends Env implements
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.support.v7.appcompat.R.id.home) {
+            if (getActiveFragments().size() > 1) {
+                getSupportFragmentManager().popBackStack();
+                return super.onOptionsItemSelected(item);
+            }
             return mDrawerToggle.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
@@ -128,18 +147,19 @@ public class MainActivity extends Env implements
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            initNavigationView();
             List<Fragment> fragments = getActiveFragments();
             if (fragments.size() == 1) {
                 super.onBackPressed();
             } else {
-                for (Fragment f: fragments) {
+                for (Fragment f : fragments) {
                     if (!f.getTag().equals(Values.NEWS_TAG))
                         remove(f.getTag());
                 }
             }
         }
     }
-
 
 
     @Override
@@ -152,7 +172,7 @@ public class MainActivity extends Env implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Values.REQUEST_ULOGIN) {
             HashMap userdata =
-                    (HashMap) data.getSerializableExtra (UloginAuthActivity.USERDATA);
+                    (HashMap) data.getSerializableExtra(UloginAuthActivity.USERDATA);
 
             switch (resultCode) {
                 case RESULT_OK:
@@ -161,10 +181,10 @@ public class MainActivity extends Env implements
                     new AuthorizationRequest(MainActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
-                    if(userdata.get("error").equals("canceled")) {
+                    if (userdata.get("error").equals("canceled")) {
                         Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Error: "+userdata.get("error"),
+                        Toast.makeText(this, "Error: " + userdata.get("error"),
                                 Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -172,11 +192,9 @@ public class MainActivity extends Env implements
         }
         if (requestCode == Values.MEDIA_RESULT && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            String fileSrc = cursor.getString(idx);
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String filePath = cursor.getString(columnIndex);
             cursor.close();
@@ -186,23 +204,15 @@ public class MainActivity extends Env implements
         }
     }
 
-    public List<Fragment> getActiveFragments() {
-        ArrayList<Fragment> ret = new ArrayList<Fragment>();
-        for(WeakReference<Fragment> ref : mFragList) {
-            Fragment f = ref.get();
-            if(f != null) {
-                if(f.isVisible()) {
-                    ret.add(f);
-                }
-            }
-        }
-        return ret;
-    }
 
     @Override
-    public void onAttachFragment (Fragment fragment) {
-        mFragList.add(new WeakReference(fragment));
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (getActiveFragments().size() > 1) {
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+        }
     }
+
 
     @Override
     public void onAutorizationTaskCompleted(CookieStore result) {

@@ -6,16 +6,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.macrobit.abonnews.R;
+import ru.macrobit.abonnews.Values;
 
 public class Env extends AppCompatActivity {
     private static FragmentTransaction mTransaction;
     private static FragmentManager mManager;
+    List<WeakReference<Fragment>> mFragList = new ArrayList<WeakReference<Fragment>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mManager = getSupportFragmentManager();
+    }
+
+    @Override
+    public void onAttachFragment (Fragment fragment) {
+        mFragList.add(new WeakReference(fragment));
+    }
+
+    List<Fragment> getActiveFragments() {
+        ArrayList<Fragment> ret = new ArrayList<Fragment>();
+        for(WeakReference<Fragment> ref : mFragList) {
+            Fragment f = ref.get();
+            if(f != null) {
+                if(f.isVisible()) {
+                    ret.add(f);
+                }
+            }
+        }
+        return ret;
     }
 
     void add(Fragment fragment, String tag) {
@@ -26,6 +50,9 @@ public class Env extends AppCompatActivity {
             mTransaction.commit();
         } else {
             popBackStack(tag);
+        }
+        if (!tag.equals(Values.NEWS_TAG)) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
