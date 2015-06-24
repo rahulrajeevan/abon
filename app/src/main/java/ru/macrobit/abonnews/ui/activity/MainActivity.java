@@ -30,6 +30,7 @@ import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AboutFragment;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
+import ru.macrobit.abonnews.ui.fragment.MyCommentFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.ulogin.sdk.UloginAuthActivity;
@@ -97,7 +98,11 @@ public class MainActivity extends Env implements
                 }
                 break;
             case R.id.comments:
-                Toast.makeText(this, "Comments", Toast.LENGTH_SHORT).show();
+                if (Utils.isCookiesExist(this)) {
+                    add(new MyCommentFragment(), Values.MY_COMMENTS);
+                } else {
+                    add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
+                }
                 break;
             case R.id.about:
                 add(new AboutFragment(), Values.ABOUT_TAG);
