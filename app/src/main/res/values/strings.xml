@@ -29,4 +29,5 @@
     <string name="copyright">2015 © ABON</string>
     <string name="rights">Все материалы, находящиеся на сайте, охраняются в соответствии с законодательством РФ, в том числе об авторском праве и смежных правах</string>
     <string name="logout">Выйти</string>
+    <string name="not_connect">Отсутствует подключение к интернету</string>
 </resources>
