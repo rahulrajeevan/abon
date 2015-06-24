@@ -30,4 +30,7 @@
     <string name="rights">Все материалы, находящиеся на сайте, охраняются в соответствии с законодательством РФ, в том числе об авторском праве и смежных правах</string>
     <string name="logout">Выйти</string>
     <string name="not_connect">Отсутствует подключение к интернету</string>
+    <string name="registration">Регистрация</string>
+    <string name="enter_email">Email</string>
+    <string name="reg_message">На Ваш email придёт письмо с паролем. Спасибо за регистрацию</string>
 </resources>

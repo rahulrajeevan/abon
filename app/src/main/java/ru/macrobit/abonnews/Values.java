@@ -28,5 +28,6 @@ public class Values {
     public static final String PROFILE_TAG = "profile";
     public static final String ADD_TAG = "add";
     public static final String ABOUT_TAG = "about";
+    public static final String REGISTRATION_TAG = "registry";
     public static final int MEDIA_RESULT = 121;
 }
