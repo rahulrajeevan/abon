@@ -34,6 +34,7 @@ import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
+import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
@@ -54,6 +55,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     private FullNews mNews;
     private View mFooter;
     private ShareActionProvider mShareActionProvider;
+    private int mCommentId = -999;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,7 +135,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Comments comments = new Comments(commentEdit.getText().toString());
+                AddComment comments;
+                if (mCommentId == -999) {
+                    comments = new AddComment(commentEdit.getText().toString());
+                } else {
+                    comments = new AddComment(commentEdit.getText().toString(), mCommentId);
+                }
                 String json = GsonUtils.toJson(comments);
                 new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                         Utils.getPrefs(getActivity())), json)
@@ -168,11 +176,15 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
+        initComments(result);
+    }
+
+    private void initComments(String result) {
         Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
         if (comments.length > 0) {
-            ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+            final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
             ArrayList<String> group = new ArrayList<>();
-            group.add("comments");
+            group.add(getActivity().getString(R.string.comments));
             MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
             adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
 //        mListView.addFooterView(mFooter);
@@ -186,7 +198,13 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
                     return false;
                 }
             });
-            adapter.notifyDataSetChanged();
+            mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                @Override
+                public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
+                    mCommentId = arrayList.get(childId).getId();
+                    return false;
+                }
+            });
         } else {
             mListView.setVisibility(View.GONE);
         }
@@ -205,7 +223,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         mShareActionProvider = (ShareActionProvider)
                 MenuItemCompat.getActionProvider(shareItem);
         mShareActionProvider.setShareIntent(intent);
-//        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public class ProgressWebClient extends WebViewClient {
@@ -238,7 +255,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
                 View.MeasureSpec.EXACTLY);
         for (int i = 0; i < listAdapter.getGroupCount(); i++) {
             View groupItem = listAdapter.getGroupView(i, false, null, listView);
-            groupItem.setLayoutParams(new ViewGroup.LayoutParams(0,0));
+            groupItem.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
             groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
             totalHeight += groupItem.getMeasuredHeight();
@@ -256,9 +273,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
             }
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        mFooter.setLayoutParams(new ViewGroup.LayoutParams(0,0));
-//        mFooter.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//        int footHeight = mFooter.getMeasuredHeight();
         int height = totalHeight
                 + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
         if (height < 10)
