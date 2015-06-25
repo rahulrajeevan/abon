@@ -29,7 +29,7 @@ import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AboutFragment;
-import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
+import ru.macrobit.abonnews.ui.fragment.AddPostFragment;
 import ru.macrobit.abonnews.ui.fragment.MyCommentFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
@@ -87,25 +87,24 @@ public class MainActivity extends Env implements
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.profile:
-                if (Utils.isCookiesExist(this)) {
-                    add(new ProfileFragment(), Values.PROFILE_TAG);
-                } else {
-                    if (getFragmentByTag(Values.AUTHORIZATION_TAG) == null) {
-                        add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
-                    } else {
-                        popBackStack(Values.AUTHORIZATION_TAG);
-                    }
-                }
+                add(new ProfileFragment(), Values.PROFILE_TAG);
                 break;
             case R.id.comments:
                 if (Utils.isCookiesExist(this)) {
                     add(new MyCommentFragment(), Values.MY_COMMENTS);
                 } else {
-                    add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
+                    add(new ProfileFragment(), Values.PROFILE_TAG);
                 }
                 break;
             case R.id.about:
                 add(new AboutFragment(), Values.ABOUT_TAG);
+                break;
+            case R.id.add_news:
+                if (Utils.isCookiesExist(this)) {
+                    add(new AddPostFragment(), Values.ADD_TAG);
+                } else {
+                    add(new ProfileFragment(), Values.PROFILE_TAG);
+                }
                 break;
             case R.id.home:
                 onBackPressed();
@@ -152,6 +151,7 @@ public class MainActivity extends Env implements
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            Values.isDisplayHomeEnabled = false;
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             initNavigationView();
             List<Fragment> fragments = getActiveFragments();
@@ -182,7 +182,9 @@ public class MainActivity extends Env implements
             switch (resultCode) {
                 case RESULT_OK:
                     String token = userdata.get(Values.TOKEN).toString();
+                    String email = userdata.get(Values.EMAIL).toString();
                     Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
+                    Utils.saveToSharedPreferences(Values.EMAIL, email, Utils.getPrefs(this));
                     new AuthorizationRequest(MainActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
@@ -221,7 +223,8 @@ public class MainActivity extends Env implements
 
     @Override
     public void onAutorizationTaskCompleted(CookieStore result) {
-        remove(Values.AUTHORIZATION_TAG);
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
+        remove(Values.PROFILE_TAG);
+        add(new ProfileFragment(), Values.PROFILE_TAG);
     }
 }
