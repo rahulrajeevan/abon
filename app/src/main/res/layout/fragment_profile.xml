@@ -5,11 +5,38 @@
     android:background="@color/primary"
     android:clickable="true">
 
+    <TextView
+        android:id="@+id/profile_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/profile"
+        android:textColor="@color/secondary_text"
+        android:textSize="24dp" />
+
+
+    <TextView
+        android:id="@+id/need_authorization"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_title"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/need_authorization" />
+
     <RelativeLayout
+        android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/profile_title"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/layout"
@@ -60,12 +87,61 @@
             android:layout_marginTop="10dp"
             android:textSize="16dp" />
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:id="@+id/profile_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profile_url"
             android:layout_marginTop="10dp"
-            android:text="@string/logout" />
+            android:background="@color/primary_dark"
+            android:text="@string/logout"
+            android:textColor="@color/primary" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/authorization"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/profile_authorization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="104dp"
+            android:background="@color/primary_dark"
+            android:text="@string/authorization"
+            android:textColor="@color/primary" />
+
+        <Button
+            android:id="@+id/profile_soc_auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_authorization"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/primary_dark"
+            android:text="@string/social_authorization"
+            android:textColor="@color/primary" />
+
+        <Button
+            android:id="@+id/profile_reg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_soc_auto"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/primary_dark"
+            android:text="@string/registration"
+            android:textColor="@color/primary" />
+
     </RelativeLayout>
 </RelativeLayout>
