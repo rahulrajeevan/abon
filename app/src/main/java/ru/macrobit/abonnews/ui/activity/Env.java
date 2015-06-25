@@ -16,7 +16,7 @@ import ru.macrobit.abonnews.Values;
 public class Env extends AppCompatActivity {
     private static FragmentTransaction mTransaction;
     private static FragmentManager mManager;
-    List<WeakReference<Fragment>> mFragList = new ArrayList<WeakReference<Fragment>>();
+    private List<WeakReference<Fragment>> mFragList = new ArrayList<WeakReference<Fragment>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,10 @@ public class Env extends AppCompatActivity {
             popBackStack(tag);
         }
         if (!tag.equals(Values.NEWS_TAG)) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (!Values.isDisplayHomeEnabled) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                Values.isDisplayHomeEnabled = true;
+            }
         }
     }
 
@@ -75,10 +78,12 @@ public class Env extends AppCompatActivity {
     }
 
     void remove(String tag) {
-        mTransaction = mManager.beginTransaction();
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-        mTransaction.remove(getFragmentByTag(tag));
-        mTransaction.commit();
+        if (isFragmentExist(tag)) {
+            mTransaction = mManager.beginTransaction();
+            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            mTransaction.remove(getFragmentByTag(tag));
+            mTransaction.commit();
+        }
     }
 
     void hide(String tag) {
