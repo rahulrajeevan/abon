@@ -63,7 +63,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 if (Utils.isCookiesExist(getActivity())) {
                     add(new AddPostFragment(), Values.ADD_TAG);
                 } else {
-                    add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
+                    add(new ProfileFragment(), Values.PROFILE_TAG);
                 }
             }
         });
