@@ -7,20 +7,26 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import ru.macrobit.abonnews.R;
+import ru.macrobit.abonnews.Values;
 
 
 public class EnvFragment extends Fragment {
-    static FragmentTransaction mTransaction;
-    FragmentManager mManager;
+    private static FragmentTransaction mTransaction;
+    private FragmentManager mManager;
+
 
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
+        Values.isDisplayHomeEnabled = false;
         mManager = getActivity().getSupportFragmentManager();
     }
 
     void add(Fragment fragment, String tag) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!Values.isDisplayHomeEnabled) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            Values.isDisplayHomeEnabled = true;
+        }
         mTransaction = mManager.beginTransaction();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mTransaction.add(R.id.fragment_container, fragment, tag);
@@ -29,7 +35,10 @@ public class EnvFragment extends Fragment {
     }
 
     void add(Fragment fragment, Bundle bundle, String tag) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!Values.isDisplayHomeEnabled) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            Values.isDisplayHomeEnabled = true;
+        }
         mTransaction = mManager.beginTransaction();
         mTransaction.add(R.id.fragment_container, fragment, tag);
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -39,10 +48,12 @@ public class EnvFragment extends Fragment {
     }
 
     void remove(String tag) {
-        mTransaction = mManager.beginTransaction();
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-        mTransaction.remove(getFragmentByTag(tag));
-        mTransaction.commit();
+        if (isFragmentExist(tag)) {
+            mTransaction = mManager.beginTransaction();
+            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            mTransaction.remove(getFragmentByTag(tag));
+            mTransaction.commit();
+        }
     }
 
     Fragment getFragmentByTag(String tag) {
@@ -55,5 +66,9 @@ public class EnvFragment extends Fragment {
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mTransaction.addToBackStack(tag);
         mTransaction.commit();
+    }
+
+    boolean isFragmentExist(String tag) {
+        return (getFragmentByTag(tag) != null)? true: false;
     }
 }
