@@ -19,6 +19,7 @@ public class Values {
     public static final String ADS = URL +  "/wp-json/ads";
     public static final int REQUEST_ULOGIN = 1;
     public static final String TOKEN = "token";
+    public static final String EMAIL = "email";
     public static final String ULOGIN = URL + "?ulogin=token&backurl=http://abon-news.ru/wp-login.php?loggedout=true";
 //    public static final String SOC_AUTORIZATION = URL + "?ulogin=token&backurl=http://abon-news.ru/wp-login.php";
     public static final String SOC_AUTORIZATION = "http://abon-news.ru/?ulogin=token&backurl=http%3A%2F%2Fabon-news.ru%2Fwp-login.php%3Fredirect_to%3Dhttp%253A%252F%252Fabon-news.ru%252Fwp-admin%252F%26reauth%3D1";
@@ -30,4 +31,5 @@ public class Values {
     public static final String ABOUT_TAG = "about";
     public static final String REGISTRATION_TAG = "registry";
     public static final int MEDIA_RESULT = 121;
+    public static boolean isDisplayHomeEnabled;
 }
