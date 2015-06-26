@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.macrobit.abonnews.R;
+import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.model.Comments;
 
 public class MyExpandableAdapter extends BaseExpandableListAdapter {
@@ -24,6 +25,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
     class ViewHolder {
         TextView title;
+        TextView date;
         TextView body;
     }
 
@@ -49,6 +51,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.comments_item, parent, false);
             viewHolder.title = ((TextView) convertView.findViewById(R.id.com_author));
             viewHolder.body = ((TextView) convertView.findViewById(R.id.com_body));
+            viewHolder.date = ((TextView) convertView.findViewById(R.id.com_date));
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -56,6 +59,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         Spanned span = Html.fromHtml(childtems.get(childPosition).getContent());
         viewHolder.title.setText(childtems.get(childPosition).getAuthorName());
         viewHolder.body.setText(span);
+        viewHolder.date.setText(NewsUtils.parseDate(childtems.get(childPosition).getDate()));
         return convertView;
     }
 
