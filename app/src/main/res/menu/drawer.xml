@@ -3,6 +3,9 @@
     tools:context=".MainActivity">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/news"
+            android:title="@string/menu_news" />
+        <item
             android:id="@+id/profile"
             android:title="@string/menu_profile" />
         <item

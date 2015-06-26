@@ -35,4 +35,5 @@
     <string name="reg_message">На Ваш email придёт письмо с паролем. Спасибо за регистрацию</string>
     <string name="profile">Профиль</string>
     <string name="need_authorization">Необходимо авторизоваться</string>
+    <string name="menu_news">Новости</string>
 </resources>
