@@ -86,6 +86,12 @@ public class MainActivity extends Env implements
 
     private void navigate(final int itemId) {
         switch (itemId) {
+            case R.id.news:
+                if (getActiveFragments().size() > 1) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
+                }
+                break;
             case R.id.profile:
                 add(new ProfileFragment(), Values.PROFILE_TAG);
                 break;
@@ -151,10 +157,14 @@ public class MainActivity extends Env implements
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0){
+                finish();
+            }
             Values.isDisplayHomeEnabled = false;
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             initNavigationView();
             List<Fragment> fragments = getActiveFragments();
+            replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
             if (fragments.size() == 1) {
                 super.onBackPressed();
             } else {
@@ -166,6 +176,9 @@ public class MainActivity extends Env implements
         }
     }
 
+    private void removeFragments() {
+
+    }
 
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
