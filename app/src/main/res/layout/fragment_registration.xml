@@ -47,11 +47,15 @@
 
     <Button
         android:id="@+id/reg_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/authorization"
         android:layout_below="@+id/input_email"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:background="@color/primary_dark"
+        android:text="@string/registration"
+        android:textColor="@color/primary">
         android:layout_marginTop="41dp"></Button>
 
 
