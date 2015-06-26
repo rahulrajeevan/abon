@@ -6,7 +6,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -17,20 +16,18 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
+import ru.macrobit.abonnews.OnTaskCompleted;
 
-public class RegistrationRequest extends AsyncTask<String, String, CookieStore> {
-    private OnAuthorizationTaskCompleted callback;
+public class RegistrationRequest extends AsyncTask<String, String, String> {
+    private OnTaskCompleted callback;
     private String mEmail;
     private String mLogin;
 
-    public RegistrationRequest(OnAuthorizationTaskCompleted callback, String email, String login) {
+    public RegistrationRequest(OnTaskCompleted callback, String email, String login) {
         this.callback = callback;
         mEmail = email;
         mLogin = login;
@@ -42,7 +39,7 @@ public class RegistrationRequest extends AsyncTask<String, String, CookieStore> 
     }
 
     @Override
-    protected CookieStore doInBackground(String... urls) {
+    protected String doInBackground(String... urls) {
         String result = null;
         try {
             HttpParams httpParams = new BasicHttpParams();
@@ -68,26 +65,8 @@ public class RegistrationRequest extends AsyncTask<String, String, CookieStore> 
                 nameValuePairs.add(new BasicNameValuePair("user_email", mEmail));
 
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-//            mCookieStore = new BasicCookieStore();
-//            HttpContext ctx = new BasicHttpContext();
-//            ctx.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);
-
             HttpResponse response = client.execute(post);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    response.getEntity().getContent(), "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-//            List<Cookie> cookies = mCookieStore.getCookies();
-//            if( !cookies.isEmpty() ){
-//                for (Cookie cookie : cookies){
-//                    String cookieString = cookie.getName() + " : " + cookie.getValue();
-//                }
-//            }
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + System.getProperty("line.separator"));
-            }
-            result = sb.toString();
+            result = String.valueOf(response.getStatusLine().getStatusCode());
         } catch (org.apache.http.client.ClientProtocolException e) {
             result = "ClientProtocolException: " + e.getMessage();
         } catch (IOException e) {
@@ -95,13 +74,13 @@ public class RegistrationRequest extends AsyncTask<String, String, CookieStore> 
         } catch (Exception e) {
             result = "Exception: " + e.getMessage();
         }
-        return null;
+        return result;
     }
 
     @Override
-    protected void onPostExecute(CookieStore result) {
+    protected void onPostExecute(String result) {
         if (callback != null) {
-            callback.onAutorizationTaskCompleted(result);
+            callback.onTaskCompleted(result);
         }
 
 //        super.onPostExecute(result);
