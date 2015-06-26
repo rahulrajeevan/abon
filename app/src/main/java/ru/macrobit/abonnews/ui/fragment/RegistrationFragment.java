@@ -8,14 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.client.CookieStore;
-
-import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
+import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.loader.RegistrationRequest;
 
-public class RegistrationFragment extends EnvFragment implements OnAuthorizationTaskCompleted{
+public class RegistrationFragment extends EnvFragment implements OnTaskCompleted {
     private EditText mLogin;
     private EditText mEmail;
 
@@ -41,8 +39,9 @@ public class RegistrationFragment extends EnvFragment implements OnAuthorization
     }
 
     @Override
-    public void onAutorizationTaskCompleted(CookieStore result) {
-        Toast.makeText(getActivity(), getActivity().getString(R.string.reg_message), Toast.LENGTH_LONG).show();
+    public void onTaskCompleted(String result) {
+        if (result.equals("200"))
+            Toast.makeText(getActivity(), getActivity().getString(R.string.reg_message), Toast.LENGTH_LONG).show();
         remove(Values.REGISTRATION_TAG);
     }
  }
