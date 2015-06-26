@@ -39,7 +39,7 @@ public class NewsUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        DateFormat df = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         return df.format(date);
     }
 
