@@ -41,7 +41,7 @@ import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
 
-public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
+public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
 
     private TextView mTitle;
     private TextView mDate;
@@ -56,6 +56,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
     private View mFooter;
     private ShareActionProvider mShareActionProvider;
     private int mCommentId = -999;
+    private View mImageLayout;
+    private ImageView mWebImage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,21 +114,40 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
             }
         });
         webView.setWebChromeClient(webChromeClient);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.contains(".jpg") || url.contains(".jpeg") || url.contains(".png")) {
+                    mImageLayout.setVisibility(View.VISIBLE);
+                    ImageUtils.getUIL(getActivity()).displayImage(url, mWebImage);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
         webView.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
     }
 
     private void initFragment(View parent) {
         Bundle bundle = this.getArguments();
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
+        mImageLayout = parent.findViewById(R.id.det_imageLayout);
+        mWebImage = (ImageView) parent.findViewById(R.id.det_webImage);
         mTitle = (TextView) parent.findViewById(R.id.det_title);
         mDate = (TextView) parent.findViewById(R.id.det_date);
         mImage = (ImageView) parent.findViewById(R.id.det_imageView);
         mFooter = parent.findViewById(R.id.det_footer);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
         mNews = bundle.getParcelable("data");
+        if (mNews.getBody().contains(mNews.getImageUrl())) {
+            mImage.setVisibility(View.GONE);
+        }
         mTitle.setText(mNews.getTitle());
         mDate.setText(mNews.getDate());
         mId = mNews.getId();
+        mImageLayout.setOnClickListener(this);
+        mWebImage.setOnClickListener(this);
         getComments(mNews.getId() + "/comments/");
         initVideo(parent, mNews.getBody());
         ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
@@ -148,6 +169,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
             }
         });
     }
+
+
 
     private String getHtmlData(String bodyHTML) {
         String head = "<html><head> " +
@@ -223,6 +246,11 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted {
         mShareActionProvider = (ShareActionProvider)
                 MenuItemCompat.getActionProvider(shareItem);
         mShareActionProvider.setShareIntent(intent);
+    }
+
+    @Override
+    public void onClick(View v) {
+        mImageLayout.setVisibility(View.GONE);
     }
 
     public class ProgressWebClient extends WebViewClient {
