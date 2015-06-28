@@ -23,10 +23,10 @@ public class EnvFragment extends Fragment {
     }
 
     void add(Fragment fragment, String tag) {
-        if (!Values.isDisplayHomeEnabled) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            Values.isDisplayHomeEnabled = true;
-        }
+//        if (!Values.isDisplayHomeEnabled) {
+//            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            Values.isDisplayHomeEnabled = true;
+//        }
         mTransaction = mManager.beginTransaction();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mTransaction.add(R.id.fragment_container, fragment, tag);

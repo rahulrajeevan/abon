@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.Values;
 
 public class Env extends AppCompatActivity {
     private static FragmentTransaction mTransaction;
@@ -42,25 +41,38 @@ public class Env extends AppCompatActivity {
         return ret;
     }
 
+    void add(Fragment fragment) {
+            mTransaction = mManager.beginTransaction();
+            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            mTransaction.add(R.id.fragment_container, fragment);
+            mTransaction.addToBackStack(null);
+            mTransaction.commit();
+    }
+
     void add(Fragment fragment, String tag) {
         if (!isFragmentExist(tag)) {
             mTransaction = mManager.beginTransaction();
             mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             mTransaction.add(R.id.fragment_container, fragment, tag);
+            mTransaction.addToBackStack(tag);
             mTransaction.commit();
         } else {
             popBackStack(tag);
         }
-        if (!tag.equals(Values.NEWS_TAG)) {
-            if (!Values.isDisplayHomeEnabled) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                Values.isDisplayHomeEnabled = true;
-            }
-        }
+//        if (!tag.equals(Values.NEWS_TAG)) {
+//            if (!Values.isDisplayHomeEnabled) {
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                Values.isDisplayHomeEnabled = true;
+//            }
+//        }
     }
 
     void popBackStack (String tag) {
         mManager.popBackStack(tag, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+    }
+
+    void popBackStack () {
+        mManager.popBackStack();
     }
 
     void addHiding(Fragment fragment, String tag) {
