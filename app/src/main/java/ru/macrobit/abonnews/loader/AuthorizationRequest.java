@@ -110,7 +110,7 @@ public class AuthorizationRequest extends AsyncTask<String, String, CookieStore>
     @Override
     protected void onPostExecute(CookieStore result) {
         if (callback != null) {
-            callback.onAutorizationTaskCompleted(result);
+            callback.onAuthorizationTaskCompleted(result);
         }
 
 //        super.onPostExecute(result);

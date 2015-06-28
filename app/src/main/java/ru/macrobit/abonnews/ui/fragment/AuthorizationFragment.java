@@ -44,7 +44,7 @@ public class AuthorizationFragment extends EnvFragment implements OnAuthorizatio
 
 
     @Override
-    public void onAutorizationTaskCompleted(CookieStore result) {
+    public void onAuthorizationTaskCompleted(CookieStore result) {
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(getActivity()));
         remove(Values.AUTHORIZATION_TAG);
     }
