@@ -72,7 +72,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignLeft="@+id/det_imageView"
                 android:layout_alignStart="@+id/det_imageView"
-                android:layout_below="@+id/det_imageView">
+                android:layout_below="@+id/det_imageView"
+                android:layout_marginTop="10dp">
 
                 <ru.macrobit.abonnews.ui.view.VideoEnabledWebView
                     android:id="@+id/webView"
@@ -114,43 +115,43 @@
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:text="@string/add_comment"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black" />
 
                     <Button
                         android:id="@+id/addComment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/textView2"
                         android:background="@color/primary_dark"
                         android:gravity="center"
+                        android:onClick="addComments"
                         android:text="@string/send"
                         android:textAlignment="gravity"
                         android:textColor="@color/accent"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:onClick="addComments"
-                        android:layout_below="@+id/textView2"/>
+                        android:textSize="16sp" />
 
                     <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/comment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/enter_comment"
-                        android:ems="10"
-                        android:inputType="textMultiLine"
-                        android:minLines="5"
-                        android:background="@drawable/border"
-                        android:layout_alignTop="@+id/addComment"
+                        android:layout_alignBottom="@+id/addComment"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        android:layout_toStartOf="@+id/addComment"
+                        android:layout_alignTop="@+id/addComment"
                         android:layout_toLeftOf="@+id/addComment"
-                        android:layout_alignBottom="@+id/addComment" />
+                        android:layout_toStartOf="@+id/addComment"
+                        android:background="@drawable/border"
+                        android:ems="10"
+                        android:hint="@string/enter_comment"
+                        android:inputType="textMultiLine"
+                        android:minLines="5" />
 
 
                 </RelativeLayout>
@@ -160,22 +161,22 @@
 
     <RelativeLayout
         android:id="@+id/det_imageLayout"
-        android:background="@color/primary_dark"
-        android:visibility="gone"
-        android:clickable="true"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:animateLayoutChanges="true"
+        android:background="@color/primary_dark"
+        android:clickable="true"
+        android:visibility="gone">
 
         <ru.macrobit.abonnews.ui.view.DynamicImageView
             android:id="@+id/det_webImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_centerVertical="true" />
 
     </RelativeLayout>
 
