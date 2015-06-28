@@ -125,6 +125,13 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     return false;
                 }
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                mFooter.setVisibility(View.VISIBLE);
+                mListView.setVisibility(View.VISIBLE);
+            }
         });
         webView.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
     }
@@ -138,7 +145,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mDate = (TextView) parent.findViewById(R.id.det_date);
         mImage = (ImageView) parent.findViewById(R.id.det_imageView);
         mFooter = parent.findViewById(R.id.det_footer);
+        mFooter.setVisibility(View.GONE);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
+        mListView.setVisibility(View.GONE);
         mNews = bundle.getParcelable("data");
         if (mNews.getBody().contains(mNews.getImageUrl())) {
             mImage.setVisibility(View.GONE);

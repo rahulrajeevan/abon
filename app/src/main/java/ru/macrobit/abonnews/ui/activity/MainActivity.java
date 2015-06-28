@@ -20,7 +20,6 @@ import android.widget.Toast;
 import org.apache.http.client.CookieStore;
 
 import java.util.HashMap;
-import java.util.List;
 
 import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -28,9 +27,6 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
-import ru.macrobit.abonnews.ui.fragment.AboutFragment;
-import ru.macrobit.abonnews.ui.fragment.AddPostFragment;
-import ru.macrobit.abonnews.ui.fragment.MyCommentFragment;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.ulogin.sdk.UloginAuthActivity;
@@ -46,13 +42,14 @@ public class MainActivity extends Env implements
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mNavItemId;
+    private Intent mIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        add(new NewsFragment(), Values.NEWS_TAG);
-
+        add(new NewsFragment());
+        mIntent = new Intent(MainActivity.this, FragmentActivity.class);
         initNavigationView();
 
 //        navigate(mNavItemId);
@@ -93,23 +90,35 @@ public class MainActivity extends Env implements
                 }
                 break;
             case R.id.profile:
-                add(new ProfileFragment(), Values.PROFILE_TAG);
+//                add(new ProfileFragment(), Values.PROFILE_TAG);
+                mIntent.putExtra(Values.TAG, Values.PROFILE_TAG);
+                startActivity(mIntent);
                 break;
             case R.id.comments:
                 if (Utils.isCookiesExist(this)) {
-                    add(new MyCommentFragment(), Values.MY_COMMENTS);
+//                    add(new MyCommentFragment(), Values.MY_COMMENTS);
+                    mIntent.putExtra(Values.TAG, Values.MY_COMMENTS);
+                    startActivity(mIntent);
                 } else {
-                    add(new ProfileFragment(), Values.PROFILE_TAG);
+//                    add(new ProfileFragment(), Values.PROFILE_TAG);
+                    mIntent.putExtra(Values.TAG, Values.PROFILE_TAG);
+                    startActivity(mIntent);
                 }
                 break;
             case R.id.about:
-                add(new AboutFragment(), Values.ABOUT_TAG);
+//                add(new AboutFragment(), Values.ABOUT_TAG);
+                mIntent.putExtra(Values.TAG, Values.ABOUT_TAG);
+                startActivity(mIntent);
                 break;
             case R.id.add_news:
                 if (Utils.isCookiesExist(this)) {
-                    add(new AddPostFragment(), Values.ADD_TAG);
+//                    add(new AddPostFragment(), Values.ADD_TAG);
+                    mIntent.putExtra(Values.TAG, Values.ADD_TAG);
+                    startActivity(mIntent);
                 } else {
-                    add(new ProfileFragment(), Values.PROFILE_TAG);
+//                    add(new ProfileFragment(), Values.PROFILE_TAG);
+                    mIntent.putExtra(Values.TAG, Values.PROFILE_TAG);
+                    startActivity(mIntent);
                 }
                 break;
             case R.id.home:
@@ -163,16 +172,17 @@ public class MainActivity extends Env implements
             Values.isDisplayHomeEnabled = false;
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             initNavigationView();
-            List<Fragment> fragments = getActiveFragments();
-            replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
-            if (fragments.size() == 1) {
-                super.onBackPressed();
-            } else {
-                for (Fragment f : fragments) {
-                    if (!f.getTag().equals(Values.NEWS_TAG))
-                        remove(f.getTag());
-                }
-            }
+            popBackStack();
+//            List<Fragment> fragments = getActiveFragments();
+//            replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
+//            if (fragments.size() == 1) {
+//                super.onBackPressed();
+//            } else {
+//                for (Fragment f : fragments) {
+//                    if (!f.getTag().equals(Values.NEWS_TAG))
+//                        remove(f.getTag());
+//                }
+//            }
         }
     }
 
@@ -180,11 +190,11 @@ public class MainActivity extends Env implements
 
     }
 
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(NAV_ITEM_ID, mNavItemId);
-    }
+//    @Override
+//    protected void onSaveInstanceState(final Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putInt(NAV_ITEM_ID, mNavItemId);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -235,7 +245,7 @@ public class MainActivity extends Env implements
 
 
     @Override
-    public void onAutorizationTaskCompleted(CookieStore result) {
+    public void onAuthorizationTaskCompleted(CookieStore result) {
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
         remove(Values.PROFILE_TAG);
         add(new ProfileFragment(), Values.PROFILE_TAG);
