@@ -9,6 +9,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -62,7 +63,8 @@ public class AddMediaRequest extends AsyncTask<String, String, String> {
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             File f = new File(mFile);
             if (f.exists()) {
-                builder.addPart("file", new FileBody(f, "image/jpeg", null));
+                builder.addPart("file", new FileBody(f, ContentType.MULTIPART_FORM_DATA, null));
+//                builder.addPart("name", new StringBody("file"));
             }
 //            MultipartEntity ent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 //            FileBody fileBody = new FileBody(new File(mFile));
