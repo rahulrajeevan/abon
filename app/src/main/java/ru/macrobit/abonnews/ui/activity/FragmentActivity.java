@@ -18,8 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.apache.http.client.CookieStore;
+
 import java.util.HashMap;
 
+import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
@@ -33,7 +36,7 @@ import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.macrobit.abonnews.ui.fragment.RegistrationFragment;
 import ru.ulogin.sdk.UloginAuthActivity;
 
-public class FragmentActivity extends Env implements NavigationView.OnNavigationItemSelectedListener {
+public class FragmentActivity extends Env implements NavigationView.OnNavigationItemSelectedListener, OnAuthorizationTaskCompleted {
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
@@ -107,7 +110,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
 //                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
 //                    mDrawerLayout.openDrawer(GravityCompat.START);
 //                } else {
-                    onBackPressed();
+                onBackPressed();
 //                }
             }
 
@@ -259,5 +262,12 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAuthorizationTaskCompleted(CookieStore result) {
+        Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
+        popBackStack();
+//        add(new ProfileFragment(), Values.PROFILE_TAG);
     }
 }
