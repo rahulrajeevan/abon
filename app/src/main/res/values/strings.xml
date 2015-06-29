@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Abon News</string>
+    <string name="app_name">Abon</string>
     <string name="menu_profile">Профиль</string>
     <string name="menu_comments">Мои комментарии</string>
     <string name="menu_about">О программе</string>

@@ -166,13 +166,14 @@ public class MainActivity extends Env implements
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0){
+            if (getSupportFragmentManager().getBackStackEntryCount() == 1){
                 finish();
+            } else {
+                Values.isDisplayHomeEnabled = false;
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                initNavigationView();
+                popBackStack();
             }
-            Values.isDisplayHomeEnabled = false;
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            initNavigationView();
-            popBackStack();
 //            List<Fragment> fragments = getActiveFragments();
 //            replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
 //            if (fragments.size() == 1) {
