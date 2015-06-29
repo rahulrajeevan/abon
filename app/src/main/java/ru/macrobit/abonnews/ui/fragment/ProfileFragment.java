@@ -73,7 +73,8 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
             @Override
             public void onClick(View v) {
                 Utils.deleteCookies(getActivity());
-                remove(Values.PROFILE_TAG);
+                getActivity().finish();
+//                remove(Values.PROFILE_TAG);
             }
         });
         mAuthorization = (Button) v.findViewById(R.id.profile_authorization);
@@ -100,6 +101,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
                 add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
                 break;
             case R.id.profile_soc_auto:
+                hide(this.getTag());
                 runUlogin();
                 break;
             case R.id.profile_reg:
@@ -129,7 +131,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
                 new ArrayList(Arrays.asList(optional_fields))
         );
         getActivity().startActivityForResult(intent, Values.REQUEST_ULOGIN);
-        remove(Values.PROFILE_TAG);
+//        remove(Values.PROFILE_TAG);
     }
 
 }

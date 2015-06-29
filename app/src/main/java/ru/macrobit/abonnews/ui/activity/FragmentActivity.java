@@ -27,6 +27,7 @@ import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddMediaRequest;
+import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AboutFragment;
 import ru.macrobit.abonnews.ui.fragment.AddPostFragment;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
@@ -156,7 +157,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
 
     @Override
     public boolean onNavigationItemSelected(final MenuItem menuItem) {
-//        menuItem.setChecked(true);
         mNavItemId = menuItem.getItemId();
         mDrawerLayout.closeDrawer(GravityCompat.START);
         mDrawerActionHandler.postDelayed(new Runnable() {
@@ -185,13 +185,10 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             } else {
                 popBackStack();
             }
-//            super.onBackPressed();
         }
     }
 
     private void goToMain() {
-//        Intent intent = new Intent(FragmentActivity.this, MainActivity.class);
-//        startActivity(intent);
         finish();
     }
 
@@ -206,13 +203,13 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         if (requestCode == Values.REQUEST_ULOGIN) {
             HashMap userdata =
                     (HashMap) data.getSerializableExtra(UloginAuthActivity.USERDATA);
-
             switch (resultCode) {
                 case RESULT_OK:
                     String token = userdata.get(Values.TOKEN).toString();
                     String email = userdata.get(Values.EMAIL).toString();
                     Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
                     Utils.saveToSharedPreferences(Values.EMAIL, email, Utils.getPrefs(this));
+                    new AuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
                     if (userdata.get("error").equals("canceled")) {
@@ -238,7 +235,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         }
     }
 
-
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
@@ -247,7 +243,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_, menu);
@@ -255,19 +250,11 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onAuthorizationTaskCompleted(CookieStore result) {
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
+
         popBackStack();
+        finish();
 //        add(new ProfileFragment(), Values.PROFILE_TAG);
     }
 }

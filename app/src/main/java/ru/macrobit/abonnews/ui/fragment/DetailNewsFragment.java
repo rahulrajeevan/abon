@@ -169,16 +169,20 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddComment comments;
-                if (mCommentId == -999) {
-                    comments = new AddComment(commentEdit.getText().toString());
+                if (Utils.isCookiesExist(getActivity())) {
+                    AddComment comments;
+                    if (mCommentId == -999) {
+                        comments = new AddComment(commentEdit.getText().toString());
+                    } else {
+                        comments = new AddComment(commentEdit.getText().toString(), mCommentId);
+                    }
+                    String json = GsonUtils.toJson(comments);
+                    new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                            Utils.getPrefs(getActivity())), json)
+                            .execute(Values.POSTS + mNews.getId() + "/comments/");
                 } else {
-                    comments = new AddComment(commentEdit.getText().toString(), mCommentId);
+                    add(new ProfileFragment(), Values.PROFILE_TAG);
                 }
-                String json = GsonUtils.toJson(comments);
-                new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                        Utils.getPrefs(getActivity())), json)
-                        .execute(Values.POSTS + mNews.getId() + "/comments/");
             }
         });
     }

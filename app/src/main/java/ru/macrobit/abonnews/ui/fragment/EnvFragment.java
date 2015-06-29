@@ -68,6 +68,18 @@ public class EnvFragment extends Fragment {
         mTransaction.commit();
     }
 
+    void hide(String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.hide(getFragmentByTag(tag));
+        mTransaction.commit();
+    }
+
+    void show(String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.show(getFragmentByTag(tag));
+        mTransaction.commit();
+    }
+
     boolean isFragmentExist(String tag) {
         return (getFragmentByTag(tag) != null)? true: false;
     }
