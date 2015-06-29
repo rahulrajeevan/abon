@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,6 +60,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private int mCommentId = -999;
     private View mImageLayout;
     private ImageView mWebImage;
+    private View mLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,7 +155,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         if (mNews.getBody().contains(mNews.getImageUrl())) {
             mImage.setVisibility(View.GONE);
         }
-        mTitle.setText(mNews.getTitle());
+        Spanned span = Html.fromHtml(mNews.getTitle());
+        mTitle.setText(span);
         mDate.setText(mNews.getDate());
         mId = mNews.getId();
         mImageLayout.setOnClickListener(this);
@@ -184,6 +188,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private String getHtmlData(String bodyHTML) {
         String head = "<html><head> " +
                 "<style> " +
+                "p {text-align: justify !important;}" +
                 "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
                 ".wp-video {height:auto !important; width:100%% !important; visibility: visible !important;} " +
                 ".wp-video-shortcode {height:auto !important; width:100% !important; visibility: visible !important;} " +

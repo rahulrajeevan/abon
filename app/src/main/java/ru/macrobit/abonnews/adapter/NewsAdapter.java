@@ -2,6 +2,8 @@ package ru.macrobit.abonnews.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +81,8 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         viewHolder.title = ((TextView) convertView.findViewById(R.id.textBody));
         viewHolder.date = ((TextView) convertView.findViewById(R.id.det_date));
         viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
-        viewHolder.title.setText(mNews.get(position).getTitle());
+        Spanned span = Html.fromHtml(mNews.get(position).getTitle());
+        viewHolder.title.setText(span);
         viewHolder.date.setText(mNews.get(position).getDate());
         viewHolder.date.setTextColor(Color.parseColor("#ffff8800"));
         viewHolder.image.setImageBitmap(null);
