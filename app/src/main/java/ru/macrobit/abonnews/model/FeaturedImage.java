@@ -45,8 +45,8 @@ public class FeaturedImage {
     private String source;
     @SerializedName("is_image")
     private boolean isImage;
-    @SerializedName("attachment_meta")
-    private AttachmentMeta attachmentMeta;
+//    @SerializedName("attachment_meta")
+//    private AttachmentMeta attachmentMeta;
 
 //    public ImageTerms getTerm() {
 //        return term;
@@ -272,11 +272,11 @@ public class FeaturedImage {
         this.isImage = isImage;
     }
 
-    public AttachmentMeta getAttachmentMeta() {
-        return attachmentMeta;
-    }
-
-    public void setAttachmentMeta(AttachmentMeta attachmentMeta) {
-        this.attachmentMeta = attachmentMeta;
-    }
+//    public AttachmentMeta getAttachmentMeta() {
+//        return attachmentMeta;
+//    }
+//
+//    public void setAttachmentMeta(AttachmentMeta attachmentMeta) {
+//        this.attachmentMeta = attachmentMeta;
+//    }
 }
