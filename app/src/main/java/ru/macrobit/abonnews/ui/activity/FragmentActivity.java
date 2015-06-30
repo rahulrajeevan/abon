@@ -77,7 +77,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                 frag = new AddPostFragment();
                 break;
             case Values.DETAIL_TAG:
-//                Bundle data = getIntent().getExtras();
                 frag = new DetailNewsFragment();
                 break;
             case Values.PROFILE_TAG:
@@ -105,6 +104,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
