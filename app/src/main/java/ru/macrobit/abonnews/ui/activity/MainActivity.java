@@ -81,14 +81,19 @@ public class MainActivity extends Env implements
         });
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
     private void navigate(final int itemId) {
         switch (itemId) {
-            case R.id.news:
-                if (getActiveFragments().size() > 1) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
-                }
-                break;
+//            case R.id.news:
+//                if (getActiveFragments().size() > 1) {
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                    replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
+//                }
+//                break;
             case R.id.profile:
 //                add(new ProfileFragment(), Values.PROFILE_TAG);
                 mIntent.putExtra(Values.TAG, Values.PROFILE_TAG);
@@ -169,7 +174,6 @@ public class MainActivity extends Env implements
             if (getSupportFragmentManager().getBackStackEntryCount() == 1){
                 finish();
             } else {
-                Values.isDisplayHomeEnabled = false;
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 initNavigationView();
                 popBackStack();
@@ -187,15 +191,11 @@ public class MainActivity extends Env implements
         }
     }
 
-    private void removeFragments() {
-
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(NAV_ITEM_ID, mNavItemId);
     }
-
-//    @Override
-//    protected void onSaveInstanceState(final Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putInt(NAV_ITEM_ID, mNavItemId);
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

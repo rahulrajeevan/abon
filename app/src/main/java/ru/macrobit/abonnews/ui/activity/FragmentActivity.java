@@ -120,13 +120,13 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
 
     private void navigate(final int itemId) {
         switch (itemId) {
-            case R.id.news:
-                if (getActiveFragments().size() > 1) {
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    goToMain();
-//                    replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
-                }
-                break;
+//            case R.id.news:
+//                if (getActiveFragments().size() > 1) {
+////                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                    goToMain();
+////                    replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
+//                }
+//                break;
             case R.id.profile:
                 add(new ProfileFragment(), Values.PROFILE_TAG);
                 break;
