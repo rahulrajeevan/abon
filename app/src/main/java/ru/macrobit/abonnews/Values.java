@@ -31,6 +31,7 @@ public class Values {
     public static final String ABOUT_TAG = "about";
     public static final String REGISTRATION_TAG = "registry";
     public static final String TAG = "tag";
+    public static final String FULL_NEWS = "full";
     public static final int MEDIA_RESULT = 121;
     public static boolean isDisplayHomeEnabled;
 }
