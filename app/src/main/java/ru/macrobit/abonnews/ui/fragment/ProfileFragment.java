@@ -101,8 +101,9 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
                 add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
                 break;
             case R.id.profile_soc_auto:
-                hide(this.getTag());
+//                hide(this.getTag());
                 runUlogin();
+                popBackStack();
                 break;
             case R.id.profile_reg:
                 add(new RegistrationFragment(), Values.REGISTRATION_TAG);
