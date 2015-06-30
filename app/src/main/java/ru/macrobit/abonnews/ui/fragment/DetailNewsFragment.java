@@ -41,7 +41,6 @@ import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.ui.activity.FragmentActivity;
-import ru.macrobit.abonnews.ui.activity.MainActivity;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
@@ -79,7 +78,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private void initVideo(View parent, String data) {
         webView = (VideoEnabledWebView) parent.findViewById(R.id.webView);
         webView.setVisibility(View.GONE);
-        MainActivity.setDrawerDisable();
         // Initialize the VideoEnabledWebChromeClient and set event handlers
         View nonVideoLayout = parent.findViewById(R.id.nonVideoLayout); // Your own view, read class comments
         ViewGroup videoLayout = (ViewGroup) parent.findViewById(R.id.videoLayout); // Your own view, read class comments
