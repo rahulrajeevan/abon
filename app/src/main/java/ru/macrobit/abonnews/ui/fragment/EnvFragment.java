@@ -68,6 +68,10 @@ public class EnvFragment extends Fragment {
         mTransaction.commit();
     }
 
+    void popBackStack () {
+        mManager.popBackStack();
+    }
+
     void hide(String tag) {
         mTransaction = mManager.beginTransaction();
         mTransaction.hide(getFragmentByTag(tag));
