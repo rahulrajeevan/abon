@@ -41,6 +41,7 @@ import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.ui.activity.FragmentActivity;
+import ru.macrobit.abonnews.ui.activity.MainActivity;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
@@ -78,6 +79,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private void initVideo(View parent, String data) {
         webView = (VideoEnabledWebView) parent.findViewById(R.id.webView);
         webView.setVisibility(View.GONE);
+        MainActivity.setDrawerDisable();
         // Initialize the VideoEnabledWebChromeClient and set event handlers
         View nonVideoLayout = parent.findViewById(R.id.nonVideoLayout); // Your own view, read class comments
         ViewGroup videoLayout = (ViewGroup) parent.findViewById(R.id.videoLayout); // Your own view, read class comments
@@ -143,7 +145,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                         mListView.setVisibility(View.VISIBLE);
                         mLayout.setVisibility(View.VISIBLE);
                     }
-                }, 1800L);
+                }, 100L);
 
             }
         });
@@ -151,7 +153,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void initFragment(View parent) {
-        Bundle bundle = this.getArguments();
+//        Bundle bundle = this.getArguments();
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("data");
         mLayout = parent.findViewById(R.id.det_scroll);
         mLayout.setVisibility(View.GONE);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
@@ -164,7 +168,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mFooter.setVisibility(View.GONE);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
         mListView.setVisibility(View.GONE);
-        mNews = bundle.getParcelable("data");
+//        mNews = bundle.getParcelable("data");
+        String s = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
+        mNews = GsonUtils.fromJson(s, FullNews.class);
         if (mNews.getBody().contains(mNews.getImageUrl())) {
             mImage.setVisibility(View.GONE);
         }
@@ -268,7 +274,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.getItem(0).setVisible(false);
+//        menu.getItem(0).setVisible(false);
         inflater.inflate(R.menu.global, menu);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);

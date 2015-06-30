@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
+import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 
 
 public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
@@ -126,8 +128,14 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 News news = mNews.get(position);
                 FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("data", fullNews);
-                add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
+                bundle.putString(Values.TAG, Values.DETAIL_TAG);
+//                bundle.putParcelable("data", fullNews);
+//                add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
+                Intent intent = new Intent(getActivity(), FragmentActivity.class);
+                Utils.saveToSharedPreferences(Values.FULL_NEWS, GsonUtils.toJson(fullNews), Utils.getPrefs(getActivity()));
+//                intent.putExtra("data", fullNews);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 //        if( isEndNewsList)
