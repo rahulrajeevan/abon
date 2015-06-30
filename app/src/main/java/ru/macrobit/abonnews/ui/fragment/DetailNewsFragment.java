@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
@@ -39,6 +40,7 @@ import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
+import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
@@ -47,7 +49,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     private TextView mTitle;
     private TextView mDate;
-    private WebView mBody;
     private ImageView mImage;
     private ExpandableListView mListView;
     private ProgressBar mProgressBar;
@@ -76,7 +77,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     private void initVideo(View parent, String data) {
         webView = (VideoEnabledWebView) parent.findViewById(R.id.webView);
-
+        webView.setVisibility(View.GONE);
         // Initialize the VideoEnabledWebChromeClient and set event handlers
         View nonVideoLayout = parent.findViewById(R.id.nonVideoLayout); // Your own view, read class comments
         ViewGroup videoLayout = (ViewGroup) parent.findViewById(R.id.videoLayout); // Your own view, read class comments
@@ -117,7 +118,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             }
         });
         webView.setWebChromeClient(webChromeClient);
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains(".jpg") || url.contains(".jpeg") || url.contains(".png")) {
@@ -132,8 +133,18 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                mFooter.setVisibility(View.VISIBLE);
-                mListView.setVisibility(View.VISIBLE);
+                webView.setVisibility(View.VISIBLE);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        mFooter.setVisibility(View.VISIBLE);
+                        mListView.setVisibility(View.VISIBLE);
+                        mLayout.setVisibility(View.VISIBLE);
+                    }
+                }, 1800L);
+
             }
         });
         webView.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
@@ -141,6 +152,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     private void initFragment(View parent) {
         Bundle bundle = this.getArguments();
+        mLayout = parent.findViewById(R.id.det_scroll);
+        mLayout.setVisibility(View.GONE);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         mImageLayout = parent.findViewById(R.id.det_imageLayout);
         mWebImage = (ImageView) parent.findViewById(R.id.det_webImage);
@@ -181,18 +194,19 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                             Utils.getPrefs(getActivity())), json)
                             .execute(Values.POSTS + mNews.getId() + "/comments/");
                 } else {
-                    add(new ProfileFragment(), Values.PROFILE_TAG);
+                    Intent intent = new Intent(getActivity(), FragmentActivity.class);
+                    intent.putExtra(Values.TAG, Values.PROFILE_TAG);
+                    startActivity(intent);
                 }
             }
         });
     }
 
 
-
     private String getHtmlData(String bodyHTML) {
         String head = "<html><head> " +
                 "<style> " +
-                "p {text-align: justify !important;}" +
+//                "p {text-align: justify !important;}" +
                 "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
                 ".wp-video {height:auto !important; width:100%% !important; visibility: visible !important;} " +
                 ".wp-video-shortcode {height:auto !important; width:100% !important; visibility: visible !important;} " +
@@ -289,6 +303,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             mListView.setVisibility(View.VISIBLE);
+
             mProgressBar.setVisibility(View.GONE);
         }
     }
