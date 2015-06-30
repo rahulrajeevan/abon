@@ -61,6 +61,13 @@ public class Utils {
         }
     }
 
+    /**
+     * Saving cookies in SharedPreferences
+     * @param key
+     * @param cookieStore
+     * @param pref
+     */
+
     public static void saveCookieToSharedPreferences(String key, CookieStore cookieStore,
                                                           SharedPreferences pref) {
         List<Cookie> list = cookieStore.getCookies();
@@ -73,6 +80,13 @@ public class Utils {
         edit.putString(key, s);
         edit.commit();
     }
+
+    /**
+     * Load cookies from SharedPreferences
+     * @param key key in SharedPreferences
+     * @param pref SharedPreferences
+     * @return cookies
+     */
 
     public static BasicClientCookie[] loadCookieFromSharedPreferences(String key,
                                                      SharedPreferences pref) {
@@ -91,6 +105,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Delete cookies from SharedPreferences
+     * @param context
+     */
+
     public static void deleteCookies(Context context) {
         SharedPreferences prefs = getPrefs(context);
         SharedPreferences.Editor editor = prefs.edit();
@@ -98,6 +117,12 @@ public class Utils {
         editor.remove(Values.TOKEN);
         editor.commit();
     }
+
+    /**
+     * Checking internet state
+     * @param context
+     * @return true if connected
+     */
 
     public static boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
