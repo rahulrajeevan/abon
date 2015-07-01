@@ -30,6 +30,7 @@ public class Values {
     public static final String ADD_TAG = "add";
     public static final String ABOUT_TAG = "about";
     public static final String REGISTRATION_TAG = "registry";
+    public static final String MY_COMMENTS_TAG = "my comments";
     public static final String TAG = "tag";
     public static final String FULL_NEWS = "full";
     public static final String FACEBOOK = "http://www.facebook.com/sharer/sharer.php?u=";

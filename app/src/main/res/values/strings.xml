@@ -5,7 +5,7 @@
     <string name="menu_about">О программе</string>
     <string name="comments">Комментарии</string>
     <string name="menu_search">Поиск...</string>
-    <string name="list_end">Конец списка</string>
+    <string name="list_end">Все новости загружены</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="info_abon">Информационный портал</string>
@@ -42,4 +42,6 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="comment_moder">Ваш комментарий будет добавлен после модерации</string>
     <string name="version">Версия</string>
+    <string name="cancel">Авторизация отменена</string>
+    <string name="server_error">Внутренняя ошибка сервера, повторите запрос позже</string>
 </resources>
