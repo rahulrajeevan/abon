@@ -10,6 +10,8 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -138,5 +140,28 @@ public class Utils {
         }
         Toast.makeText(context, context.getString(R.string.not_connect), Toast.LENGTH_LONG).show();
         return false;
+    }
+
+    public static String convertToHex(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+
+    public static String getHtmlData(String bodyHTML) {
+        String head = "<html><head> " +
+                "<style> " +
+//                "p {text-align: justify !important;}" +
+                "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
+                ".wp-video {height:auto !important; width:100%% !important; visibility: visible !important;} " +
+                ".wp-video-shortcode {height:auto !important; width:100% !important; visibility: visible !important;} " +
+                "audio {visibility: visible !important;} " +
+                "iframe {height:auto !important; width:100%% !important; visibility: visible !important;} " +
+                "</style>" +
+                "</head><body style='margin:0; '>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 }
