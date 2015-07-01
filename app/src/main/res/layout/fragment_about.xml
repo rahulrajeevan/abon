@@ -34,13 +34,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/version"
+        android:textColor="@color/secondary_text"
+        android:id="@+id/version"
+        android:layout_below="@+id/textView4"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/url"
         android:autoLink="web"
         android:textColor="@color/secondary_text"
         android:id="@+id/textView5"
-        android:layout_below="@+id/textView4"
-        android:layout_alignLeft="@+id/textView4"
-        android:layout_alignStart="@+id/textView4"
+        android:layout_below="@+id/version"
+        android:layout_alignLeft="@+id/version"
+        android:layout_alignStart="@+id/version"
         android:layout_marginTop="15dp" />
 
     <TextView
