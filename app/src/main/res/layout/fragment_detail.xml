@@ -86,16 +86,62 @@
             <RelativeLayout
                 android:id="@+id/videoLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/shadow_start_color" />
 
-
-            <ExpandableListView
-                android:id="@+id/det_listView"
+            <LinearLayout
+                android:id="@+id/social_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/nonVideoLayout"
                 android:layout_alignStart="@+id/nonVideoLayout"
                 android:layout_below="@+id/nonVideoLayout"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/det_vk"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#ffffffff"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/vk" />
+
+                <ImageButton
+                    android:id="@+id/det_fb"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#ffffffff"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/fb" />
+
+                <ImageButton
+                    android:id="@+id/det_ok"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#ffffffff"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ok" />
+
+                <ImageButton
+                    android:id="@+id/det_tw"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#ffffffff"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/tw" />
+            </LinearLayout>
+
+            <ExpandableListView
+                android:id="@+id/det_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/social_layout"
+                android:layout_alignStart="@+id/social_layout"
+                android:layout_below="@+id/social_layout"
                 android:layout_marginTop="10dp" />
 
             <LinearLayout
@@ -179,6 +225,12 @@
             android:layout_centerVertical="true" />
 
     </RelativeLayout>
+
+    <WebView
+        android:id="@+id/shareWebView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 
 </RelativeLayout>
