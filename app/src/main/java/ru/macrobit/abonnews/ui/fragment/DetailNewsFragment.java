@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -148,6 +149,22 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             }
         });
         webView.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        try {
+            Class.forName("android.webkit.WebView")
+                    .getMethod("onPause", (Class[]) null)
+                    .invoke(webView, (Object[]) null);
+
+        } catch(ClassNotFoundException cnfe) {
+        } catch(NoSuchMethodException nsme) {
+        } catch(InvocationTargetException ite) {
+        } catch (IllegalAccessException iae) {
+        }
     }
 
     private void initFragment(View parent) {
