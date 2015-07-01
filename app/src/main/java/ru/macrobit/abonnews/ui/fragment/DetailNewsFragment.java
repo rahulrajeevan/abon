@@ -1,11 +1,9 @@
 package ru.macrobit.abonnews.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
@@ -21,9 +19,11 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -41,7 +41,6 @@ import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
-import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
@@ -63,6 +62,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mImageLayout;
     private ImageView mWebImage;
     private View mLayout;
+    public static WebView mShareWebView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,7 +148,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
             }
         });
-        webView.loadData(getHtmlData(data), "text/html; charset=UTF-8", null);
+        webView.loadData(Utils.getHtmlData(data), "text/html; charset=UTF-8", null);
     }
 
     @Override
@@ -171,6 +171,15 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 //        Bundle bundle = this.getArguments();
 //        Bundle bundle = new Bundle();
 //        bundle.putParcelable("data");
+        ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
+        ImageButton ok = (ImageButton) parent.findViewById(R.id.det_ok);
+        ImageButton fb = (ImageButton) parent.findViewById(R.id.det_fb);
+        ImageButton tw = (ImageButton) parent.findViewById(R.id.det_tw);
+        vk.setOnClickListener(this);
+        ok.setOnClickListener(this);
+        fb.setOnClickListener(this);
+        tw.setOnClickListener(this);
+        mShareWebView = (WebView) parent.findViewById(R.id.shareWebView);
         mLayout = parent.findViewById(R.id.det_scroll);
         mLayout.setVisibility(View.GONE);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
@@ -214,28 +223,16 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                             Utils.getPrefs(getActivity())), json)
                             .execute(Values.POSTS + mNews.getId() + "/comments/");
+                    commentEdit.setText("");
+                    Toast.makeText(getActivity(), getString(R.string.comment_moder), Toast.LENGTH_LONG).show();
                 } else {
-                    Intent intent = new Intent(getActivity(), FragmentActivity.class);
-                    intent.putExtra(Values.TAG, Values.PROFILE_TAG);
-                    startActivity(intent);
+                    add(new ProfileFragment(), Values.PROFILE_TAG);
+//                    Intent intent = new Intent(getActivity(), FragmentActivity.class);
+//                    intent.putExtra(Values.TAG, Values.PROFILE_TAG);
+//                    startActivity(intent);
                 }
             }
         });
-    }
-
-
-    private String getHtmlData(String bodyHTML) {
-        String head = "<html><head> " +
-                "<style> " +
-//                "p {text-align: justify !important;}" +
-                "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
-                ".wp-video {height:auto !important; width:100%% !important; visibility: visible !important;} " +
-                ".wp-video-shortcode {height:auto !important; width:100% !important; visibility: visible !important;} " +
-                "audio {visibility: visible !important;} " +
-                "iframe {height:auto !important; width:100%% !important; visibility: visible !important;} " +
-                "</style>" +
-                "</head><body style='margin:0; '>";
-        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
     private void getComments(String url) {
@@ -286,24 +283,65 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        menu.getItem(0).setVisible(false);
-        inflater.inflate(R.menu.global, menu);
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, mNews.getUrl());
-        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider)
-                MenuItemCompat.getActionProvider(shareItem);
-        mShareActionProvider.setShareIntent(intent);
+//        inflater.inflate(R.menu.global, menu);
+//        Intent intent = new Intent();
+//        intent.setAction(Intent.ACTION_SEND);
+//        intent.setType("text/plain");
+//        intent.putExtra(Intent.EXTRA_TEXT, mNews.getUrl());
+//        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
+//        mShareActionProvider = (ShareActionProvider)
+//                MenuItemCompat.getActionProvider(shareItem);
+//        mShareActionProvider.setShareIntent(intent);
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mShareWebView.setVisibility(View.VISIBLE);
+        mShareWebView.setWebViewClient(new ProgressWebClient());
+        switch (item.getItemId()) {
+            case R.id.menu_item_vk:
+
+                mShareWebView.loadUrl(Values.VK + mNews.getUrl() + "&image=" + Values.ABON_LOGO);
+                return true;
+            case R.id.menu_item_ok:
+                mShareWebView.setWebViewClient(new ProgressWebClient());
+                mShareWebView.loadUrl(Values.OK + mNews.getUrl());
+                return true;
+            case R.id.menu_item_fb:
+                mShareWebView.setWebViewClient(new ProgressWebClient());
+                mShareWebView.loadUrl(Values.FACEBOOK + mNews.getUrl() + "&p[images][0]=" + Values.ABON_LOGO);
+                return true;
+            case R.id.menu_item_tw:
+                mShareWebView.setWebViewClient(new ProgressWebClient());
+                mShareWebView.loadUrl(Values.TWITTER + mNews.getUrl() );
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
     public void onClick(View v) {
-        mImageLayout.setVisibility(View.GONE);
+        mShareWebView.setVisibility(View.VISIBLE);
+        mShareWebView.setWebViewClient(new ProgressWebClient());
+        switch (v.getId()) {
+            case R.id.det_vk:
+                mShareWebView.loadUrl(Values.VK + mNews.getUrl() + "&image=" + Values.ABON_LOGO);
+                break;
+            case R.id.det_ok:
+                mShareWebView.loadUrl(Values.OK + mNews.getUrl());
+                break;
+            case R.id.det_fb:
+                mShareWebView.loadUrl(Values.FACEBOOK + mNews.getUrl() + "&p[images][0]=" + Values.ABON_LOGO);
+                break;
+            case R.id.det_tw:
+                mShareWebView.loadUrl(Values.TWITTER + mNews.getUrl() );
+                break;
+        }
     }
 
     public class ProgressWebClient extends WebViewClient {
@@ -323,7 +361,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            mListView.setVisibility(View.VISIBLE);
 
             mProgressBar.setVisibility(View.GONE);
         }
