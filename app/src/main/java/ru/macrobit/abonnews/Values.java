@@ -32,6 +32,11 @@ public class Values {
     public static final String REGISTRATION_TAG = "registry";
     public static final String TAG = "tag";
     public static final String FULL_NEWS = "full";
+    public static final String FACEBOOK = "http://www.facebook.com/sharer/sharer.php?u=";
+    public static final String VK = "https://vk.com/share.php?url=";
+    public static final String OK = "http://www.odnoklassniki.ru/dk?st.cmd=addShare&st.s=1&st._surl=";
+    public static final String TWITTER = "http://twitter.com/share?text=";
+    public static final String ABON_LOGO = "http://abon-news.ru/wp-content/themes/abon/images/logo.png";
     public static final int MEDIA_RESULT = 121;
     public static boolean isDisplayHomeEnabled;
 }
