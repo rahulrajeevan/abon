@@ -117,6 +117,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 mAdapter.add(s);
         }
         if (isSearchList) {
+            mListView.removeFooterView(mFooter);
             mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
             mListView.setAdapter(mAdapter);
         }
@@ -172,7 +173,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     private void searchNews(String searchWord) {
         isSearchList = true;
-        new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + searchWord);
+        new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + Utils.convertToHex(searchWord));
     }
 
     private void getNewsFromServer() {
@@ -194,19 +195,25 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     @Override
     public void onTaskCompleted(String result) {
-        News[] news = GsonUtils.fromJson(result, News[].class);
-        if (!isSearchList) {
-            mNews.addAll(Arrays.asList(news));
-        } else {
-            mNews.clear();
-            mNews.addAll(Arrays.asList(news));
+        try {
+            News[] news = GsonUtils.fromJson(result, News[].class);
+            if (!isSearchList) {
+                mNews.addAll(Arrays.asList(news));
+            } else {
+                mNews.clear();
+                mNews.addAll(Arrays.asList(news));
+            }
+            if (news.length > 0) {
+                ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
+                listViewInit(newsList);
+                mSwipeRefreshLayout.setRefreshing(false);
+            } else {
+                isEndNewsList = true;
+            }
         }
-        if (news.length > 0) {
-            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
-            listViewInit(newsList);
-            mSwipeRefreshLayout.setRefreshing(false);
-        } else {
-            isEndNewsList = true;
+        catch (Exception e) {
+            mListView.removeFooterView(mFooter);
+            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
     }
 
