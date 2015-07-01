@@ -102,7 +102,7 @@ public class MainActivity extends Env implements
             case R.id.comments:
                 if (Utils.isCookiesExist(this)) {
 //                    add(new MyCommentFragment(), Values.MY_COMMENTS);
-                    mIntent.putExtra(Values.TAG, Values.MY_COMMENTS);
+                    mIntent.putExtra(Values.TAG, Values.MY_COMMENTS_TAG);
                     startActivity(mIntent);
                 } else {
 //                    add(new ProfileFragment(), Values.PROFILE_TAG);
