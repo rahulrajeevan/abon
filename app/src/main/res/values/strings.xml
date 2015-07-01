@@ -37,7 +37,6 @@
     <string name="need_authorization">Необходимо авторизоваться</string>
     <string name="menu_news">Новости</string>
     <string name="title_activity_fragment">FragmentActivity</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">DetailActivity</string>
