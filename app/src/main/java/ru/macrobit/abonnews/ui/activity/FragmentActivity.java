@@ -85,6 +85,9 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             case Values.REGISTRATION_TAG:
                 frag = new RegistrationFragment();
                 break;
+            case Values.MY_COMMENTS_TAG:
+                frag = new MyCommentFragment();
+                break;
         }
         return frag;
     }
@@ -180,7 +183,12 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            if (getActiveFragments().size() == 1) {
+            if (isFragmentExist(Values.DETAIL_TAG)) {
+                if (DetailNewsFragment.mShareWebView.getVisibility() != View.GONE) {
+                    DetailNewsFragment.mShareWebView.setVisibility(View.GONE);
+                    DetailNewsFragment.mShareWebView.loadUrl("about:blank");
+                }
+            } else if (getActiveFragments().size() == 1) {
                 goToMain();
             } else {
                 popBackStack();
@@ -212,12 +220,15 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                     new AuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
+//                    popBackStack();
+
                     if (userdata.get("error").equals("canceled")) {
-                        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.cancel), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Error: " + userdata.get("error"),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    finish();
                     break;
             }
         }
