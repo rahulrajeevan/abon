@@ -52,6 +52,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private ImageView mImage;
     private ExpandableListView mListView;
     private ProgressBar mProgressBar;
+    private ProgressBar mCommentProgressBar;
     private String mId;
     private VideoEnabledWebView webView;
     private VideoEnabledWebChromeClient webChromeClient;
@@ -182,6 +183,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mShareWebView = (WebView) parent.findViewById(R.id.shareWebView);
         mLayout = parent.findViewById(R.id.det_scroll);
         mLayout.setVisibility(View.GONE);
+        mCommentProgressBar = (ProgressBar) parent.findViewById(R.id.det_progress);
+        mCommentProgressBar.setVisibility(View.GONE);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         mImageLayout = parent.findViewById(R.id.det_imageLayout);
         mWebImage = (ImageView) parent.findViewById(R.id.det_webImage);
@@ -237,6 +240,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     private void getComments(String url) {
         if (Utils.isConnected(getActivity())) {
+            mCommentProgressBar.setVisibility(View.VISIBLE);
             new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + url);
         }
     }
@@ -249,6 +253,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     @Override
     public void onTaskCompleted(String result) {
+        mCommentProgressBar.setVisibility(View.GONE);
         initComments(result);
     }
 

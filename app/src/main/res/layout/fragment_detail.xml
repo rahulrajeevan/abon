@@ -142,7 +142,15 @@
                 android:layout_alignLeft="@+id/social_layout"
                 android:layout_alignStart="@+id/social_layout"
                 android:layout_below="@+id/social_layout"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"/>
+            <ProgressBar
+                android:id="@+id/det_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_below="@+id/social_layout"
+                android:layout_marginTop="10dp"/>
 
             <LinearLayout
                 android:id="@+id/det_footer"

@@ -187,8 +187,11 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                 if (DetailNewsFragment.mShareWebView.getVisibility() != View.GONE) {
                     DetailNewsFragment.mShareWebView.setVisibility(View.GONE);
                     DetailNewsFragment.mShareWebView.loadUrl("about:blank");
+                } else {
+                    goToMain();
                 }
-            } else if (getActiveFragments().size() == 1) {
+            }
+            if (getActiveFragments().size() == 1) {
                 goToMain();
             } else {
                 popBackStack();
