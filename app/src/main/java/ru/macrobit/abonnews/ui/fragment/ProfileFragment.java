@@ -98,6 +98,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profile_authorization:
+                popBackStack();
                 add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
                 break;
             case R.id.profile_soc_auto:
@@ -106,7 +107,9 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
                 popBackStack();
                 break;
             case R.id.profile_reg:
+                popBackStack();
                 add(new RegistrationFragment(), Values.REGISTRATION_TAG);
+
             break;
         }
     }
