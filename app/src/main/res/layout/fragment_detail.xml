@@ -66,36 +66,24 @@
             <!--android:layout_below="@+id/det_imageView"-->
             <!--android:layout_marginTop="10dp" />-->
 
-            <RelativeLayout
-                android:id="@+id/nonVideoLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignLeft="@+id/det_imageView"
-                android:layout_alignStart="@+id/det_imageView"
-                android:layout_below="@+id/det_imageView"
-                android:layout_marginTop="10dp">
 
-                <ru.macrobit.abonnews.ui.view.VideoEnabledWebView
+                <WebView
                     android:id="@+id/webView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_alignLeft="@+id/det_imageView"
+                    android:layout_alignStart="@+id/det_imageView"
+                    android:layout_below="@+id/det_imageView"
+                    android:layout_marginTop="10dp"/>
 
-            </RelativeLayout>
-
-            <!-- View where the video will be shown when video goes fullscreen -->
-            <RelativeLayout
-                android:id="@+id/videoLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/shadow_start_color" />
 
             <LinearLayout
                 android:id="@+id/social_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/nonVideoLayout"
-                android:layout_alignStart="@+id/nonVideoLayout"
-                android:layout_below="@+id/nonVideoLayout"
+                android:layout_alignLeft="@+id/webView"
+                android:layout_alignStart="@+id/webView"
+                android:layout_below="@+id/webView"
                 android:gravity="center">
 
                 <ImageButton
@@ -142,15 +130,16 @@
                 android:layout_alignLeft="@+id/social_layout"
                 android:layout_alignStart="@+id/social_layout"
                 android:layout_below="@+id/social_layout"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
+
             <ProgressBar
                 android:id="@+id/det_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/social_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
-                android:layout_below="@+id/social_layout"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
 
             <LinearLayout
                 android:id="@+id/det_footer"
@@ -239,6 +228,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/customViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone"
+        />
 
 
 </RelativeLayout>

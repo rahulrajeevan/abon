@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -13,12 +12,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,7 +42,6 @@ import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
-import ru.macrobit.abonnews.ui.view.VideoEnabledWebView;
 
 
 public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
@@ -54,16 +53,20 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private ProgressBar mProgressBar;
     private ProgressBar mCommentProgressBar;
     private String mId;
-    private VideoEnabledWebView webView;
+    private WebView webView;
     private VideoEnabledWebChromeClient webChromeClient;
     private FullNews mNews;
     private View mFooter;
-    private ShareActionProvider mShareActionProvider;
     private int mCommentId = -999;
     private View mImageLayout;
     private ImageView mWebImage;
     private View mLayout;
     public static WebView mShareWebView;
+    public static FrameLayout mCustomViewContainer;
+    private WebChromeClient.CustomViewCallback customViewCallback;
+    private View mCustomView;
+    private myWebChromeClient mWebChromeClient;
+    private myWebViewClient mWebViewClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +80,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         return view;
     }
 
-    private void initVideo(View parent, String data) {
+   /* private void initVideo(View parent, String data) {
         webView = (VideoEnabledWebView) parent.findViewById(R.id.webView);
         webView.setVisibility(View.GONE);
         // Initialize the VideoEnabledWebChromeClient and set event handlers
@@ -151,7 +154,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         });
         webView.loadData(Utils.getHtmlData(data), "text/html; charset=UTF-8", null);
     }
-
+*/
     @Override
     public void onPause() {
         super.onPause();
@@ -169,9 +172,16 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void initFragment(View parent) {
-//        Bundle bundle = this.getArguments();
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable("data");
+        webView = (WebView) parent.findViewById(R.id.webView);
+        mWebViewClient = new myWebViewClient();
+        webView.setWebViewClient(mWebViewClient);
+        mWebChromeClient = new myWebChromeClient();
+        webView.setWebChromeClient(mWebChromeClient);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSaveFormData(true);
+        mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
         ImageButton ok = (ImageButton) parent.findViewById(R.id.det_ok);
         ImageButton fb = (ImageButton) parent.findViewById(R.id.det_fb);
@@ -201,6 +211,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         if (mNews.getBody().contains(mNews.getImageUrl())) {
             mImage.setVisibility(View.GONE);
         }
+        webView.loadData(Utils.getHtmlData(mNews.getBody()), "text/html; charset=UTF-8", null);
+
         Spanned span = Html.fromHtml(mNews.getTitle());
         mTitle.setText(span);
         mDate.setText(mNews.getDate());
@@ -208,7 +220,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mImageLayout.setOnClickListener(this);
         mWebImage.setOnClickListener(this);
         getComments(mNews.getId() + "/comments/");
-        initVideo(parent, mNews.getBody());
+//        initVideo(parent, mNews.getBody());
         ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
         Button addComment = (Button) parent.findViewById(R.id.addComment);
         final EditText commentEdit = (EditText) parent.findViewById(R.id.comment);
@@ -404,6 +416,99 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         params.height = height;
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+
+    public void hide() {
+        mLayout.setVisibility(View.VISIBLE);
+        if (mCustomView == null)
+            return;
+
+        webView.setVisibility(View.VISIBLE);
+        mCustomViewContainer.setVisibility(View.GONE);
+
+        // Hide the custom view.
+        mCustomView.setVisibility(View.GONE);
+
+        // Remove the custom view from its container.
+        mCustomViewContainer.removeView(mCustomView);
+        customViewCallback.onCustomViewHidden();
+
+        mCustomView = null;
+    }
+
+    class myWebChromeClient extends WebChromeClient {
+        private Bitmap mDefaultVideoPoster;
+        private View mVideoProgressView;
+
+        @Override
+        public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
+            onShowCustomView(view, callback);    //To change body of overridden methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public void onShowCustomView(View view,CustomViewCallback callback) {
+            mLayout.setVisibility(View.GONE);
+            if (mCustomView != null) {
+                callback.onCustomViewHidden();
+                return;
+            }
+            mCustomView = view;
+            webView.setVisibility(View.GONE);
+            mCustomViewContainer.setVisibility(View.VISIBLE);
+            mCustomViewContainer.addView(view);
+            customViewCallback = callback;
+        }
+
+        @Override
+        public View getVideoLoadingProgressView() {
+            if (mVideoProgressView == null) {
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                mVideoProgressView = inflater.inflate(R.layout.view_loading_video, null);
+            }
+            return mVideoProgressView;
+        }
+
+        @Override
+        public Bitmap getDefaultVideoPoster() {
+            return super.getDefaultVideoPoster();
+        }
+
+        @Override
+        public void onHideCustomView() {
+            super.onHideCustomView();
+            hide();
+        }
+    }
+
+    class myWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.contains(".jpg") || url.contains(".jpeg") || url.contains(".png")) {
+                mImageLayout.setVisibility(View.VISIBLE);
+                ImageUtils.getUIL(getActivity()).displayImage(url, mWebImage);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            webView.setVisibility(View.VISIBLE);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLayout.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mFooter.setVisibility(View.VISIBLE);
+                    mListView.setVisibility(View.VISIBLE);
+                    mLayout.setVisibility(View.VISIBLE);
+                }
+            }, 1500);
+
+        }
     }
 
 }

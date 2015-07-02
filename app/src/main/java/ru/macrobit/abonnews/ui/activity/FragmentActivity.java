@@ -32,6 +32,7 @@ import ru.macrobit.abonnews.ui.fragment.AboutFragment;
 import ru.macrobit.abonnews.ui.fragment.AddPostFragment;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
 import ru.macrobit.abonnews.ui.fragment.DetailNewsFragment;
+import ru.macrobit.abonnews.ui.fragment.EnvFragment;
 import ru.macrobit.abonnews.ui.fragment.MyCommentFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.macrobit.abonnews.ui.fragment.RegistrationFragment;
@@ -46,6 +47,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mNavItemId;
+    private EnvFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,31 +67,30 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
     }
 
     private Fragment getFragment(String nameFrag) {
-        Fragment frag = null;
         switch (nameFrag) {
             case Values.ABOUT_TAG:
-                frag = new AboutFragment();
+                mFragment = new AboutFragment();
                 break;
             case Values.AUTHORIZATION_TAG:
-                frag = new AuthorizationFragment();
+                mFragment = new AuthorizationFragment();
                 break;
             case Values.ADD_TAG:
-                frag = new AddPostFragment();
+                mFragment = new AddPostFragment();
                 break;
             case Values.DETAIL_TAG:
-                frag = new DetailNewsFragment();
+                mFragment = new DetailNewsFragment();
                 break;
             case Values.PROFILE_TAG:
-                frag = new ProfileFragment();
+                mFragment = new ProfileFragment();
                 break;
             case Values.REGISTRATION_TAG:
-                frag = new RegistrationFragment();
+                mFragment = new RegistrationFragment();
                 break;
             case Values.MY_COMMENTS_TAG:
-                frag = new MyCommentFragment();
+                mFragment = new MyCommentFragment();
                 break;
         }
-        return frag;
+        return mFragment;
     }
 
     private void initNavigationView() {
@@ -184,17 +185,24 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (isFragmentExist(Values.DETAIL_TAG)) {
+                DetailNewsFragment frag = (DetailNewsFragment) mFragment;
                 if (DetailNewsFragment.mShareWebView.getVisibility() != View.GONE) {
                     DetailNewsFragment.mShareWebView.setVisibility(View.GONE);
                     DetailNewsFragment.mShareWebView.loadUrl("about:blank");
                 } else {
-                    goToMain();
+                    if (DetailNewsFragment.mCustomViewContainer.getVisibility() != View.GONE) {
+                        frag.hide();
+                    } else {
+                        goToMain();
+                    }
                 }
-            }
-            if (getActiveFragments().size() == 1) {
-                goToMain();
+
             } else {
-                popBackStack();
+                if (getActiveFragments().size() == 1) {
+                    goToMain();
+                } else {
+                    popBackStack();
+                }
             }
         }
     }
