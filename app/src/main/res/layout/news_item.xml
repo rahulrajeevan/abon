@@ -22,7 +22,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerCrop"/>
         <!--android:layout_below="@+id/det_search"-->
         <!--android:layout_alignLeft="@+id/det_search"-->
         <!--android:layout_alignStart="@+id/det_search"-->
