@@ -48,6 +48,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
     private ActionBarDrawerToggle mDrawerToggle;
     private int mNavItemId;
     private EnvFragment mFragment;
+    private Bundle mExtras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +60,9 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
 
     private String getTag() {
         String value = null;
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            value = extras.getString(Values.TAG);
+        mExtras = getIntent().getExtras();
+        if (mExtras != null) {
+            value = mExtras.getString(Values.TAG);
         }
         return value;
     }
@@ -120,6 +121,11 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             }
 
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     private void navigate(final int itemId) {
@@ -198,7 +204,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                 }
 
             } else {
-                if (getActiveFragments().size() == 1) {
+                if (getActiveFragments().size() <= 1) {
                     goToMain();
                 } else {
                     popBackStack();
@@ -214,7 +220,15 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(NAV_ITEM_ID, mNavItemId);
+        outState.putAll(mExtras);
+//        outState.putInt(NAV_ITEM_ID, mNavItemId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mExtras = savedInstanceState;
+        add(getFragment(getTag()), getTag());
     }
 
     @Override

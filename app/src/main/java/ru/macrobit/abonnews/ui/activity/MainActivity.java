@@ -82,6 +82,12 @@ public class MainActivity extends Env implements
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    @Override
     protected void onPostResume() {
         super.onPostResume();
     }
