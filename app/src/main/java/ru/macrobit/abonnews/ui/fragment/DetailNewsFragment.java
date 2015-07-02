@@ -1,6 +1,7 @@
 package ru.macrobit.abonnews.ui.fragment;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,7 +42,6 @@ import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
-import ru.macrobit.abonnews.ui.view.VideoEnabledWebChromeClient;
 
 
 public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
@@ -54,7 +54,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private ProgressBar mCommentProgressBar;
     private String mId;
     private WebView webView;
-    private VideoEnabledWebChromeClient webChromeClient;
     private FullNews mNews;
     private View mFooter;
     private int mCommentId = -999;
@@ -80,81 +79,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         return view;
     }
 
-   /* private void initVideo(View parent, String data) {
-        webView = (VideoEnabledWebView) parent.findViewById(R.id.webView);
-        webView.setVisibility(View.GONE);
-        // Initialize the VideoEnabledWebChromeClient and set event handlers
-        View nonVideoLayout = parent.findViewById(R.id.nonVideoLayout); // Your own view, read class comments
-        ViewGroup videoLayout = (ViewGroup) parent.findViewById(R.id.videoLayout); // Your own view, read class comments
-        //noinspection all
-        View loadingView = getActivity().getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
-        webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView) // See all available constructors...
-        {
-            // Subscribe to standard events, such as onProgressChanged()...
-            @Override
-            public void onProgressChanged(WebView view, int progress) {
-                // Your code...
-            }
-        };
-        webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
-            @Override
-            public void toggledFullscreen(boolean fullscreen) {
-                // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
-                if (fullscreen) {
-                    WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
-                    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-                    attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-                    getActivity().getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14) {
-                        //noinspection all
-                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-                    }
-                } else {
-                    WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
-                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
-                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-                    getActivity().getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14) {
-                        //noinspection all
-                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                    }
-                }
-
-            }
-        });
-        webView.setWebChromeClient(webChromeClient);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.contains(".jpg") || url.contains(".jpeg") || url.contains(".png")) {
-                    mImageLayout.setVisibility(View.VISIBLE);
-                    ImageUtils.getUIL(getActivity()).displayImage(url, mWebImage);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                webView.setVisibility(View.VISIBLE);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressBar.setVisibility(View.GONE);
-                        mFooter.setVisibility(View.VISIBLE);
-                        mListView.setVisibility(View.VISIBLE);
-                        mLayout.setVisibility(View.VISIBLE);
-                    }
-                }, 100L);
-
-            }
-        });
-        webView.loadData(Utils.getHtmlData(data), "text/html; charset=UTF-8", null);
-    }
-*/
     @Override
     public void onPause() {
         super.onPause();
@@ -179,7 +103,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         webView.setWebChromeClient(mWebChromeClient);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAppCacheEnabled(true);
-        webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setSaveFormData(true);
         mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
@@ -277,7 +200,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             group.add(getActivity().getString(R.string.comments));
             MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
             adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-//        mListView.addFooterView(mFooter);
             mListView.setAdapter(adapter);
             mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -419,6 +341,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     public void hide() {
+        getActivity().setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mLayout.setVisibility(View.VISIBLE);
         if (mCustomView == null)
             return;
@@ -440,6 +363,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         private Bitmap mDefaultVideoPoster;
         private View mVideoProgressView;
 
+
+
         @Override
         public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
             onShowCustomView(view, callback);    //To change body of overridden methods use File | Settings | File Templates.
@@ -447,6 +372,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
         @Override
         public void onShowCustomView(View view,CustomViewCallback callback) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             mLayout.setVisibility(View.GONE);
             if (mCustomView != null) {
                 callback.onCustomViewHidden();
