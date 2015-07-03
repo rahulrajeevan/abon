@@ -9,6 +9,7 @@ public class ShortNews implements Parcelable{
     String imageUrl;
     String id;
     boolean sticky;
+    boolean isAd;
 
     public ShortNews(String title, String date, String imageUrl, String id, boolean sticky) {
         this.title = title;
@@ -16,6 +17,7 @@ public class ShortNews implements Parcelable{
         this.imageUrl = imageUrl;
         this.id = id;
         this.sticky = sticky;
+        this.isAd = false;
     }
 
     public ShortNews(Parcel in) {
@@ -24,6 +26,12 @@ public class ShortNews implements Parcelable{
         this.imageUrl = in.readString();
         this.id = in.readString();
         this.sticky = in.readByte() != 0;
+        this.isAd = in.readByte() != 0;
+    }
+
+    public ShortNews(String imageUrl) {
+        this.imageUrl = imageUrl;
+        this.isAd = true;
     }
 
     public boolean isSticky() {
@@ -66,6 +74,14 @@ public class ShortNews implements Parcelable{
         this.imageUrl = imageUrl;
     }
 
+    public boolean isAd() {
+        return isAd;
+    }
+
+    public void setIsAd(boolean isAd) {
+        this.isAd = isAd;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,7 +94,10 @@ public class ShortNews implements Parcelable{
         dest.writeString(imageUrl);
         dest.writeString(id);
         dest.writeByte((byte) (sticky ? 1 : 0));
+        dest.writeByte((byte) (isAd ? 1 : 0));
     }
+
+
 
     public static final Parcelable.Creator<ShortNews> CREATOR
             = new Parcelable.Creator<ShortNews>() {
