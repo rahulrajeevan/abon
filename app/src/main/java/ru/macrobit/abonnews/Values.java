@@ -38,6 +38,7 @@ public class Values {
     public static final String OK = "http://www.odnoklassniki.ru/dk?st.cmd=addShare&st.s=1&st._surl=";
     public static final String TWITTER = "http://twitter.com/share?text=";
     public static final String ABON_LOGO = "http://abon-news.ru/wp-content/themes/abon/images/logo.png";
+    public static final String ADS_PREF = "ads";
     public static final int MEDIA_RESULT = 121;
     public static boolean isDisplayHomeEnabled;
 }
