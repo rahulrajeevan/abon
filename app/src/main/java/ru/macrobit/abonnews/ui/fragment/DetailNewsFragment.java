@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -66,6 +66,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
+    String fulljs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,6 +105,16 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setSaveFormData(true);
+
+
+        webView.addJavascriptInterface(new ObjectExtension(), "webviewScriptAPI");
+        fulljs = "javascript:(\n    function() { \n";
+        fulljs += "        window.onload = function() {\n";
+        fulljs += "            webviewScriptAPI.onLoad();\n";
+        fulljs += "        };\n";
+        fulljs += "    })()\n";
+        webView.loadUrl(fulljs);
+
         mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
         ImageButton ok = (ImageButton) parent.findViewById(R.id.det_ok);
@@ -379,7 +390,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 return;
             }
             mCustomView = view;
-            webView.setVisibility(View.GONE);
+//            webView.setVisibility(View.GONE);
             mCustomViewContainer.setVisibility(View.VISIBLE);
             mCustomViewContainer.addView(view);
             customViewCallback = callback;
@@ -406,6 +417,38 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
     }
 
+    private void onPageLoaded() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                webView.setVisibility(View.VISIBLE);
+                mLayout.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mFooter.setVisibility(View.VISIBLE);
+                mListView.setVisibility(View.VISIBLE);
+                mLayout.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+    }
+
+    final class ObjectExtension {
+        @JavascriptInterface
+        public void onLoad() {
+
+           onLoadCompleted();
+        }
+    }
+
+
+    public void onLoadCompleted() {
+//        Toast.makeText(getActivity(), "ONLOADCOMPLETED", Toast.LENGTH_LONG).show();
+        webView.loadUrl(fulljs);
+        onPageLoaded();
+    }
+
     class myWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -418,22 +461,13 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             }
         }
 
+
+
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            webView.setVisibility(View.VISIBLE);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mLayout.setVisibility(View.VISIBLE);
-                    mProgressBar.setVisibility(View.GONE);
-                    mFooter.setVisibility(View.VISIBLE);
-                    mListView.setVisibility(View.VISIBLE);
-                    mLayout.setVisibility(View.VISIBLE);
-                }
-            }, 1500);
-
+//            Toast.makeText(getActivity(), "INJECTIN JS", Toast.LENGTH_LONG).show();
+            webView.loadUrl(fulljs);
         }
     }
 
