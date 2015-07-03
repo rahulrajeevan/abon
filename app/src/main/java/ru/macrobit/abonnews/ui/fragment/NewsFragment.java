@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.NewsAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
+import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -45,6 +47,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private boolean isLastItemVisible = false;
     private NewsAdapter mAdapter;
     private View mFooter;
+    private View mHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,8 +58,10 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         View view = inflater.inflate(R.layout.fragment_newslist,
                 container, false);
         createFooter();
+        createHeader();
         mListView = (ListView) view.findViewById(R.id.listView);
         mListView.addFooterView(mFooter, null, false);
+        mListView.addHeaderView(mHeader);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.float_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -193,6 +198,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         super.onCreate(arg0);
     }
 
+    private View createHeader(){
+        mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
+        ImageView img = (ImageView) mHeader.findViewById(R.id.imageAd);
+        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(5, getActivity()), img);
+        return mHeader;
+    }
+
     @Override
     public void onTaskCompleted(String result) {
         try {
@@ -204,7 +216,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 mNews.addAll(Arrays.asList(news));
             }
             if (news.length > 0) {
-                ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news);
+                ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news, getActivity());
                 listViewInit(newsList);
                 mSwipeRefreshLayout.setRefreshing(false);
             } else {
