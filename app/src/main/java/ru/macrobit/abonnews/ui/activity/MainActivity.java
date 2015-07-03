@@ -22,18 +22,20 @@ import org.apache.http.client.CookieStore;
 import java.util.HashMap;
 
 import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
+import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddMediaRequest;
 import ru.macrobit.abonnews.loader.AuthorizationRequest;
+import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 import ru.ulogin.sdk.UloginAuthActivity;
 
 
 public class MainActivity extends Env implements
-        NavigationView.OnNavigationItemSelectedListener, OnAuthorizationTaskCompleted {
+        NavigationView.OnNavigationItemSelectedListener, OnAuthorizationTaskCompleted, OnTaskCompleted {
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
@@ -51,8 +53,12 @@ public class MainActivity extends Env implements
         add(new NewsFragment());
         mIntent = new Intent(MainActivity.this, FragmentActivity.class);
         initNavigationView();
-
+        getAds();
 //        navigate(mNavItemId);
+    }
+
+    private void getAds() {
+        new GetRequest(this).execute(Values.ADS);
     }
 
     private void initNavigationView() {
@@ -84,8 +90,8 @@ public class MainActivity extends Env implements
     @Override
     protected void onStop() {
         super.onStop();
-        finish();
     }
+
 
     @Override
     protected void onPostResume() {
@@ -235,7 +241,6 @@ public class MainActivity extends Env implements
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String filePath = cursor.getString(columnIndex);
             cursor.close();
-
             new AddMediaRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                     Utils.getPrefs(this)), filePath).execute(Values.MEDIA_ADD);
         }
@@ -256,5 +261,10 @@ public class MainActivity extends Env implements
         Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
         remove(Values.PROFILE_TAG);
         add(new ProfileFragment(), Values.PROFILE_TAG);
+    }
+
+    @Override
+    public void onTaskCompleted(String result) {
+        Utils.saveToSharedPreferences(Values.ADS_PREF, result, Utils.getPrefs(this));
     }
 }
