@@ -181,7 +181,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
 
@@ -202,7 +201,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                         goToMain();
                     }
                 }
-
             } else {
                 if (getActiveFragments().size() <= 1) {
                     goToMain();
