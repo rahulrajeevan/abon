@@ -31,6 +31,7 @@
         <activity
             android:name=".ui.activity.FragmentActivity"
             android:label="@string/title_activity_fragment"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:parentActivityName=".ui.activity.MainActivity"
             android:screenOrientation="portrait" >
