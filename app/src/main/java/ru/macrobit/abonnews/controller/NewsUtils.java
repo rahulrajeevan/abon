@@ -1,5 +1,7 @@
 package ru.macrobit.abonnews.controller;
 
+import android.content.Context;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,16 +13,33 @@ import ru.macrobit.abonnews.model.Media;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
 
-/**
- * Created by Comp on 01.06.2015.
- */
+
 public class NewsUtils {
 
-    public static ArrayList<ShortNews> generateShortNews(News[] news) {
+    public static ArrayList<ShortNews> generateShortNews(News[] news, Context context) {
         ArrayList<ShortNews> arrayList = new ArrayList<ShortNews>();
-        for (News n : news) {
-            ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
-            arrayList.add(shortNews);
+//        for (News n : news) {
+        int ad = 0;
+        int x = news.length + (int) (news.length / 7);
+        for (int i = 0; i < x; i++) {
+            ShortNews shortNews;
+            if (i % 6 == 0) {
+                if (i != 0) {
+                    ad++;
+                    shortNews = new ShortNews(Utils.getAd(5, context));
+                    arrayList.add(shortNews);
+                } else {
+                    News n = news[i - ad];
+                    shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
+                    arrayList.add(shortNews);
+                }
+            } else {
+                News n = news[i - ad];
+                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
+                arrayList.add(shortNews);
+            }
+
+
         }
         return arrayList;
     }

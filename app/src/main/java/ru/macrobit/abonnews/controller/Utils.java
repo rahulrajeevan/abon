@@ -12,13 +12,16 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.ShortCookie;
 
 public class Utils {
@@ -163,5 +166,19 @@ public class Utils {
                 "</style>" +
                 "</head><body style='margin:0; '>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
+    }
+
+    public static String getAd(int pid, Context context) {
+        String json = Utils.loadFromSharedPreferences(Values.ADS_PREF, getPrefs(context));
+        Ads[] ads = GsonUtils.fromJson(json, Ads[].class);
+        ArrayList<Ads> arrayList = new ArrayList<>();
+        for (Ads a:ads) {
+            if (a.getPid() == pid) {
+                arrayList.add(a);
+            }
+        }
+        Random rnd = new Random();
+        int idx = rnd.nextInt(arrayList.size());
+        return arrayList.get(idx).getAdImg();
     }
 }
