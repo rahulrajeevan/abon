@@ -21,6 +21,10 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
 
     private Context mContext;
     private ArrayList<ShortNews> mNews;
+    private final int HEADER = 0;
+    private final int ITEM = 1;
+    private final int AD = 2;
+    private int ad_count = 0;
 
     public NewsAdapter(Context context, int resource, ArrayList<ShortNews> arrayList) {
         super(context, resource, arrayList);
@@ -30,6 +34,7 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
 
     @Override
     public int getCount() {
+//        int x = mNews.size() / 6;
         return mNews.size();
     }
 
@@ -52,15 +57,18 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     @Override
     public int getItemViewType(int position) {
         if (getItem(position).isSticky()) {
-            return 0;
+            return HEADER;
+        } else if (getItem(position).isAd()) {
+            return AD;
         } else {
-            return 1;
+            return ITEM;
         }
+
     }
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -69,10 +77,20 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            if (getItemViewType(position) != 0) {
-                convertView = inflater.inflate(R.layout.news_item, parent, false);
-            } else {
-                convertView = inflater.inflate(R.layout.main_news_item, parent, false);
+            switch (getItemViewType(position)) {
+                case HEADER:
+                    convertView = inflater.inflate(R.layout.main_news_item, parent, false);
+                    break;
+                case ITEM:
+                    convertView = inflater.inflate(R.layout.news_item, parent, false);
+                    break;
+                case AD: {
+                    convertView = inflater.inflate(R.layout.ad_item, parent, false);
+//                    ad_count++;
+//                    View v = inflater.inflate(R.layout.header, parent, false);
+//                    ImageView image = ((ImageView) v.findViewById(R.id.imageAd));
+//                    ImageUtils.getUIL(mContext).displayImage(Utils.getAd(6, mContext), image);
+                }
             }
             convertView.setTag(viewHolder);
         } else {
@@ -81,12 +99,14 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         viewHolder.title = ((TextView) convertView.findViewById(R.id.textBody));
         viewHolder.date = ((TextView) convertView.findViewById(R.id.det_date));
         viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
-        Spanned span = Html.fromHtml(mNews.get(position).getTitle());
-        viewHolder.title.setText(span);
-        viewHolder.date.setText(mNews.get(position).getDate());
-        viewHolder.date.setTextColor(Color.parseColor("#ffff8800"));
+        if (!mNews.get(position).isAd()) {
+            Spanned span = Html.fromHtml(mNews.get(position - ad_count).getTitle());
+            viewHolder.title.setText(span);
+            viewHolder.date.setText(mNews.get(position - ad_count).getDate());
+            viewHolder.date.setTextColor(Color.parseColor("#ffff8800"));
+        }
         viewHolder.image.setImageBitmap(null);
-        ImageUtils.getUIL(mContext).displayImage(mNews.get(position).getImageUrl(), viewHolder.image);
+        ImageUtils.getUIL(mContext).displayImage(mNews.get(position - ad_count).getImageUrl(), viewHolder.image);
         return convertView;
     }
 }
