@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -105,6 +102,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setSaveFormData(true);
+        ImageView adHeader = (ImageView) parent.findViewById(R.id.ad_header);
+        ImageView adFooter = (ImageView) parent.findViewById(R.id.ad_footer);
 
 
         webView.addJavascriptInterface(new ObjectExtension(), "webviewScriptAPI");
@@ -182,6 +181,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 }
             }
         });
+        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_DETAIL, getActivity()), adFooter);
+        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_DETAIL, getActivity()), adHeader);
     }
 
     private void getComments(String url) {
@@ -232,47 +233,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             mListView.setVisibility(View.GONE);
         }
     }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        menu.getItem(0).setVisible(false);
-//        inflater.inflate(R.menu.global, menu);
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_SEND);
-//        intent.setType("text/plain");
-//        intent.putExtra(Intent.EXTRA_TEXT, mNews.getUrl());
-//        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-//        mShareActionProvider = (ShareActionProvider)
-//                MenuItemCompat.getActionProvider(shareItem);
-//        mShareActionProvider.setShareIntent(intent);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        mShareWebView.setVisibility(View.VISIBLE);
-        mShareWebView.setWebViewClient(new ProgressWebClient());
-        switch (item.getItemId()) {
-            case R.id.menu_item_vk:
-
-                mShareWebView.loadUrl(Values.VK + mNews.getUrl() + "&image=" + Values.ABON_LOGO);
-                return true;
-            case R.id.menu_item_ok:
-                mShareWebView.setWebViewClient(new ProgressWebClient());
-                mShareWebView.loadUrl(Values.OK + mNews.getUrl());
-                return true;
-            case R.id.menu_item_fb:
-                mShareWebView.setWebViewClient(new ProgressWebClient());
-                mShareWebView.loadUrl(Values.FACEBOOK + mNews.getUrl() + "&p[images][0]=" + Values.ABON_LOGO);
-                return true;
-            case R.id.menu_item_tw:
-                mShareWebView.setWebViewClient(new ProgressWebClient());
-                mShareWebView.loadUrl(Values.TWITTER + mNews.getUrl() );
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -335,7 +295,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     View listItem = listAdapter.getChildView(i, j, false, null,
                             listView);
                     listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-
                     totalHeight += listItem.getMeasuredHeight();
 
                 }
@@ -356,17 +315,11 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mLayout.setVisibility(View.VISIBLE);
         if (mCustomView == null)
             return;
-
         webView.setVisibility(View.VISIBLE);
         mCustomViewContainer.setVisibility(View.GONE);
-
-        // Hide the custom view.
         mCustomView.setVisibility(View.GONE);
-
-        // Remove the custom view from its container.
         mCustomViewContainer.removeView(mCustomView);
         customViewCallback.onCustomViewHidden();
-
         mCustomView = null;
     }
 
@@ -421,7 +374,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 webView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
