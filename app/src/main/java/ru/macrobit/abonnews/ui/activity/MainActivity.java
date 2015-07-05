@@ -50,7 +50,7 @@ public class MainActivity extends Env implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        add(new NewsFragment());
+
         mIntent = new Intent(MainActivity.this, FragmentActivity.class);
         initNavigationView();
         getAds();
@@ -227,7 +227,7 @@ public class MainActivity extends Env implements
                     if (userdata.get("error").equals("canceled")) {
                         Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Error: " + userdata.get("error"),
+                        Toast.makeText(this, "ErrorJson: " + userdata.get("error"),
                                 Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -266,5 +266,6 @@ public class MainActivity extends Env implements
     @Override
     public void onTaskCompleted(String result) {
         Utils.saveToSharedPreferences(Values.ADS_PREF, result, Utils.getPrefs(this));
+        add(new NewsFragment());
     }
 }
