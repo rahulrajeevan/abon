@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.JsonSyntaxException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,6 +22,7 @@ import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.Author;
+import ru.macrobit.abonnews.model.ErrorJson;
 import ru.ulogin.sdk.UloginAuthActivity;
 
 public class ProfileFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener{
@@ -33,6 +36,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
     private Button mSocAuthorization;
     private Button mRegistration;
     private boolean isCookieExist;
+    View mParentView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,29 +45,18 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
             return null;
         }
         isCookieExist = Utils.isCookiesExist(getActivity());
-        View view = inflater.inflate(R.layout.fragment_profile,
+        mParentView = inflater.inflate(R.layout.fragment_profile,
                 container, false);
         if (Utils.isConnected(getActivity()) && isCookieExist) {
             new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                     Utils.getPrefs(getActivity()))).execute(Values.PROFILE);
         }
-        initFragment(view);
-        return view;
+        initFragment(mParentView);
+        return mParentView;
     }
 
     private void initFragment(View v) {
-        View profile = v.findViewById(R.id.profile);
-        View authorization = v.findViewById(R.id.authorization);
-        TextView needAuthorization = (TextView) v.findViewById(R.id.need_authorization);
-        if (isCookieExist) {
-            profile.setVisibility(View.VISIBLE);
-            needAuthorization.setVisibility(View.GONE);
-            authorization.setVisibility(View.GONE);
-        } else {
-            profile.setVisibility(View.GONE);
-            needAuthorization.setVisibility(View.VISIBLE);
-            authorization.setVisibility(View.VISIBLE);
-        }
+        setVisibility(v);
         mAvatar = (ImageView) v.findViewById(R.id.profile_avatar);
         mName = (TextView) v.findViewById(R.id.profile_name);
         mEmail = (TextView) v.findViewById(R.id.profile_email);
@@ -85,13 +78,37 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         mRegistration.setOnClickListener(this);
     }
 
+    private void setVisibility(View v) {
+        View profile = v.findViewById(R.id.profile);
+        View authorization = v.findViewById(R.id.authorization);
+        TextView needAuthorization = (TextView) v.findViewById(R.id.need_authorization);
+        if (isCookieExist) {
+            profile.setVisibility(View.VISIBLE);
+            needAuthorization.setVisibility(View.GONE);
+            authorization.setVisibility(View.GONE);
+        } else {
+            profile.setVisibility(View.GONE);
+            needAuthorization.setVisibility(View.VISIBLE);
+            authorization.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onTaskCompleted(String result) {
-        Author author = GsonUtils.fromJson(result, Author.class);
-        ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
-        mName.setText(author.getFirstName());
-        mUrl.setText(author.getUrl());
-        mEmail.setText(Utils.loadFromSharedPreferences(Values.EMAIL, Utils.getPrefs(getActivity())));
+        try {
+            Author author = GsonUtils.fromJson(result, Author.class);
+            ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
+            mName.setText(author.getFirstName());
+            mUrl.setText(author.getUrl());
+            mEmail.setText(Utils.loadFromSharedPreferences(Values.EMAIL, Utils.getPrefs(getActivity())));
+        }
+        catch (JsonSyntaxException e) {
+            ErrorJson[] error = GsonUtils.fromJson(result, ErrorJson[].class);
+            if (error[0].getCode().equals(getString(R.string.code_error))) {
+                isCookieExist = false;
+                setVisibility(mParentView);
+            }
+        }
     }
 
     @Override
