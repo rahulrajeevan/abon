@@ -40,13 +40,38 @@ public class News {
     @SerializedName("featured_image")
     private FeaturedImage featuredImage;
     private Terms terms;
+    private String adUrl;
+    private boolean isAdv;
 
     public News (String title, String content) {
         this.title = title;
         this.content = content;
+        this.isAdv = false;
     }
 
     public News () {
+        this.isAdv = false;
+    }
+
+    public News (String url) {
+        this.adUrl = url;
+        this.isAdv = true;
+    }
+
+    public String getAdUrl() {
+        return adUrl;
+    }
+
+    public void setAdUrl(String adUrl) {
+        this.adUrl = adUrl;
+    }
+
+    public boolean isAdv() {
+        return isAdv;
+    }
+
+    public void setIsAdv(boolean isAdv) {
+        this.isAdv = isAdv;
     }
 
     public int getId() {
