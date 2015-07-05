@@ -19,7 +19,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -48,6 +47,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private NewsAdapter mAdapter;
     private View mFooter;
     private View mHeader;
+    private int adCount = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +61,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         createHeader();
         mListView = (ListView) view.findViewById(R.id.listView);
         mListView.addFooterView(mFooter, null, false);
-        mListView.addHeaderView(mHeader);
+        mListView.addHeaderView(mHeader, null, false);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.float_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -130,18 +130,19 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
-                News news = mNews.get(position);
-                FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
-                Bundle bundle = new Bundle();
-                bundle.putString(Values.TAG, Values.DETAIL_TAG);
-//                bundle.putParcelable("data", fullNews);
-//                add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
-                Intent intent = new Intent(getActivity(), FragmentActivity.class);
-                Utils.saveToSharedPreferences(Values.FULL_NEWS, GsonUtils.toJson(fullNews), Utils.getPrefs(getActivity()));
-//                intent.putExtra("data", fullNews);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (!mNews.get(position-1).isAdv()) {
+                    ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
+                    News news = mNews.get(position);
+                    FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Values.TAG, Values.DETAIL_TAG);
+                    Intent intent = new Intent(getActivity(), FragmentActivity.class);
+                    Utils.saveToSharedPreferences(Values.FULL_NEWS, GsonUtils.toJson(fullNews), Utils.getPrefs(getActivity()));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                } else {
+
+                }
             }
         });
 //        if( isEndNewsList)
@@ -160,7 +161,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                     isLastItemVisible = false;
                     getNewsFromServer();
                 }
-                if ((lastInScreen >= totalItemCount - 5) && isEndNewsList) {
+                if ((lastInScreen >= totalItemCount-10) && isEndNewsList) {
                     if (!isLastItemVisible) {
                         isLastItemVisible = true;
                         Toast.makeText(getActivity(), getActivity().getString(R.string.list_end), Toast.LENGTH_LONG).show();
@@ -201,26 +202,46 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private View createHeader(){
         mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
         ImageView img = (ImageView) mHeader.findViewById(R.id.imageAd);
-        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(5, getActivity()), img);
+        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_TOP, getActivity()), img);
         return mHeader;
+    }
+
+    private ArrayList<News> addToNewsArray(News[] news, ArrayList<News> arrayList) {
+        for (int i = 0; i < news.length; i++) {
+            if ((mNews.size()) % 6  == adCount && mNews.size() > 0) {
+                adCount++;
+                arrayList.add(new News(Utils.getAd(Values.AD_LIST, getActivity())));
+                mNews.add(new News(Utils.getAd(Values.AD_LIST, getActivity())));
+            }
+            arrayList.add(news[i]);
+            mNews.add(news[i]);
+        }
+        return arrayList;
     }
 
     @Override
     public void onTaskCompleted(String result) {
         try {
-            News[] news = GsonUtils.fromJson(result, News[].class);
+            ArrayList<News> news = new ArrayList<>();
+            News[] newses = GsonUtils.fromJson(result, News[].class);
+//            news.addAll();
             if (!isSearchList) {
-                mNews.addAll(Arrays.asList(news));
+//                mNews.addAll(Arrays.asList(news));
+                news = addToNewsArray(newses, news);
+//                mNews.addAll(news);
             } else {
                 mNews.clear();
-                mNews.addAll(Arrays.asList(news));
+                news = addToNewsArray(newses, news);
+//                mNews.addAll(news);
+//                mNews.addAll(Arrays.asList(news));
             }
-            if (news.length > 0) {
+            if (news.size() > 0) {
                 ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news, getActivity());
                 listViewInit(newsList);
                 mSwipeRefreshLayout.setRefreshing(false);
             } else {
                 isEndNewsList = true;
+                mListView.removeFooterView(mFooter);
             }
         }
         catch (Exception e) {
