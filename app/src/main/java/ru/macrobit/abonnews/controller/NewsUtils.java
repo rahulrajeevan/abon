@@ -16,30 +16,16 @@ import ru.macrobit.abonnews.model.ShortNews;
 
 public class NewsUtils {
 
-    public static ArrayList<ShortNews> generateShortNews(News[] news, Context context) {
+    public static ArrayList<ShortNews> generateShortNews(ArrayList<News> news, Context context) {
         ArrayList<ShortNews> arrayList = new ArrayList<ShortNews>();
-//        for (News n : news) {
-        int ad = 0;
-        int x = news.length + (int) (news.length / 7);
-        for (int i = 0; i < x; i++) {
-            ShortNews shortNews;
-            if (i % 6 == 0) {
-                if (i != 0) {
-                    ad++;
-                    shortNews = new ShortNews(Utils.getAd(5, context));
-                    arrayList.add(shortNews);
-                } else {
-                    News n = news[i - ad];
-                    shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
-                    arrayList.add(shortNews);
-                }
-            } else {
-                News n = news[i - ad];
+        ShortNews shortNews;
+        for (News n : news) {
+            if (!n.isAdv()) {
                 shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
-                arrayList.add(shortNews);
+            } else {
+                shortNews = new ShortNews(n.getAdUrl());
             }
-
-
+            arrayList.add(shortNews);
         }
         return arrayList;
     }
