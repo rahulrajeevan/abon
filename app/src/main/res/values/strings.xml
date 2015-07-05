@@ -44,4 +44,5 @@
     <string name="version">Версия</string>
     <string name="cancel">Авторизация отменена</string>
     <string name="server_error">Внутренняя ошибка сервера, повторите запрос позже</string>
+    <string name="code_error">json_not_logged_in</string>
 </resources>
