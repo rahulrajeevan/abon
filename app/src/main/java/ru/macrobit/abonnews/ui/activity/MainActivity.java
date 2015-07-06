@@ -38,14 +38,18 @@ public class MainActivity extends Env implements
     private ActionBarDrawerToggle mDrawerToggle;
     private int mNavItemId;
     private Intent mIntent;
+    private Toolbar mToolbar;
+    private boolean isActivityCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mIntent = new Intent(MainActivity.this, FragmentActivity.class);
-        initNavigationView();
-        getAds();
+        if (!isActivityCreated) {
+            initNavigationView();
+            getAds();
+        }
     }
 
     private void getAds() {
@@ -55,19 +59,19 @@ public class MainActivity extends Env implements
     }
 
     private void initNavigationView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (getSupportActionBar() == null) {
-            setSupportActionBar(toolbar);
+            setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideSoftKeyboard(MainActivity.this);
@@ -81,11 +85,19 @@ public class MainActivity extends Env implements
             }
 
         });
+        isActivityCreated = true;
     }
 
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    protected void onPause() {
+//        popBackStack();
+//        mToolbar.getMenu().clear();
+        super.onPause();
     }
 
     private void navigate(final int itemId) {
@@ -217,6 +229,8 @@ public class MainActivity extends Env implements
     @Override
     public void onTaskCompleted(String result) {
         Utils.saveToSharedPreferences(Values.ADS_PREF, result, Utils.getPrefs(this));
-        add(new NewsFragment());
+        if (!isFragmentExist(Values.NEWS_TAG)) {
+            add(new NewsFragment(), Values.NEWS_TAG);
+        }
     }
 }
