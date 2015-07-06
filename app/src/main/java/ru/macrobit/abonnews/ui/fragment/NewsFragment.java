@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -48,6 +49,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private View mFooter;
     private View mHeader;
     private int adCount = 0;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +57,12 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         if (container == null) {
             return null;
         }
+        mProgressDialog = new ProgressDialog(getActivity());
+//        mProgressDialog.setTitle(getString(R.string.loading));
+        mProgressDialog.setMessage(getString(R.string.loading));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
         View view = inflater.inflate(R.layout.fragment_newslist,
                 container, false);
         createFooter();
@@ -161,7 +169,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                     isLastItemVisible = false;
                     getNewsFromServer();
                 }
-                if ((lastInScreen >= totalItemCount-10) && isEndNewsList) {
+                if ((lastInScreen >= totalItemCount - 10) && isEndNewsList) {
                     if (!isLastItemVisible) {
                         isLastItemVisible = true;
                         Toast.makeText(getActivity(), getActivity().getString(R.string.list_end), Toast.LENGTH_LONG).show();
@@ -243,6 +251,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 isEndNewsList = true;
                 mListView.removeFooterView(mFooter);
             }
+            mProgressDialog.hide();
         }
         catch (Exception e) {
             mListView.removeFooterView(mFooter);
