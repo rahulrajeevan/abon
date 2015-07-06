@@ -1,12 +1,10 @@
 package ru.macrobit.abonnews.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -15,23 +13,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
 
 import org.apache.http.client.CookieStore;
-
-import java.util.HashMap;
 
 import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.AddMediaRequest;
-import ru.macrobit.abonnews.loader.AuthorizationRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
-import ru.ulogin.sdk.UloginAuthActivity;
 
 
 public class MainActivity extends Env implements
@@ -50,22 +43,24 @@ public class MainActivity extends Env implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mIntent = new Intent(MainActivity.this, FragmentActivity.class);
         initNavigationView();
         getAds();
-//        navigate(mNavItemId);
     }
 
     private void getAds() {
-        new GetRequest(this).execute(Values.ADS);
+        if (Utils.isConnected(this)) {
+            new GetRequest(this).execute(Values.ADS);
+        }
     }
 
     private void initNavigationView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (getSupportActionBar() == null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
@@ -75,6 +70,7 @@ public class MainActivity extends Env implements
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideSoftKeyboard(MainActivity.this);
                 if (getActiveFragments().size() > 1) {
                     onBackPressed();
                 } else {
@@ -87,15 +83,9 @@ public class MainActivity extends Env implements
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     private void navigate(final int itemId) {
@@ -183,7 +173,7 @@ public class MainActivity extends Env implements
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 1){
+            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                 finish();
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -210,51 +200,12 @@ public class MainActivity extends Env implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Values.REQUEST_ULOGIN) {
-            HashMap userdata =
-                    (HashMap) data.getSerializableExtra(UloginAuthActivity.USERDATA);
-
-            switch (resultCode) {
-                case RESULT_OK:
-                    String token = userdata.get(Values.TOKEN).toString();
-                    String email = userdata.get(Values.EMAIL).toString();
-                    Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
-                    Utils.saveToSharedPreferences(Values.EMAIL, email, Utils.getPrefs(this));
-                    new AuthorizationRequest(MainActivity.this, token).execute(Values.SOC_AUTORIZATION);
-                    break;
-                case RESULT_CANCELED:
-                    if (userdata.get("error").equals("canceled")) {
-                        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "ErrorJson: " + userdata.get("error"),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-            }
-        }
-        if (requestCode == Values.MEDIA_RESULT && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String filePath = cursor.getString(columnIndex);
-            cursor.close();
-            new AddMediaRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                    Utils.getPrefs(this)), filePath).execute(Values.MEDIA_ADD);
-        }
-    }
-
-
-    @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         if (getActiveFragments().size() > 1) {
             mDrawerToggle.setDrawerIndicatorEnabled(false);
         }
     }
-
 
     @Override
     public void onAuthorizationTaskCompleted(CookieStore result) {
