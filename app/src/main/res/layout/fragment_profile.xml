@@ -28,75 +28,81 @@
         android:layout_marginTop="20dp"
         android:text="@string/need_authorization" />
 
-    <RelativeLayout
-        android:id="@+id/profile"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/profile_title"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <RelativeLayout
+            android:id="@+id/profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/profile_title"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:visibility="gone">
 
-            <ru.macrobit.abonnews.ui.view.DynamicImageView
-                android:id="@+id/profile_avatar"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:orientation="horizontal">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
+                <ru.macrobit.abonnews.ui.view.DynamicImageView
+                    android:id="@+id/profile_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
-        </LinearLayout>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/profile_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/layout"
-            android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/profile_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/profile_name"
-            android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/layout"
+                android:layout_marginTop="10dp"
+                android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/profile_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/profile_email"
-            android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            <TextView
+                android:id="@+id/profile_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/profile_name"
+                android:layout_marginTop="10dp"
+                android:textSize="16dp" />
 
-        <Button
-            android:id="@+id/profile_logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/profile_url"
-            android:layout_marginTop="10dp"
-            android:background="@color/primary_dark"
-            android:text="@string/logout"
-            android:textColor="@color/primary" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/profile_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/profile_email"
+                android:layout_marginTop="10dp"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/profile_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profile_url"
+                android:layout_marginTop="10dp"
+                android:background="@color/primary_dark"
+                android:text="@string/logout"
+                android:textColor="@color/primary" />
+        </RelativeLayout>
+
+    </ScrollView>
 
     <RelativeLayout
         android:id="@+id/authorization"
