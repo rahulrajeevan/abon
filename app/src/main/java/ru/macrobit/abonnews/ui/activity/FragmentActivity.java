@@ -237,9 +237,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             switch (resultCode) {
                 case RESULT_OK:
                     String token = userdata.get(Values.TOKEN).toString();
-                    String email = userdata.get(Values.EMAIL).toString();
                     Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
-                    Utils.saveToSharedPreferences(Values.EMAIL, email, Utils.getPrefs(this));
                     new AuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
