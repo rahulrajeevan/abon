@@ -100,7 +100,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
             ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
             mName.setText(author.getFirstName());
             mUrl.setText(author.getUrl());
-            mEmail.setText(Utils.loadFromSharedPreferences(Values.EMAIL, Utils.getPrefs(getActivity())));
+            mEmail.setText(author.getEmail());
         }
         catch (JsonSyntaxException e) {
             ErrorJson[] error = GsonUtils.fromJson(result, ErrorJson[].class);
@@ -136,7 +136,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
 
         String[] providers = getResources()
                 .getStringArray(ru.ulogin.sdk.R.array.ulogin_providers);
-        String[] mandatory_fields = new String[]{"first_name", "last_name"};
+        String[] mandatory_fields = new String[]{"first_name", "last_name", "email"};
         String[] optional_fields = new String[]{"nickname", "photo", "email"};
 
         intent.putExtra(
