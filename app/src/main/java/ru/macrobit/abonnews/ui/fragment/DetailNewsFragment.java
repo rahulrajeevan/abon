@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -47,7 +48,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private TextView mDate;
     private ImageView mImage;
     private ExpandableListView mListView;
-    private ProgressBar mProgressBar;
     private ProgressBar mCommentProgressBar;
     private String mId;
     private WebView webView;
@@ -63,6 +63,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
+    private ProgressDialog mProgressDialog;
     String fulljs;
 
     @Override
@@ -71,6 +72,11 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         if (container == null) {
             return null;
         }
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setMessage(getString(R.string.loading_detail));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
         View view = inflater.inflate(R.layout.fragment_detail,
                 container, false);
         initFragment(view);
@@ -128,7 +134,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mLayout.setVisibility(View.GONE);
         mCommentProgressBar = (ProgressBar) parent.findViewById(R.id.det_progress);
         mCommentProgressBar.setVisibility(View.GONE);
-        mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         mImageLayout = parent.findViewById(R.id.det_imageLayout);
         mWebImage = (ImageView) parent.findViewById(R.id.det_webImage);
         mTitle = (TextView) parent.findViewById(R.id.det_title);
@@ -262,7 +267,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            mProgressBar.setVisibility(View.VISIBLE);
             view.loadUrl(url);
             return true;
 
@@ -272,7 +276,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
 
-            mProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -376,11 +379,10 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             public void run() {
                 webView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
                 mFooter.setVisibility(View.VISIBLE);
                 mListView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
-
+                mProgressDialog.hide();
             }
         });
 
