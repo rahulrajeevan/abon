@@ -47,4 +47,5 @@
     <string name="code_error">json_not_logged_in</string>
     <string name="loading">Загружается список новостей...</string>
     <string name="loading_detail">Новость загружается... </string>
+    <string name="added_news">Новость будет добавлена после модерации</string>
 </resources>
