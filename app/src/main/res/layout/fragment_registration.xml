@@ -21,6 +21,7 @@
 
         <EditText
             android:id="@+id/reg_login"
+            android:textCursorDrawable="@drawable/cursor_drawable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login" />
@@ -38,6 +39,7 @@
 
         <EditText
             android:id="@+id/reg_email"
+            android:textCursorDrawable="@drawable/cursor_drawable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"

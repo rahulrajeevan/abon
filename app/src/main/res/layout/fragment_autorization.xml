@@ -21,6 +21,7 @@
 
         <EditText
             android:id="@+id/auto_login"
+            android:textCursorDrawable="@drawable/cursor_drawable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login" />
@@ -39,8 +40,8 @@
         <EditText
             android:id="@+id/auto_pass"
             android:layout_width="match_parent"
+            android:textCursorDrawable="@drawable/cursor_drawable"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/pass"
             android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
