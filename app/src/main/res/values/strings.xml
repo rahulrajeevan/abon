@@ -4,7 +4,7 @@
     <string name="menu_comments">Мои комментарии</string>
     <string name="menu_about">О программе</string>
     <string name="comments">Комментарии</string>
-    <string name="menu_search">Поиск...</string>
+    <string name="menu_search">Поиск новостей...</string>
     <string name="list_end">Все новости загружены</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -45,4 +45,6 @@
     <string name="cancel">Авторизация отменена</string>
     <string name="server_error">Внутренняя ошибка сервера, повторите запрос позже</string>
     <string name="code_error">json_not_logged_in</string>
+    <string name="loading">Загружается список новостей...</string>
+    <string name="loading_detail">Новость загружается... </string>
 </resources>
