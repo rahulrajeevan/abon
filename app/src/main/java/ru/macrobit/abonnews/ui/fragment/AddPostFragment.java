@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.GsonUtils;
@@ -15,7 +17,7 @@ import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.model.News;
 
-public class AddPostFragment extends EnvFragment {
+public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
 
     private EditText mTitle;
     private EditText mContent;
@@ -60,5 +62,14 @@ public class AddPostFragment extends EnvFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onTaskCompleted(String result) {
+        News news = GsonUtils.fromJson(result, News.class);
+        if (news.getStatus().equals("pending")) {
+            Toast.makeText(getActivity(), getString(R.string.added_news), Toast.LENGTH_LONG).show();
+            popBackStack();
+        }
     }
 }
