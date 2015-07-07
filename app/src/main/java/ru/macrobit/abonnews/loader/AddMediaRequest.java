@@ -2,6 +2,7 @@ package ru.macrobit.abonnews.loader;
 
 import android.os.AsyncTask;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -10,7 +11,9 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -60,15 +63,15 @@ public class AddMediaRequest extends AsyncTask<String, String, String> {
                 client.setCookieStore(mCookies);
             }
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            MultipartEntity entity = new MultipartEntity();
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             File f = new File(mFile);
             if (f.exists()) {
+                FormBodyPart part = new FormBodyPart("file", new FileBody(f, ContentType.MULTIPART_FORM_DATA, null));
+                String s = part.getHeader().toString();
                 builder.addPart("file", new FileBody(f, ContentType.MULTIPART_FORM_DATA, null));
-//                builder.addPart("name", new StringBody("file"));
+                entity.addPart(part);
             }
-//            MultipartEntity ent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-//            FileBody fileBody = new FileBody(new File(mFile));
-//            ent.addPart("name", fileBody);
             HttpPost post = new HttpPost(urls[0]);
             int portOfProxy = android.net.Proxy.getDefaultPort();
             if (portOfProxy > 0) {
@@ -77,8 +80,14 @@ public class AddMediaRequest extends AsyncTask<String, String, String> {
                 client.getParams().setParameter(
                         ConnRoutePNames.DEFAULT_PROXY, proxy);
             }
-            post.setHeader("Content-type", "multipart/form-data; boundary=----");
-            post.setEntity(builder.build());
+
+//            post.setHeader("Content-type", "multipart/form-data; boundary=--------");
+
+            HttpEntity ent = builder.build();
+            post.setHeader("Content-type", "multipart/form-data");
+//            post.setHeader("Content-Disposition", "form-data; name=\"file\", " + "filename=" + "\"" + f.getName() + "\", " + "Content-Type: multipart/form-data; charset=ISO-8859-1, Content-Transfer-Encoding: binary");
+//            post.setEntity(builder.build());
+            post.setEntity(entity);
             HttpResponse response = client.execute(post);
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(response.getEntity()
