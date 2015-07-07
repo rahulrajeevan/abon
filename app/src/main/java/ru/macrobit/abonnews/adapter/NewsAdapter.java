@@ -69,8 +69,11 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     @Override
     public boolean isEnabled(int position) {
         if (mNews.get(position).isAd()) {
-            if (mNews.get(position).getUrl() != null)
-                return true;
+            if (mNews.get(position).getUrl() != null) {
+                if (!mNews.get(position).getUrl().equals(""))
+                    return true;
+                else return false;
+            }
             else
                 return false;
         } else
