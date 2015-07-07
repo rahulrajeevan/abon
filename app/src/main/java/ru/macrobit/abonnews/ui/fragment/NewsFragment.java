@@ -3,7 +3,6 @@ package ru.macrobit.abonnews.ui.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
@@ -57,21 +59,26 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         if (container == null) {
             return null;
         }
+        View view = inflater.inflate(R.layout.fragment_newslist,
+                container, false);
+        initFragment(view);
+        getNewsFromServer();
+        return view;
+    }
+
+    private void initFragment(View parent) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) parent.findViewById(R.id.refresh);
+        createFooter();
+        createHeader();
+        mListView = (ListView) parent.findViewById(R.id.listView);
+        mListView.addFooterView(mFooter, null, false);
+        mListView.addHeaderView(mHeader, null, false);
         mProgressDialog = new ProgressDialog(getActivity());
-//        mProgressDialog.setTitle(getString(R.string.loading));
         mProgressDialog.setMessage(getString(R.string.loading));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
-        View view = inflater.inflate(R.layout.fragment_newslist,
-                container, false);
-        createFooter();
-        createHeader();
-        mListView = (ListView) view.findViewById(R.id.listView);
-        mListView.addFooterView(mFooter, null, false);
-        mListView.addHeaderView(mHeader, null, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.float_button);
+        FloatingActionButton button = (FloatingActionButton) parent.findViewById(R.id.float_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,37 +89,45 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 }
             }
         });
-        getNewsFromServer();
-        return view;
+    }
+
+    private void setCursorToSearchView (SearchView search) {
+        final EditText searchTextView = (EditText) search.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        try {
+            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+            mCursorDrawableRes.setAccessible(true);
+            mCursorDrawableRes.set(searchTextView, R.drawable.cursor_drawable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.news_search, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-            search.setQueryHint(getString(R.string.menu_search));
-            search.setOnCloseListener(new SearchView.OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    getNewNewsList();
-                    return false;
-                }
-            });
-            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    searchNews(query);
-                    return false;
-                }
+        SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        setCursorToSearchView(search);
+        search.setQueryHint(getString(R.string.menu_search));
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                getNewNewsList();
+                return false;
+            }
+        });
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchNews(query);
+                return false;
+            }
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    return false;
-                }
-            });
-        }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
     }
 
@@ -138,7 +153,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!mNews.get(position-1).isAdv()) {
+                if (!mNews.get(position - 1).isAdv()) {
                     ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
                     News news = mNews.get(position);
                     FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
@@ -207,7 +222,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         super.onCreate(arg0);
     }
 
-    private View createHeader(){
+    private View createHeader() {
         mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
         ImageView img = (ImageView) mHeader.findViewById(R.id.imageAd);
         ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_TOP, getActivity()), img);
@@ -216,7 +231,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     private ArrayList<News> addToNewsArray(News[] news, ArrayList<News> arrayList) {
         for (int i = 0; i < news.length; i++) {
-            if ((mNews.size()) % 6  == adCount && mNews.size() > 0) {
+            if ((mNews.size()) % 6 == adCount && mNews.size() > 0) {
                 adCount++;
                 arrayList.add(new News(Utils.getAd(Values.AD_LIST, getActivity())));
                 mNews.add(new News(Utils.getAd(Values.AD_LIST, getActivity())));
@@ -252,8 +267,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 mListView.removeFooterView(mFooter);
             }
             mProgressDialog.hide();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             mListView.removeFooterView(mFooter);
             Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
