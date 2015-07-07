@@ -67,6 +67,14 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        if (mNews.get(position).isAd())
+            return false;
+        else
+            return true;
+    }
+
+    @Override
     public int getViewTypeCount() {
         return 3;
     }
