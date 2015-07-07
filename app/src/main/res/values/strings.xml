@@ -48,4 +48,5 @@
     <string name="loading">Загружается список новостей...</string>
     <string name="loading_detail">Новость загружается... </string>
     <string name="added_news">Новость будет добавлена после модерации</string>
+    <string name="add_media">Добавить фотографию</string>
 </resources>
