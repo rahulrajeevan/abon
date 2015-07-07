@@ -10,7 +10,6 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -112,13 +111,13 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         ImageView adFooter = (ImageView) parent.findViewById(R.id.ad_footer);
 
 
-        webView.addJavascriptInterface(new ObjectExtension(), "webviewScriptAPI");
-        fulljs = "javascript:(\n    function() { \n";
-        fulljs += "        window.onload = function() {\n";
-        fulljs += "            webviewScriptAPI.onLoad();\n";
-        fulljs += "        };\n";
-        fulljs += "    })()\n";
-        webView.loadUrl(fulljs);
+//        webView.addJavascriptInterface(new ObjectExtension(), "webviewScriptAPI");
+//        fulljs = "javascript:(\n    function() { \n";
+//        fulljs += "        window.onload = function() {\n";
+//        fulljs += "            webviewScriptAPI.onLoad();\n";
+//        fulljs += "        };\n";
+//        fulljs += "    })()\n";
+//        webView.loadUrl(fulljs);
 
         mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
@@ -387,21 +386,21 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         });
 
     }
+//
+//    final class ObjectExtension {
+//        @JavascriptInterface
+//        public void onLoad() {
+//
+//           onLoadCompleted();
+//        }
+//    }
 
-    final class ObjectExtension {
-        @JavascriptInterface
-        public void onLoad() {
 
-           onLoadCompleted();
-        }
-    }
-
-
-    public void onLoadCompleted() {
-//        Toast.makeText(getActivity(), "ONLOADCOMPLETED", Toast.LENGTH_LONG).show();
-        webView.loadUrl(fulljs);
-        onPageLoaded();
-    }
+//    public void onLoadCompleted() {
+////        Toast.makeText(getActivity(), "ONLOADCOMPLETED", Toast.LENGTH_LONG).show();
+//        webView.loadUrl(fulljs);
+//        onPageLoaded();
+//    }
 
     class myWebViewClient extends WebViewClient {
         @Override
@@ -420,8 +419,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            onPageLoaded();
 //            Toast.makeText(getActivity(), "INJECTIN JS", Toast.LENGTH_LONG).show();
-            webView.loadUrl(fulljs);
+//            webView.loadUrl(fulljs);
         }
     }
 
