@@ -8,6 +8,7 @@ public class ShortNews implements Parcelable{
     String date;
     String imageUrl;
     String id;
+    String redirectUrl;
     boolean sticky;
     boolean isAd;
 
@@ -27,13 +28,23 @@ public class ShortNews implements Parcelable{
         this.id = in.readString();
         this.sticky = in.readByte() != 0;
         this.isAd = in.readByte() != 0;
+        this.redirectUrl = in.readString();
     }
 
-    public ShortNews(String imageUrl) {
+    public ShortNews(String imageUrl, String url) {
         this.imageUrl = imageUrl;
+        this.redirectUrl = url;
         this.isAd = true;
     }
 
+
+    public String getUrl() {
+        return redirectUrl;
+    }
+
+    public void setUrl(String url) {
+        this.redirectUrl = url;
+    }
     public boolean isSticky() {
         return sticky;
     }
@@ -95,6 +106,7 @@ public class ShortNews implements Parcelable{
         dest.writeString(id);
         dest.writeByte((byte) (sticky ? 1 : 0));
         dest.writeByte((byte) (isAd ? 1 : 0));
+        dest.writeString(redirectUrl);
     }
 
 

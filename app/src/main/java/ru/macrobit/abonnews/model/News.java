@@ -41,6 +41,7 @@ public class News {
     private FeaturedImage featuredImage;
     private Terms terms;
     private String adUrl;
+    private String url;
     private boolean isAdv;
 
     public News (String title, String content) {
@@ -53,9 +54,18 @@ public class News {
         this.isAdv = false;
     }
 
-    public News (String url) {
-        this.adUrl = url;
-        this.isAdv = true;
+    public News (String adUrl, String url, boolean isAdv) {
+        this.url = url;
+        this.adUrl = adUrl;
+        this.isAdv = isAdv;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getAdUrl() {

@@ -2,8 +2,10 @@ package ru.macrobit.abonnews.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -37,6 +39,7 @@ import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.AddComment;
+import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 
@@ -108,17 +111,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setSaveFormData(true);
         ImageView adHeader = (ImageView) parent.findViewById(R.id.ad_header);
+        initAdv(adHeader);
         ImageView adFooter = (ImageView) parent.findViewById(R.id.ad_footer);
-
-
-//        webView.addJavascriptInterface(new ObjectExtension(), "webviewScriptAPI");
-//        fulljs = "javascript:(\n    function() { \n";
-//        fulljs += "        window.onload = function() {\n";
-//        fulljs += "            webviewScriptAPI.onLoad();\n";
-//        fulljs += "        };\n";
-//        fulljs += "    })()\n";
-//        webView.loadUrl(fulljs);
-
+        initAdv(adFooter);
         mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
         ImageButton ok = (ImageButton) parent.findViewById(R.id.det_ok);
@@ -142,14 +137,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mFooter.setVisibility(View.GONE);
         mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
         mListView.setVisibility(View.GONE);
-//        mNews = bundle.getParcelable("data");
         String s = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
         mNews = GsonUtils.fromJson(s, FullNews.class);
         if (mNews.getBody().contains(mNews.getImageUrl())) {
             mImage.setVisibility(View.GONE);
         }
         webView.loadData(Utils.getHtmlData(mNews.getBody()), "text/html; charset=UTF-8", null);
-
         Spanned span = Html.fromHtml(mNews.getTitle());
         mTitle.setText(span);
         mDate.setText(mNews.getDate());
@@ -157,7 +150,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mImageLayout.setOnClickListener(this);
         mWebImage.setOnClickListener(this);
         getComments(mNews.getId() + "/comments/");
-//        initVideo(parent, mNews.getBody());
         ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
         Button addComment = (Button) parent.findViewById(R.id.addComment);
         final EditText commentEdit = (EditText) parent.findViewById(R.id.comment);
@@ -185,8 +177,26 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 }
             }
         });
-        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_DETAIL, getActivity()), adFooter);
-        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_DETAIL, getActivity()), adHeader);
+
+    }
+
+    private void initAdv(ImageView imageView) {
+        final Ads ad = Utils.getAd(Values.AD_DETAIL, getActivity());
+        ImageUtils.getUIL(getActivity()).displayImage(ad.getAdImg(), imageView);
+        if (ad.getAdTarget() != null) {
+            if(!ad.getAdTarget().equals("")) {
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String url = ad.getAdTarget();
+                        if (!url.startsWith("http://") && !url.startsWith("https://"))
+                            url = "http://" + url;
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(browserIntent);
+                    }
+                });
+            }
+        }
     }
 
     private void getComments(String url) {

@@ -168,7 +168,7 @@ public class Utils {
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
-    public static String getAd(int pid, Context context) {
+    public static Ads getAd(int pid, Context context) {
         String json = Utils.loadFromSharedPreferences(Values.ADS_PREF, getPrefs(context));
         Ads[] ads = GsonUtils.fromJson(json, Ads[].class);
         ArrayList<Ads> arrayList = new ArrayList<>();
@@ -179,6 +179,6 @@ public class Utils {
         }
         Random rnd = new Random();
         int idx = rnd.nextInt(arrayList.size());
-        return arrayList.get(idx).getAdImg();
+        return arrayList.get(idx);
     }
 }

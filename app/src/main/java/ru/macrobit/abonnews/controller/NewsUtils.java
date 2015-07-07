@@ -23,7 +23,7 @@ public class NewsUtils {
             if (!n.isAdv()) {
                 shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
             } else {
-                shortNews = new ShortNews(n.getAdUrl());
+                shortNews = new ShortNews(n.getAdUrl(), n.getUrl());
             }
             arrayList.add(shortNews);
         }

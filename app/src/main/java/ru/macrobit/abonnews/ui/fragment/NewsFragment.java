@@ -2,6 +2,7 @@ package ru.macrobit.abonnews.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +33,7 @@ import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.GetRequest;
+import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
@@ -71,8 +73,15 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         createFooter();
         createHeader();
         mListView = (ListView) parent.findViewById(R.id.listView);
+        Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
+        final String link = ad.getAdTarget();
+        if (link != null) {
+            mListView.addHeaderView(mHeader, null, true);
+        } else {
+            mListView.addHeaderView(mHeader, null, false);
+        }
         mListView.addFooterView(mFooter, null, false);
-        mListView.addHeaderView(mHeader, null, false);
+
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getString(R.string.loading));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -91,7 +100,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         });
     }
 
-    private void setCursorToSearchView (SearchView search) {
+    private void setCursorToSearchView(SearchView search) {
         final EditText searchTextView = (EditText) search.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         try {
             Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
@@ -164,13 +173,14 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                     intent.putExtras(bundle);
                     startActivity(intent);
                 } else {
-
+                    String url = mAdapter.getItem(position).getUrl();
+                    if (!url.startsWith("http://") && !url.startsWith("https://"))
+                        url = "http://" + url;
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
                 }
             }
         });
-//        if( isEndNewsList)
-//            mListView.removeFooterView(mFooter);
-//        mListView.getFooterViewsCount()
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -223,9 +233,22 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private View createHeader() {
+
+        Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
+        final String link = ad.getAdTarget();
         mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
+        mHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = link;
+                if (!url.startsWith("http://") && !url.startsWith("https://"))
+                    url = "http://" + url;
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+            }
+        });
         ImageView img = (ImageView) mHeader.findViewById(R.id.imageAd);
-        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_TOP, getActivity()), img);
+        ImageUtils.getUIL(getActivity()).displayImage(Utils.getAd(Values.AD_TOP, getActivity()).getAdImg(), img);
         return mHeader;
     }
 
@@ -233,8 +256,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         for (int i = 0; i < news.length; i++) {
             if ((mNews.size()) % 6 == adCount && mNews.size() > 0) {
                 adCount++;
-                arrayList.add(new News(Utils.getAd(Values.AD_LIST, getActivity())));
-                mNews.add(new News(Utils.getAd(Values.AD_LIST, getActivity())));
+                Ads ad = Utils.getAd(Values.AD_LIST, getActivity());
+                arrayList.add(new News(ad.getAdImg(), ad.getAdTarget(), true));
+                mNews.add(new News(ad.getAdImg(), ad.getAdTarget(), true));
             }
             arrayList.add(news[i]);
             mNews.add(news[i]);

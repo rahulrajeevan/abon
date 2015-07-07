@@ -12,6 +12,16 @@ public class Ads {
     private String description;
     @SerializedName("ad_img")
     private String adImg;
+    @SerializedName("ad_target")
+    private String adTarget;
+
+    public String getAdTarget() {
+        return adTarget;
+    }
+
+    public void setAdTarget(String adTarget) {
+        this.adTarget = adTarget;
+    }
 
     public int getId() {
         return id;
