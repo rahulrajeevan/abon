@@ -39,17 +39,71 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
     private void initFragment(View parent) {
         mTitle = (EditText) parent.findViewById(R.id.addTitle);
         mContent = (EditText) parent.findViewById(R.id.addContent);
+//        final  TextInputLayout titleInputLayout = (TextInputLayout) parent.findViewById(R.id.input_add_title);
+//        titleInputLayout.setError(getString(R.string.need_title));
+//        final TextInputLayout contentInputLayout = (TextInputLayout) parent.findViewById(R.id.input_content);
+//        contentInputLayout.setError(getString(R.string.need_content));
+//        mContent.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (s.toString().length() == 0) {
+//                    contentInputLayout.setErrorEnabled(true);
+//                } else {
+//                    contentInputLayout.setErrorEnabled(false);
+//                }
+//            }
+//        });
+//        mTitle.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (s.toString().length() == 0) {
+//                    titleInputLayout.setErrorEnabled(true);
+//                } else {
+//                    titleInputLayout.setErrorEnabled(false);
+//                }
+//            }
+//        });
         mPostButton = (Button) parent.findViewById(R.id.addNewsButton);
+
         mPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                News news = new News(mTitle.getText().toString(), mContent.getText().toString());
-                String json = GsonUtils.toJson(news);
-//                String s = Utils.convertToHex(json);
-                if (Utils.isConnected(getActivity())) {
-                    new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                            Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
-                    showDialog(getString(R.string.loading_add));
+                String title = mTitle.getText().toString();
+                String content = mContent.getText().toString();
+                if (!title.equals("")) {
+                    if (!content.equals("")) {
+                        News news = new News(title, content);
+                        String json = GsonUtils.toJson(news);
+                        if (Utils.isConnected(getActivity())) {
+                            new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                                    Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
+                            showDialog(getString(R.string.loading_add));
+                        }
+                    } else {
+                        makeText(getString(R.string.need_content));
+                    }
+                } else {
+                    makeText(getString(R.string.need_title));
                 }
             }
         });
