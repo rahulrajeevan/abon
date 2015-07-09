@@ -45,7 +45,9 @@
     <string name="code_error">json_not_logged_in</string>
     <string name="loading">Загружается список новостей...</string>
     <string name="loading_detail">Новость загружается... </string>
+    <string name="loading_comments">Комментарии загружаются... </string>
     <string name="added_news">Новость будет добавлена после модерации</string>
     <string name="add_media">Добавить фотографию</string>
     <string name="crash_toast_text">Произошла ошибка. Приложение будет перезапущено</string>
+    <string name="no_comments">Вы ещё не оставляли комментариев</string>
 </resources>
