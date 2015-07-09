@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
@@ -95,6 +96,10 @@ public class EnvFragment extends Fragment {
         mTransaction = mManager.beginTransaction();
         mTransaction.show(getFragmentByTag(tag));
         mTransaction.commit();
+    }
+
+    void makeText(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     boolean isFragmentExist(String tag) {
