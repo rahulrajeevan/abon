@@ -50,4 +50,7 @@
     <string name="add_media">Добавить фотографию</string>
     <string name="crash_toast_text">Произошла ошибка. Приложение будет перезапущено</string>
     <string name="no_comments">Вы ещё не оставляли комментариев</string>
+    <string name="loading_add">Новость добавляется...</string>
+    <string name="need_title">Заголовок не может быть пустым</string>
+    <string name="need_content">Содержимое новости не может быть пустым</string>
 </resources>
