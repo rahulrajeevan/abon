@@ -16,6 +16,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class AddDataRequest extends AsyncTask<String, String, String> {
                         ConnRoutePNames.DEFAULT_PROXY, proxy);
             }
             StringEntity ent = null;
-            ent = new StringEntity(mJson);
+            ent = new StringEntity(mJson, HTTP.UTF_8);
             post.setEntity(ent);
             post.setHeader("Accept", "application/json");
             post.setHeader("Content-type", "application/json");
