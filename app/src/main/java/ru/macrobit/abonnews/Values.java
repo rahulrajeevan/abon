@@ -39,6 +39,7 @@ public class Values {
     public static final String TWITTER = "http://twitter.com/share?text=";
     public static final String ABON_LOGO = "http://abon-news.ru/wp-content/themes/abon/images/logo.png";
     public static final String ADS_PREF = "ads";
+    public static final String SENDER_ID = "221731321249";
     public static final int AD_TOP = 5;
     public static final int AD_LIST = 6;
     public static final int AD_DETAIL = 7;
