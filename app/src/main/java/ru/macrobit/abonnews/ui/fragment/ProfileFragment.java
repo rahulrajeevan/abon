@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 
@@ -25,7 +26,7 @@ import ru.macrobit.abonnews.model.Author;
 import ru.macrobit.abonnews.model.ErrorJson;
 import ru.ulogin.sdk.UloginAuthActivity;
 
-public class ProfileFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener{
+public class ProfileFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
 
     private ImageView mAvatar;
     private TextView mUrl;
@@ -96,18 +97,21 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
     @Override
     public void onTaskCompleted(String result) {
         try {
-            Author author = GsonUtils.fromJson(result, Author.class);
-            ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
-            mName.setText(author.getFirstName());
-            mUrl.setText(author.getUrl());
-            mEmail.setText(author.getEmail());
-        }
-        catch (JsonSyntaxException e) {
-            ErrorJson[] error = GsonUtils.fromJson(result, ErrorJson[].class);
-            if (error[0].getCode().equals(getString(R.string.code_error))) {
-                isCookieExist = false;
-                setVisibility(mParentView);
+            try {
+                Author author = GsonUtils.fromJson(result, Author.class);
+                ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
+                mName.setText(author.getFirstName());
+                mUrl.setText(author.getUrl());
+                mEmail.setText(author.getEmail());
+            } catch (JsonSyntaxException e) {
+                ErrorJson[] error = GsonUtils.fromJson(result, ErrorJson[].class);
+                if (error[0].getCode().equals(getString(R.string.code_error))) {
+                    isCookieExist = false;
+                    setVisibility(mParentView);
+                }
             }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -127,7 +131,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
                 popBackStack();
                 add(new RegistrationFragment(), Values.REGISTRATION_TAG);
 
-            break;
+                break;
         }
     }
 

@@ -45,9 +45,11 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
             public void onClick(View view) {
                 News news = new News(mTitle.getText().toString(), mContent.getText().toString());
                 String json = GsonUtils.toJson(news);
+//                String s = Utils.convertToHex(json);
                 if (Utils.isConnected(getActivity())) {
-                    new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                    new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                             Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
+                    showDialog(getString(R.string.loading_add));
                 }
             }
         });
@@ -66,10 +68,16 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
-        News news = GsonUtils.fromJson(result, News.class);
-        if (news.getStatus().equals("pending")) {
-            Toast.makeText(getActivity(), getString(R.string.added_news), Toast.LENGTH_LONG).show();
-            popBackStack();
+        hideDialog();
+        try {
+            News news = GsonUtils.fromJson(result, News.class);
+            if (news.getStatus().equals("pending")) {
+                Toast.makeText(getActivity(), getString(R.string.added_news), Toast.LENGTH_LONG).show();
+
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
+        getActivity().onBackPressed();
     }
 }

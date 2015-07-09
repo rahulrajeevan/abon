@@ -216,33 +216,37 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void initComments(String result) {
-        if (result != null) {
-            Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
-            if (comments.length > 0) {
-                final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-                ArrayList<String> group = new ArrayList<>();
-                group.add(getActivity().getString(R.string.comments));
-                MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-                adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-                mListView.setAdapter(adapter);
-                mListView.setVisibility(View.VISIBLE);
-                mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        try {
+            if (result != null) {
+                Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
+                if (comments.length > 0) {
+                    final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+                    ArrayList<String> group = new ArrayList<>();
+                    group.add(getActivity().getString(R.string.comments));
+                    MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+                    adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+                    mListView.setAdapter(adapter);
+                    mListView.setVisibility(View.VISIBLE);
+                    mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-                    @Override
-                    public boolean onGroupClick(ExpandableListView parent, View v,
-                                                int groupPosition, long id) {
-                        setListViewHeight(parent, groupPosition);
-                        return false;
-                    }
-                });
-                mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                    @Override
-                    public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
-                        mCommentId = arrayList.get(childId).getId();
-                        return false;
-                    }
-                });
+                        @Override
+                        public boolean onGroupClick(ExpandableListView parent, View v,
+                                                    int groupPosition, long id) {
+                            setListViewHeight(parent, groupPosition);
+                            return false;
+                        }
+                    });
+                    mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                        @Override
+                        public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
+                            mCommentId = arrayList.get(childId).getId();
+                            return false;
+                        }
+                    });
+                }
             }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -393,21 +397,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         });
 
     }
-//
-//    final class ObjectExtension {
-//        @JavascriptInterface
-//        public void onLoad() {
-//
-//           onLoadCompleted();
-//        }
-//    }
-
-
-//    public void onLoadCompleted() {
-////        Toast.makeText(getActivity(), "ONLOADCOMPLETED", Toast.LENGTH_LONG).show();
-//        webView.loadUrl(fulljs);
-//        onPageLoaded();
-//    }
 
     class myWebViewClient extends WebViewClient {
         @Override
@@ -426,8 +415,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             onPageLoaded();
-//            Toast.makeText(getActivity(), "INJECTIN JS", Toast.LENGTH_LONG).show();
-//            webView.loadUrl(fulljs);
         }
     }
 
