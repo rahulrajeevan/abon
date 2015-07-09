@@ -40,9 +40,9 @@ public class News {
     @SerializedName("featured_image")
     private FeaturedImage featuredImage;
     private Terms terms;
-    private String adUrl;
-    private String url;
-    private boolean isAdv;
+    private transient String adUrl;
+    private transient String url;
+    private transient boolean isAdv;
 
     public News (String title, String content) {
         this.title = title;
