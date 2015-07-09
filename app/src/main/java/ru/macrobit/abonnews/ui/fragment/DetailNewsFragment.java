@@ -1,6 +1,5 @@
 package ru.macrobit.abonnews.ui.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -65,7 +64,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
-    private ProgressDialog mProgressDialog;
+
     String fulljs;
 
     @Override
@@ -74,11 +73,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         if (container == null) {
             return null;
         }
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setMessage(getString(R.string.loading_detail));
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.show();
+        showDialog(getString(R.string.loading_detail));
         View view = inflater.inflate(R.layout.fragment_detail,
                 container, false);
         initFragment(view);
@@ -94,9 +89,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     .getMethod("onPause", (Class[]) null)
                     .invoke(webView, (Object[]) null);
 
-        } catch(ClassNotFoundException cnfe) {
-        } catch(NoSuchMethodException nsme) {
-        } catch(InvocationTargetException ite) {
+        } catch (ClassNotFoundException cnfe) {
+        } catch (NoSuchMethodException nsme) {
+        } catch (InvocationTargetException ite) {
         } catch (IllegalAccessException iae) {
         }
     }
@@ -139,10 +134,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mListView.setVisibility(View.GONE);
         String s = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
         mNews = GsonUtils.fromJson(s, FullNews.class);
-        if (mNews.getBody().contains(mNews.getImageUrl())) {
-            mImage.setVisibility(View.GONE);
+        if (mNews.getBody() != null) {
+            if (mNews.getBody().contains(mNews.getImageUrl())) {
+                mImage.setVisibility(View.GONE);
+            }
+            webView.loadData(Utils.getHtmlData(mNews.getBody()), "text/html; charset=UTF-8", null);
         }
-        webView.loadData(Utils.getHtmlData(mNews.getBody()), "text/html; charset=UTF-8", null);
         Spanned span = Html.fromHtml(mNews.getTitle());
         mTitle.setText(span);
         mDate.setText(mNews.getDate());
@@ -184,7 +181,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         final Ads ad = Utils.getAd(Values.AD_DETAIL, getActivity());
         ImageUtils.getUIL(getActivity()).displayImage(ad.getAdImg(), imageView);
         if (ad.getAdTarget() != null) {
-            if(!ad.getAdTarget().equals("")) {
+            if (!ad.getAdTarget().equals("")) {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -219,32 +216,33 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void initComments(String result) {
-        Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
-        if (comments.length > 0) {
-            final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-            ArrayList<String> group = new ArrayList<>();
-            group.add(getActivity().getString(R.string.comments));
-            MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-            adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-            mListView.setAdapter(adapter);
-            mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        if (result != null) {
+            Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
+            if (comments.length > 0) {
+                final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+                ArrayList<String> group = new ArrayList<>();
+                group.add(getActivity().getString(R.string.comments));
+                MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
+                adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+                mListView.setAdapter(adapter);
+                mListView.setVisibility(View.VISIBLE);
+                mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-                @Override
-                public boolean onGroupClick(ExpandableListView parent, View v,
-                                            int groupPosition, long id) {
-                    setListViewHeight(parent, groupPosition);
-                    return false;
-                }
-            });
-            mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                @Override
-                public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
-                    mCommentId = arrayList.get(childId).getId();
-                    return false;
-                }
-            });
-        } else {
-            mListView.setVisibility(View.GONE);
+                    @Override
+                    public boolean onGroupClick(ExpandableListView parent, View v,
+                                                int groupPosition, long id) {
+                        setListViewHeight(parent, groupPosition);
+                        return false;
+                    }
+                });
+                mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                    @Override
+                    public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
+                        mCommentId = arrayList.get(childId).getId();
+                        return false;
+                    }
+                });
+            }
         }
     }
 
@@ -263,7 +261,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 mShareWebView.loadUrl(Values.FACEBOOK + mNews.getUrl() + "&p[images][0]=" + Values.ABON_LOGO);
                 break;
             case R.id.det_tw:
-                mShareWebView.loadUrl(Values.TWITTER + mNews.getUrl() );
+                mShareWebView.loadUrl(Values.TWITTER + mNews.getUrl());
                 break;
         }
     }
@@ -323,7 +321,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     public void hide() {
-        getActivity().setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mLayout.setVisibility(View.VISIBLE);
         if (mCustomView == null)
             return;
@@ -340,14 +338,13 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         private View mVideoProgressView;
 
 
-
         @Override
         public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
             onShowCustomView(view, callback);    //To change body of overridden methods use File | Settings | File Templates.
         }
 
         @Override
-        public void onShowCustomView(View view,CustomViewCallback callback) {
+        public void onShowCustomView(View view, CustomViewCallback callback) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             mLayout.setVisibility(View.GONE);
             if (mCustomView != null) {
@@ -391,7 +388,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 mFooter.setVisibility(View.VISIBLE);
                 mListView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
-                mProgressDialog.hide();
+                hideDialog();
             }
         });
 
@@ -423,7 +420,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 return false;
             }
         }
-
 
 
         @Override
