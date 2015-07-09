@@ -20,7 +20,7 @@
         android:layout_marginTop="43dp" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_login"
+        android:id="@+id/input_add_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
@@ -42,7 +42,7 @@
         android:id="@+id/input_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/input_login"
+        android:layout_below="@+id/input_add_title"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -84,6 +84,6 @@
         android:text="@string/add_media"
         android:background="@color/primary_dark"
         android:textColor="@color/primary"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

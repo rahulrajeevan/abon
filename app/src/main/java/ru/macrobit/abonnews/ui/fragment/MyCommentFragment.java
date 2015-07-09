@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +31,7 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
     private ListView mListView;
     private ArrayList<MyComment> mComments;
     private MyCommentsAdapter mAdapter;
+    private TextView mText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +42,8 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
         View view = inflater.inflate(R.layout.fragment_my_comment,
                 container, false);
         mListView = (ListView) view.findViewById(R.id.mycom_listview);
+        mText = (TextView) view.findViewById(R.id.mycom_text);
+        showDialog(getString(R.string.loading_comments));
         if (Utils.isConnected(getActivity())) {
             new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                     Utils.getPrefs(getActivity()))).execute(Values.MY_COMMENTS);
@@ -76,9 +81,20 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
-        mComments = new ArrayList<>();
-        MyComment[] comm = GsonUtils.fromJson(result, MyComment[].class);
-        mComments.addAll(Arrays.asList(comm));
-        initListView();
+        try {
+            mComments = new ArrayList<>();
+            MyComment[] comm = GsonUtils.fromJson(result, MyComment[].class);
+            if (comm.length > 0) {
+                mComments.addAll(Arrays.asList(comm));
+                initListView();
+            } else {
+                mText.setVisibility(View.VISIBLE);
+                mListView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+        }
+        hideDialog();
+
     }
 }
