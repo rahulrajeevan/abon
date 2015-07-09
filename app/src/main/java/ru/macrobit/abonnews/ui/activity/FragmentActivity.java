@@ -189,7 +189,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            if (isFragmentExist(Values.DETAIL_TAG)) {
+            if (mFragment instanceof DetailNewsFragment) {
                 DetailNewsFragment frag = (DetailNewsFragment) mFragment;
                 if (DetailNewsFragment.mShareWebView.getVisibility() != View.GONE) {
                     DetailNewsFragment.mShareWebView.setVisibility(View.GONE);
