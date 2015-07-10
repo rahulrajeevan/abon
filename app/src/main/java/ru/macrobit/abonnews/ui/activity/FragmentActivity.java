@@ -183,7 +183,6 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         super.onConfigurationChanged(newConfig);
     }
 
-
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -195,10 +194,14 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                     DetailNewsFragment.mShareWebView.setVisibility(View.GONE);
                     DetailNewsFragment.mShareWebView.loadUrl("about:blank");
                 } else {
-                    if (DetailNewsFragment.mCustomViewContainer.getVisibility() != View.GONE) {
-                        frag.hide();
+                    if (DetailNewsFragment.mImageLayout.getVisibility() != View.GONE) {
+                        DetailNewsFragment.mImageLayout.setVisibility(View.GONE);
                     } else {
-                        goToMain();
+                        if (DetailNewsFragment.mCustomViewContainer.getVisibility() != View.GONE) {
+                            frag.hide();
+                        } else {
+                            goToMain();
+                        }
                     }
                 }
             } else {
