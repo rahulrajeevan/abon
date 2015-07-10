@@ -1,9 +1,14 @@
 package ru.macrobit.abonnews.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.widget.Toast;
 
 import org.apache.http.client.CookieStore;
@@ -154,18 +159,34 @@ public class Utils {
         return s;
     }
 
-    public static String getHtmlData(String bodyHTML) {
+    public static String getHtmlData(String bodyHTML, Activity activity) {
+        int width = (int)(getScreenWidth(activity) - convertDpToPixel(20, activity));
+        int heigth = (int)(width*0.45);
         String head = "<html><head> " +
                 "<style> " +
 //                "p {text-align: justify !important;}" +
                 "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
-                ".wp-video {height:auto !important; width:100%% !important; visibility: visible !important;} " +
-                ".wp-video-shortcode {height:auto !important; width:100% !important; visibility: visible !important;} " +
+                ".wp-video {height:"+ heigth + "px  !important; width:100%% !important; visibility: visible !important;} " +
+                ".wp-video-shortcode {height:" + heigth + "px  !important; width:100% !important; visibility: visible !important;} " +
                 "audio {visibility: visible !important;} " +
-                "iframe {height:auto !important; width:100%% !important; visibility: visible !important;} " +
+                "iframe {height:"+ heigth + "px !important; width:100%% !important; visibility: visible !important;} " +
                 "</style>" +
                 "</head><body style='margin:0; '>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
+    }
+
+    private static int getScreenWidth(Activity activity) {
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
+    }
+
+    public static float convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return px;
     }
 
     public static Ads getAd(int pid, Context context) {

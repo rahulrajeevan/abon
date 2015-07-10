@@ -138,7 +138,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             if (mNews.getBody().contains(mNews.getImageUrl())) {
                 mImage.setVisibility(View.GONE);
             }
-            webView.loadData(Utils.getHtmlData(mNews.getBody()), "text/html; charset=UTF-8", null);
+            webView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
         }
         Spanned span = Html.fromHtml(mNews.getTitle());
         mTitle.setText(span);
