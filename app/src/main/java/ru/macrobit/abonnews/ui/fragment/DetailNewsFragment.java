@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -41,6 +42,7 @@ import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
+import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 
 
 public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
@@ -55,7 +57,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private FullNews mNews;
     private View mFooter;
     private int mCommentId = -999;
-    private View mImageLayout;
+    public static View mImageLayout;
     private ImageView mWebImage;
     private View mLayout;
     public static WebView mShareWebView;
@@ -326,6 +328,10 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     public void hide() {
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        FragmentActivity fragmentActivity = (FragmentActivity) DetailNewsFragment.this.getActivity();
+        fragmentActivity.getSupportActionBar().show();
         mLayout.setVisibility(View.VISIBLE);
         if (mCustomView == null)
             return;
@@ -350,6 +356,10 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            FragmentActivity fragmentActivity = (FragmentActivity) DetailNewsFragment.this.getActivity();
+            fragmentActivity.getSupportActionBar().hide();
             mLayout.setVisibility(View.GONE);
             if (mCustomView != null) {
                 callback.onCustomViewHidden();
