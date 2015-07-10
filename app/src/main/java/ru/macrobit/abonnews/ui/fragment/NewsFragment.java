@@ -162,9 +162,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!mNews.get(position - 1).isAdv()) {
+                if (!mNews.get(position-1).isAdv()) {
                     ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
-                    News news = mNews.get(position);
+                    News news = mNews.get(position-1);
                     FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
                     Bundle bundle = new Bundle();
                     bundle.putString(Values.TAG, Values.DETAIL_TAG);
@@ -233,7 +233,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private View createHeader() {
-
         Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
         final String link = ad.getAdTarget();
         mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
