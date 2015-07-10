@@ -49,6 +49,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         mParentView = inflater.inflate(R.layout.fragment_profile,
                 container, false);
         if (Utils.isConnected(getActivity()) && isCookieExist) {
+            showDialog(getString(R.string.loading_profile));
             new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                     Utils.getPrefs(getActivity()))).execute(Values.PROFILE);
         }
@@ -113,6 +114,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         } catch (Exception e) {
             Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
+        hideDialog();
     }
 
     @Override
