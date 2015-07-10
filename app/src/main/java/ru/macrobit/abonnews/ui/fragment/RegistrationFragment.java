@@ -41,8 +41,11 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
     @Override
     public void onTaskCompleted(String result) {
         hideDialog();
-        if (result.equals("200"))
+        if (result.equals(getString(R.string.success_reg))) {
             makeText(getString(R.string.reg_message));
+        } else {
+            makeText(getString(R.string.reg_error));
+        }
         getActivity().finish();
     }
  }

@@ -13,6 +13,7 @@ import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
@@ -59,9 +60,11 @@ public class RegistrationRequest extends AsyncTask<String, String, String> {
                 client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
                         proxy);
             }
-
+            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
+                    System.getProperty("http.agent"));
             post.setHeader("Content-type",
                     "application/x-www-form-urlencoded; charset=UTF-8");
+            post.setHeader("Accept", "*/*");
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("user_login", mLogin));
                 nameValuePairs.add(new BasicNameValuePair("user_email", mEmail));
@@ -76,7 +79,7 @@ public class RegistrationRequest extends AsyncTask<String, String, String> {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + System.getProperty("line.separator"));
             }
-            result = String.valueOf(response.getStatusLine().getStatusCode());
+            result = sb.toString();
         } catch (org.apache.http.client.ClientProtocolException e) {
             result = "ClientProtocolException: " + e.getMessage();
         } catch (IOException e) {
