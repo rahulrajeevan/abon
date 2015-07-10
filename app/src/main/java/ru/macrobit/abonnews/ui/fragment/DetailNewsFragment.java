@@ -248,7 +248,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+//            makeText(getString(R.string.server_error));
         }
     }
 
