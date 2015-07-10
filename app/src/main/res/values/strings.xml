@@ -53,4 +53,5 @@
     <string name="loading_add">Новость добавляется...</string>
     <string name="need_title">Заголовок не может быть пустым</string>
     <string name="need_content">Содержимое новости не может быть пустым</string>
+    <string name="loading_profile">Профиль загружается...</string>
 </resources>
