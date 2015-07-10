@@ -28,6 +28,7 @@ public class EnvFragment extends Fragment {
     void showDialog(String message) {
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(message);
+        mProgressDialog.setCancelable(false);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
