@@ -16,7 +16,9 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +68,14 @@ public class RegistrationRequest extends AsyncTask<String, String, String> {
 
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = client.execute(post);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(response.getEntity()
+                            .getContent(), "UTF-8"));
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + System.getProperty("line.separator"));
+            }
             result = String.valueOf(response.getStatusLine().getStatusCode());
         } catch (org.apache.http.client.ClientProtocolException e) {
             result = "ClientProtocolException: " + e.getMessage();
