@@ -55,4 +55,6 @@
     <string name="need_content">Содержимое новости не может быть пустым</string>
     <string name="loading_profile">Профиль загружается...</string>
     <string name="loading_request">Запрос отправляется на сервер...</string>
+    <string name="success_reg">Регистрация завершена. Проверьте вашу почту.</string>
 </resources>
+
