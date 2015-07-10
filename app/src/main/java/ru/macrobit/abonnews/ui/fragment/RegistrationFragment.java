@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -32,6 +31,7 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.loading_request));
                 new RegistrationRequest(RegistrationFragment.this, mEmail.getText().toString(), mLogin.getText().toString()).execute(Values.REGISTRY);
             }
         });
@@ -40,8 +40,9 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
 
     @Override
     public void onTaskCompleted(String result) {
+        hideDialog();
         if (result.equals("200"))
-            Toast.makeText(getActivity(), getActivity().getString(R.string.reg_message), Toast.LENGTH_LONG).show();
-        remove(Values.REGISTRATION_TAG);
+            makeText(getString(R.string.reg_message));
+        getActivity().finish();
     }
  }
