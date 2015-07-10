@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
@@ -128,12 +129,23 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchNews(query);
+
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(final String newText) {
+                Handler handler = new Handler();
+                Runnable delayedAction = null;
+                if (newText.length() > 3) {
+                    delayedAction = new Runnable() {
+                        @Override
+                        public void run() {
+                            searchNews(newText);
+                        }
+                    };
+                    handler.postDelayed(delayedAction, 1000);
+                }
                 return false;
             }
         });
@@ -162,9 +174,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!mNews.get(position-1).isAdv()) {
+                if (!mNews.get(position - 1).isAdv()) {
                     ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
-                    News news = mNews.get(position-1);
+                    News news = mNews.get(position - 1);
                     FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
                     Bundle bundle = new Bundle();
                     bundle.putString(Values.TAG, Values.DETAIL_TAG);
@@ -174,10 +186,14 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                     startActivity(intent);
                 } else {
                     String url = mAdapter.getItem(position).getUrl();
-                    if (!url.startsWith("http://") && !url.startsWith("https://"))
-                        url = "http://" + url;
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(browserIntent);
+                    if (url == null || url.contains("")) {
+
+                    } else {
+                        if (!url.startsWith("http://") && !url.startsWith("https://"))
+                            url = "http://" + url;
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(browserIntent);
+                    }
                 }
             }
         });
