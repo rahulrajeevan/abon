@@ -15,7 +15,9 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddDataRequest;
+import ru.macrobit.abonnews.model.Media;
 import ru.macrobit.abonnews.model.News;
+import ru.macrobit.abonnews.model.NewsAdd;
 
 public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
 
@@ -23,6 +25,7 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
     private EditText mContent;
     private Button mPostButton;
     private Button mPickMedia;
+    String mImages;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,6 +33,7 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
         if (container == null) {
             return null;
         }
+        mImages = "";
         View view = inflater.inflate(R.layout.fragment_add_post,
                 container, false);
         initFragment(view);
@@ -89,10 +93,10 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
             @Override
             public void onClick(View view) {
                 String title = mTitle.getText().toString();
-                String content = mContent.getText().toString();
+                String content = mImages + mContent.getText().toString();
                 if (!title.equals("")) {
                     if (!content.equals("")) {
-                        News news = new News(title, content);
+                        NewsAdd news = new NewsAdd(title, content);
                         String json = GsonUtils.toJson(news);
                         if (Utils.isConnected(getActivity())) {
                             new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
@@ -124,14 +128,23 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
     public void onTaskCompleted(String result) {
         hideDialog();
         try {
+
             News news = GsonUtils.fromJson(result, News.class);
             if (news.getStatus().equals("pending")) {
                 Toast.makeText(getActivity(), getString(R.string.added_news), Toast.LENGTH_LONG).show();
 
             }
+            getActivity().onBackPressed();
+
         } catch (Exception e) {
-            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+            try {
+                Media media = GsonUtils.fromJson(result, Media.class);
+                String url = media.getGuid();
+                mImages += url + "\n";
+            } catch (Exception e1) {
+                Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+            }
         }
-        getActivity().onBackPressed();
+
     }
 }
