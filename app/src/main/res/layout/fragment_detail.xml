@@ -18,7 +18,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
 
-            <ImageView
+            <ru.macrobit.abonnews.ui.view.DynamicImageView
                 android:id="@+id/ad_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_below="@+id/det_imageView"
                 android:layout_marginTop="10dp" />
 
-            <ImageView
+            <ru.macrobit.abonnews.ui.view.DynamicImageView
                 android:id="@+id/ad_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -43,6 +43,7 @@ import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.ui.activity.FragmentActivity;
+import ru.macrobit.abonnews.ui.view.DynamicImageView;
 
 
 public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
@@ -107,9 +108,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setSaveFormData(true);
-        ImageView adHeader = (ImageView) parent.findViewById(R.id.ad_header);
+        DynamicImageView adHeader = (DynamicImageView) parent.findViewById(R.id.ad_header);
         initAdv(adHeader);
-        ImageView adFooter = (ImageView) parent.findViewById(R.id.ad_footer);
+        DynamicImageView adFooter = (DynamicImageView) parent.findViewById(R.id.ad_footer);
         initAdv(adFooter);
         mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
@@ -179,7 +180,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     }
 
-    private void initAdv(ImageView imageView) {
+    private void initAdv(DynamicImageView imageView) {
         final Ads ad = Utils.getAd(Values.AD_DETAIL, getActivity());
         ImageUtils.getUIL(getActivity()).displayImage(ad.getAdImg(), imageView);
         if (ad.getAdTarget() != null) {
