@@ -31,6 +31,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.FragmentActivity"
+            android:windowSoftInputMode="stateHidden"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:parentActivityName=".ui.activity.MainActivity"
