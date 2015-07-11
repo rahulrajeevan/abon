@@ -53,10 +53,11 @@
             android:textCursorDrawable="@drawable/cursor_drawable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars = "vertical"
             android:ems="10"
             android:hint="@string/content"
             android:inputType="textMultiLine"
-            android:lines="8" />
+            android:lines="5" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
@@ -84,6 +85,6 @@
         android:text="@string/add_media"
         android:background="@color/primary_dark"
         android:textColor="@color/primary"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>
