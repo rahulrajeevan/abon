@@ -245,12 +245,10 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                     break;
                 case RESULT_CANCELED:
 //                    popBackStack();
-
                     if (userdata.get("error").equals("canceled")) {
                         Toast.makeText(this, getString(R.string.cancel), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Error: " + userdata.get("error"),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.cancel), Toast.LENGTH_SHORT).show();
                     }
                     finish();
                     break;
@@ -264,8 +262,8 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String filePath = cursor.getString(columnIndex);
             cursor.close();
-
-            new AddMediaRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+            AddPostFragment frag = (AddPostFragment)getFragmentByTag(Values.ADD_TAG);
+            new AddMediaRequest(frag, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                     Utils.getPrefs(this)), filePath).execute(Values.MEDIA_ADD);
         }
     }
