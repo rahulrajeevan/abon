@@ -57,5 +57,6 @@
     <string name="loading_request">Запрос отправляется на сервер...</string>
     <string name="success_reg">Регистрация завершена. Проверьте вашу почту.</string>
     <string name="reg_error">Во время регистрации произошла ошибка. Повторите попытку позднее</string>
+    <string name="loading_picture">Изображение загружается...</string>
 </resources>
 
