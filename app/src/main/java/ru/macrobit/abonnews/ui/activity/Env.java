@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.ui.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,7 @@ public class Env extends AppCompatActivity {
     private static FragmentTransaction mTransaction;
     private static FragmentManager mManager;
     private List<WeakReference<Fragment>> mFragList = new ArrayList<WeakReference<Fragment>>();
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,19 @@ public class Env extends AppCompatActivity {
     @Override
     public void onAttachFragment (Fragment fragment) {
         mFragList.add(new WeakReference(fragment));
+    }
+
+    void showDialog(String message) {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(message);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+    }
+
+    void hideDialog() {
+        mProgressDialog.hide();
     }
 
     List<Fragment> getActiveFragments() {
