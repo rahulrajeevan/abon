@@ -204,7 +204,6 @@
                         android:ems="10"
                         android:hint="@string/enter_comment"
                         android:inputType="textMultiLine"
-                        android:minLines="5"
                         android:textCursorDrawable="@drawable/cursor_drawable" />
 
                 </RelativeLayout>
