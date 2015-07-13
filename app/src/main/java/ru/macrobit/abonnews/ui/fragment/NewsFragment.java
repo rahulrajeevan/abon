@@ -19,8 +19,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -55,6 +55,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private View mHeader;
     private int adCount = 0;
     private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressBar;
+    private TextView mSearchResults;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,8 +83,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         } else {
             mListView.addHeaderView(mHeader, null, false);
         }
+        mSearchResults = (TextView) parent.findViewById(R.id.searchResults);
         mListView.addFooterView(mFooter, null, false);
-
+        mProgressBar = (ProgressBar) parent.findViewById(R.id.searchProgressBar);
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getString(R.string.loading));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -118,7 +121,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         super.onCreateOptionsMenu(menu, inflater);
         SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         setCursorToSearchView(search);
-        search.setQueryHint(getString(R.string.menu_search));
+        search.setQueryHint(getString(R.string.search));
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
@@ -137,7 +140,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             public boolean onQueryTextChange(final String newText) {
                 Handler handler = new Handler();
                 Runnable delayedAction = null;
-                if (newText.length() > 3) {
+                if (newText.length() > 2) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mListView.setVisibility(View.GONE);
                     delayedAction = new Runnable() {
                         @Override
                         public void run() {
@@ -213,7 +218,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 if ((lastInScreen >= totalItemCount - 10) && isEndNewsList) {
                     if (!isLastItemVisible) {
                         isLastItemVisible = true;
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.list_end), Toast.LENGTH_LONG).show();
+                        if (!isSearchList)
+                            makeText(getActivity().getString(R.string.list_end));
                         mListView.removeFooterView(mFooter);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -286,16 +292,19 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         try {
             ArrayList<News> news = new ArrayList<>();
             News[] newses = GsonUtils.fromJson(result, News[].class);
-//            news.addAll();
             if (!isSearchList) {
-//                mNews.addAll(Arrays.asList(news));
                 news = addToNewsArray(newses, news);
-//                mNews.addAll(news);
             } else {
-                mNews.clear();
                 news = addToNewsArray(newses, news);
-//                mNews.addAll(news);
-//                mNews.addAll(Arrays.asList(news));
+                if (news.size() == 0) {
+                    mSearchResults.setVisibility(View.VISIBLE);
+                    mListView.setAdapter(null);
+                } else {
+                    mSearchResults.setVisibility(View.GONE);
+                    mListView.setVisibility(View.VISIBLE);
+                    mNews.clear();
+                }
+                mProgressBar.setVisibility(View.GONE);
             }
             if (news.size() > 0) {
                 ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news, getActivity());
@@ -308,11 +317,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             mProgressDialog.hide();
         } catch (Exception e) {
             mListView.removeFooterView(mFooter);
-            Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+            makeText(getString(R.string.server_error));
         }
     }
 
     private void getNewNewsList() {
+        mListView.setVisibility(View.VISIBLE);
+        mSearchResults.setVisibility(View.GONE);
         isSearchList = false;
         mPage = 0;
         mAdapter = null;
