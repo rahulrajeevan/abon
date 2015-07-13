@@ -24,7 +24,7 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
         }
         View view = inflater.inflate(R.layout.fragment_registration,
                 container, false);
-//
+        addListenerToEditText(view, getActivity());
         Button button = (Button) view.findViewById(R.id.reg_button);
         mLogin = (EditText) view.findViewById(R.id.reg_login);
         mEmail = (EditText) view.findViewById(R.id.reg_email);

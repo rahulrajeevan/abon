@@ -27,7 +27,7 @@ public class AuthorizationFragment extends EnvFragment implements OnAuthorizatio
         }
         View view = inflater.inflate(R.layout.fragment_autorization,
                 container, false);
-//
+        addListenerToEditText(view, getActivity());
         Button button = (Button) view.findViewById(R.id.auto_button);
         mLogin = (EditText) view.findViewById(R.id.auto_login);
         mPass = (EditText) view.findViewById(R.id.auto_pass);

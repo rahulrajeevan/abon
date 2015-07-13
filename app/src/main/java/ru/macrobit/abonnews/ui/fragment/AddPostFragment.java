@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -36,6 +35,7 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
         mImages = "";
         View view = inflater.inflate(R.layout.fragment_add_post,
                 container, false);
+        addListenerToEditText(view, getActivity());
         initFragment(view);
         return view;
     }
@@ -126,23 +126,21 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(String result) {
-        hideDialog();
         try {
-
             News news = GsonUtils.fromJson(result, News.class);
             if (news.getStatus().equals("pending")) {
-                Toast.makeText(getActivity(), getString(R.string.added_news), Toast.LENGTH_LONG).show();
-
+                makeText(getString(R.string.added_news));
             }
+            hideDialog();
             getActivity().onBackPressed();
-
         } catch (Exception e) {
             try {
                 Media media = GsonUtils.fromJson(result, Media.class);
                 String url = media.getGuid();
                 mImages += url + "\n";
+                makeText(getString(R.string.image_attached));
             } catch (Exception e1) {
-                Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                makeText(getString(R.string.server_error));
             }
         }
 
