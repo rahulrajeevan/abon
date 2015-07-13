@@ -67,8 +67,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
-
-    String fulljs;
+    MyExpandableAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +78,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         showDialog(getString(R.string.loading_detail));
         View view = inflater.inflate(R.layout.fragment_detail,
                 container, false);
+        addListenerToEditText(view, getActivity());
         initFragment(view);
         return view;
     }
@@ -164,11 +164,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                         comments = new AddComment(commentEdit.getText().toString(), mCommentId);
                     }
                     String json = GsonUtils.toJson(comments);
-                    new AddDataRequest(null, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
+                    new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
                             Utils.getPrefs(getActivity())), json)
                             .execute(Values.POSTS + mNews.getId() + "/comments/");
                     commentEdit.setText("");
-                    Toast.makeText(getActivity(), getString(R.string.comment_moder), Toast.LENGTH_LONG).show();
+                    initComments(mNews.getId() + "/comments/");
+                    Toast.makeText(getActivity(), getString(R.string.comment_added), Toast.LENGTH_LONG).show();
                 } else {
                     add(new ProfileFragment(), Values.PROFILE_TAG);
 //                    Intent intent = new Intent(getActivity(), FragmentActivity.class);
@@ -221,14 +222,20 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private void initComments(String result) {
         try {
             if (result != null) {
+                boolean isExpand = false;
+                try {
+                    isExpand = mListView.isGroupExpanded(0);
+                } catch (NullPointerException nullPointer) {
+                    nullPointer.printStackTrace();
+                }
                 Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
                 if (comments.length > 0) {
                     final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
                     ArrayList<String> group = new ArrayList<>();
                     group.add(getActivity().getString(R.string.comments));
-                    MyExpandableAdapter adapter = new MyExpandableAdapter(group, arrayList);
-                    adapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
-                    mListView.setAdapter(adapter);
+                    mAdapter = new MyExpandableAdapter(group, arrayList);
+                    mAdapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+                    mListView.setAdapter(mAdapter);
                     mListView.setVisibility(View.VISIBLE);
                     mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -246,9 +253,18 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                             return false;
                         }
                     });
+                    if (isExpand) {
+                        mListView.expandGroup(0);
+                    }
                 }
             }
         } catch (Exception e) {
+            try {
+                Comments comment = GsonUtils.fromJson(result, Comments.class);
+                getComments(mNews.getId() + "/comments/");
+            } catch (Exception e1) {
+
+            }
 //            makeText(getString(R.string.server_error));
         }
     }
@@ -420,7 +436,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 return false;
             }
         }
-
 
         @Override
         public void onPageFinished(WebView view, String url) {
