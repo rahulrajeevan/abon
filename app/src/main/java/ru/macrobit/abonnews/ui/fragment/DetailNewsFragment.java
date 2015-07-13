@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 import ru.macrobit.abonnews.ui.view.DynamicImageView;
 
 
-public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
+public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private TextView mTitle;
     private TextView mDate;
@@ -67,7 +68,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
-    MyExpandableAdapter mAdapter;
+    private MyExpandableAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +80,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         showDialog(getString(R.string.loading_detail));
         View view = inflater.inflate(R.layout.fragment_detail,
                 container, false);
-        addListenerToEditText(view, getActivity());
         initFragment(view);
         return view;
     }
@@ -99,20 +100,34 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
     }
 
-    private void initFragment(View parent) {
+    private void initUI(View parent) {
         webView = (WebView) parent.findViewById(R.id.webView);
-        mWebViewClient = new myWebViewClient();
-        webView.setWebViewClient(mWebViewClient);
-        mWebChromeClient = new myWebChromeClient();
-        webView.setWebChromeClient(mWebChromeClient);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.getSettings().setSaveFormData(true);
         DynamicImageView adHeader = (DynamicImageView) parent.findViewById(R.id.ad_header);
         initAdv(adHeader);
         DynamicImageView adFooter = (DynamicImageView) parent.findViewById(R.id.ad_footer);
         initAdv(adFooter);
         mCustomViewContainer = (FrameLayout) parent.findViewById(R.id.customViewContainer);
+        mShareWebView = (WebView) parent.findViewById(R.id.shareWebView);
+        mLayout = parent.findViewById(R.id.det_scroll);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) parent.findViewById(R.id.det_swipe);
+        mCommentProgressBar = (ProgressBar) parent.findViewById(R.id.det_progress);
+        mImageLayout = parent.findViewById(R.id.det_imageLayout);
+        mWebImage = (ImageView) parent.findViewById(R.id.det_webImage);
+        mTitle = (TextView) parent.findViewById(R.id.det_title);
+        mDate = (TextView) parent.findViewById(R.id.det_date);
+        mImage = (ImageView) parent.findViewById(R.id.det_imageView);
+        mFooter = parent.findViewById(R.id.det_footer);
+        mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
+    }
+
+    private void setVisibilities() {
+        mLayout.setVisibility(View.GONE);
+        mCommentProgressBar.setVisibility(View.GONE);
+        mFooter.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
+    }
+
+    private void setListeners(View parent) {
         ImageButton vk = (ImageButton) parent.findViewById(R.id.det_vk);
         ImageButton ok = (ImageButton) parent.findViewById(R.id.det_ok);
         ImageButton fb = (ImageButton) parent.findViewById(R.id.det_fb);
@@ -121,38 +136,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         ok.setOnClickListener(this);
         fb.setOnClickListener(this);
         tw.setOnClickListener(this);
-        mShareWebView = (WebView) parent.findViewById(R.id.shareWebView);
-        mLayout = parent.findViewById(R.id.det_scroll);
-        mLayout.setVisibility(View.GONE);
-        mCommentProgressBar = (ProgressBar) parent.findViewById(R.id.det_progress);
-        mCommentProgressBar.setVisibility(View.GONE);
-        mImageLayout = parent.findViewById(R.id.det_imageLayout);
-        mWebImage = (ImageView) parent.findViewById(R.id.det_webImage);
-        mTitle = (TextView) parent.findViewById(R.id.det_title);
-        mDate = (TextView) parent.findViewById(R.id.det_date);
-        mImage = (ImageView) parent.findViewById(R.id.det_imageView);
-        mFooter = parent.findViewById(R.id.det_footer);
-        mFooter.setVisibility(View.GONE);
-        mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
-        mListView.setVisibility(View.GONE);
-        String s = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
-        mNews = GsonUtils.fromJson(s, FullNews.class);
-        if (mNews.getBody() != null) {
-            if (mNews.getBody().contains(mNews.getImageUrl())) {
-                mImage.setVisibility(View.GONE);
-            }
-            webView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
-        }
-        Spanned span = Html.fromHtml(mNews.getTitle());
-        mTitle.setText(span);
-        mDate.setText(mNews.getDate());
-        mId = mNews.getId();
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mImageLayout.setOnClickListener(this);
         mWebImage.setOnClickListener(this);
-        getComments(mNews.getId() + "/comments/");
-        ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
         Button addComment = (Button) parent.findViewById(R.id.addComment);
         final EditText commentEdit = (EditText) parent.findViewById(R.id.comment);
+        addListenerToEditText(commentEdit, getActivity());
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,7 +167,48 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 }
             }
         });
+    }
 
+    private void setWebViews() {
+        mWebViewClient = new myWebViewClient();
+        webView.setWebViewClient(mWebViewClient);
+        mWebChromeClient = new myWebChromeClient();
+        webView.setWebChromeClient(mWebChromeClient);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setSaveFormData(true);
+
+
+        mShareWebView.getSettings().setUserAgentString(System.getProperty("http.agent"));
+        mShareWebView.getSettings().setJavaScriptEnabled(true);
+        mShareWebView.setWebChromeClient(mWebChromeClient);
+        mShareWebView.getSettings().setSupportMultipleWindows(true);
+        mShareWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+    }
+
+    private void setData() {
+        String s = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
+        mNews = GsonUtils.fromJson(s, FullNews.class);
+        if (mNews.getBody() != null) {
+            if (mNews.getBody().contains(mNews.getImageUrl())) {
+                mImage.setVisibility(View.GONE);
+            }
+            webView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
+        }
+        Spanned span = Html.fromHtml(mNews.getTitle());
+        mTitle.setText(span);
+        mDate.setText(mNews.getDate());
+        mId = mNews.getId();
+        getComments();
+        ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
+    }
+
+    private void initFragment(View parent) {
+        initUI(parent);
+        setVisibilities();
+        setWebViews();
+        setData();
+        setListeners(parent);
     }
 
     private void initAdv(DynamicImageView imageView) {
@@ -200,10 +230,10 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
     }
 
-    private void getComments(String url) {
+    private void getComments() {
         if (Utils.isConnected(getActivity())) {
             mCommentProgressBar.setVisibility(View.VISIBLE);
-            new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + url);
+            new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + mNews.getId() + "/comments/");
         }
     }
 
@@ -261,12 +291,13 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         } catch (Exception e) {
             try {
                 Comments comment = GsonUtils.fromJson(result, Comments.class);
-                getComments(mNews.getId() + "/comments/");
+                getComments();
             } catch (Exception e1) {
 
             }
 //            makeText(getString(R.string.server_error));
         }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -287,6 +318,11 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 mShareWebView.loadUrl(Values.TWITTER + mNews.getUrl());
                 break;
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        getComments();
     }
 
     public class ProgressWebClient extends WebViewClient {

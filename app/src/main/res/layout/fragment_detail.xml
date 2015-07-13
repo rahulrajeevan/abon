@@ -7,209 +7,205 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <ru.macrobit.abonnews.ui.view.CustomScrollView
-        android:id="@+id/det_scroll"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/det_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <ru.macrobit.abonnews.ui.view.CustomScrollView
+            android:id="@+id/det_scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_height="match_parent">
 
-            <ru.macrobit.abonnews.ui.view.DynamicImageView
-                android:id="@+id/ad_header"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp" />
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
-            <TextView
-                android:id="@+id/det_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/ad_header"
-                android:layout_alignStart="@+id/ad_header"
-                android:layout_below="@+id/ad_header"
-                android:layout_marginTop="10dp"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/det_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/det_title"
-                android:layout_alignStart="@+id/det_title"
-                android:layout_below="@+id/det_title"
-                android:textColor="@android:color/holo_orange_dark"
-                android:textSize="12sp" />
-
-            <ru.macrobit.abonnews.ui.view.DynamicImageView
-                android:id="@+id/det_imageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/det_date"
-                android:layout_alignStart="@+id/det_date"
-                android:layout_below="@+id/det_date"
-                android:layout_marginTop="10dp" />
-
-            <!--<WebView-->
-            <!--android:id="@+id/det_body"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignLeft="@+id/det_imageView"-->
-            <!--android:layout_alignStart="@+id/det_imageView"-->
-            <!--android:layout_below="@+id/det_imageView"-->
-            <!--android:layout_marginTop="10dp" />-->
-
-
-            <WebView
-                android:id="@+id/webView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/det_imageView"
-                android:layout_alignStart="@+id/det_imageView"
-                android:layout_below="@+id/det_imageView"
-                android:layout_marginTop="10dp" />
-
-            <ru.macrobit.abonnews.ui.view.DynamicImageView
-                android:id="@+id/ad_footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/webView"
-                android:layout_alignStart="@+id/webView"
-                android:layout_below="@+id/webView"
-                android:layout_marginTop="10dp" />
-
-            <LinearLayout
-                android:id="@+id/social_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/ad_footer"
-                android:layout_alignStart="@+id/ad_footer"
-                android:layout_below="@+id/ad_footer"
-                android:layout_marginTop="10dp"
-                android:gravity="center">
-
-                <ImageButton
-                    android:id="@+id/det_vk"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#ffffffff"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/vk" />
-
-                <ImageButton
-                    android:id="@+id/det_fb"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#ffffffff"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/fb" />
-
-                <ImageButton
-                    android:id="@+id/det_ok"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#ffffffff"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ok" />
-
-                <ImageButton
-                    android:id="@+id/det_tw"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#ffffffff"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/tw" />
-            </LinearLayout>
-
-            <ExpandableListView
-                android:id="@+id/det_listView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/social_layout"
-                android:layout_alignStart="@+id/social_layout"
-                android:layout_below="@+id/social_layout"
-                android:layout_marginTop="10dp" />
-
-            <ProgressBar
-                android:id="@+id/det_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/social_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp" />
-
-            <LinearLayout
-                android:id="@+id/det_footer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/det_listView"
-                android:layout_alignStart="@+id/det_listView"
-                android:layout_below="@+id/det_listView">
-
-                <RelativeLayout
+                <ru.macrobit.abonnews.ui.view.DynamicImageView
+                    android:id="@+id/ad_header"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="20dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp" />
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:text="@string/add_comment"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@android:color/black" />
+                <TextView
+                    android:id="@+id/det_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/ad_header"
+                    android:layout_alignStart="@+id/ad_header"
+                    android:layout_below="@+id/ad_header"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16sp" />
 
-                    <Button
-                        android:id="@+id/addComment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/textView2"
-                        android:background="@color/primary_dark"
-                        android:gravity="center"
-                        android:onClick="addComments"
-                        android:text="@string/send"
-                        android:textAlignment="gravity"
-                        android:textColor="@color/accent"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/det_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/det_title"
+                    android:layout_alignStart="@+id/det_title"
+                    android:layout_below="@+id/det_title"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="12sp" />
 
-                    <EditText
-                        android:id="@+id/comment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/addComment"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignTop="@+id/addComment"
-                        android:layout_toLeftOf="@+id/addComment"
-                        android:layout_toStartOf="@+id/addComment"
-                        android:background="@drawable/border"
-                        android:ems="10"
-                        android:hint="@string/enter_comment"
-                        android:inputType="textMultiLine"
-                        android:textCursorDrawable="@drawable/cursor_drawable" />
+                <ru.macrobit.abonnews.ui.view.DynamicImageView
+                    android:id="@+id/det_imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/det_date"
+                    android:layout_alignStart="@+id/det_date"
+                    android:layout_below="@+id/det_date"
+                    android:layout_marginTop="10dp" />
 
-                </RelativeLayout>
-            </LinearLayout>
-        </RelativeLayout>
-    </ru.macrobit.abonnews.ui.view.CustomScrollView>
+                <WebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/det_imageView"
+                    android:layout_alignStart="@+id/det_imageView"
+                    android:layout_below="@+id/det_imageView"
+                    android:layout_marginTop="10dp" />
+
+                <ru.macrobit.abonnews.ui.view.DynamicImageView
+                    android:id="@+id/ad_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/webView"
+                    android:layout_alignStart="@+id/webView"
+                    android:layout_below="@+id/webView"
+                    android:layout_marginTop="10dp" />
+
+                <LinearLayout
+                    android:id="@+id/social_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/ad_footer"
+                    android:layout_alignStart="@+id/ad_footer"
+                    android:layout_below="@+id/ad_footer"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/det_vk"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#ffffffff"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/vk" />
+
+                    <ImageButton
+                        android:id="@+id/det_fb"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#ffffffff"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/fb" />
+
+                    <ImageButton
+                        android:id="@+id/det_ok"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#ffffffff"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ok" />
+
+                    <ImageButton
+                        android:id="@+id/det_tw"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#ffffffff"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/tw" />
+                </LinearLayout>
+
+                <ExpandableListView
+                    android:id="@+id/det_listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/social_layout"
+                    android:layout_alignStart="@+id/social_layout"
+                    android:layout_below="@+id/social_layout"
+                    android:layout_marginTop="10dp" />
+
+                <ProgressBar
+                    android:id="@+id/det_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/social_layout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp" />
+
+                <LinearLayout
+                    android:id="@+id/det_footer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/det_listView"
+                    android:layout_alignStart="@+id/det_listView"
+                    android:layout_below="@+id/det_listView">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:text="@string/add_comment"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@android:color/black" />
+
+                        <Button
+                            android:id="@+id/addComment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/textView2"
+                            android:background="@color/primary_dark"
+                            android:gravity="center"
+                            android:onClick="addComments"
+                            android:text="@string/send"
+                            android:textAlignment="gravity"
+                            android:textColor="@color/accent"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/comment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/addComment"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignTop="@+id/addComment"
+                            android:layout_toLeftOf="@+id/addComment"
+                            android:layout_toStartOf="@+id/addComment"
+                            android:background="@drawable/border"
+                            android:ems="10"
+                            android:hint="@string/enter_comment"
+                            android:inputType="textMultiLine"
+                            android:textCursorDrawable="@drawable/cursor_drawable" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </ru.macrobit.abonnews.ui.view.CustomScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
         android:id="@+id/det_imageLayout"
