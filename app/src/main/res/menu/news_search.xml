@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item
         android:id="@+id/menu_search"
-        android:title="@string/menu_search"
+        android:title="@string/search"
         appcompat:actionViewClass="android.support.v7.widget.SearchView"
         appcompat:showAsAction="always"/>
 </menu>
