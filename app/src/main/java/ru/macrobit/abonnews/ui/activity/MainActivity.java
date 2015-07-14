@@ -45,6 +45,7 @@ public class MainActivity extends Env implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Utils.createAndSendDeviceToken(this);
         mIntent = new Intent(MainActivity.this, FragmentActivity.class);
         if (!isActivityCreated) {
             initNavigationView();
