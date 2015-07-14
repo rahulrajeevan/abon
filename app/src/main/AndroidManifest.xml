@@ -19,6 +19,8 @@
         android:name=".AbonApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
         android:label="@string/app_name"
         android:theme="@style/MyTheme" >
         <receiver android:name="ru.macrobit.abonnews.gcm.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
