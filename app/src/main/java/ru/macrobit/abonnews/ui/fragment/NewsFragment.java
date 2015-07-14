@@ -322,10 +322,12 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void getNewNewsList() {
+        mNews.clear();
         mListView.setVisibility(View.VISIBLE);
         mSearchResults.setVisibility(View.GONE);
         isSearchList = false;
         mPage = 0;
+        adCount = 0;
         mAdapter = null;
         isLastItemVisible = false;
         isEndNewsList = false;
