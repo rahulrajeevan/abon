@@ -7,14 +7,18 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.widget.Toast;
+
+import com.google.android.gms.iid.InstanceID;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -26,7 +30,9 @@ import java.util.Set;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.model.Ads;
+import ru.macrobit.abonnews.model.PushReg;
 import ru.macrobit.abonnews.model.ShortCookie;
 
 public class Utils {
@@ -201,5 +207,68 @@ public class Utils {
         Random rnd = new Random();
         int idx = rnd.nextInt(arrayList.size());
         return arrayList.get(idx);
+    }
+
+    public static void setDeviceToken(Context context, String deviceToken) {
+        SharedPreferences sp = getPrefs(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(Values.PREF_DEVICE_TOKEN, deviceToken);
+        editor.commit();
+    }
+
+    public static String getDeviceToken(Context context) {
+        SharedPreferences sp = getPrefs(context);
+        return sp.getString(Values.PREF_DEVICE_TOKEN, null);
+    }
+
+    public static boolean isDeviceTokenSent(Context context) {
+        SharedPreferences sp = getPrefs(context);
+        return sp.getBoolean(Values.PREF_DEVICE_TOKEN_SENT, false);
+    }
+
+    public static void setDeviceTokenSend(Context context, boolean sent) {
+        SharedPreferences sp = getPrefs(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(Values.PREF_DEVICE_TOKEN_SENT, sent);
+        editor.commit();
+    }
+
+    public static String createDeviceToken(Context context) throws IOException {
+        String token = getDeviceToken(context);
+        if(token == null) {
+                token = InstanceID.getInstance(context).getToken(Values.SENDER_ID, Values.SCOPE, null);
+            setDeviceToken(context, token);
+        }
+        return token;
+    }
+
+    public static void createAndSendDeviceToken(final Context context) {
+        if(isDeviceTokenSent(context)) {
+            return;
+        }
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                try {
+                    return createDeviceToken(context);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                if (s != null) {
+                    PushReg pushReg = new PushReg(s);
+                    String json = GsonUtils.toJson(pushReg);
+                    new AddDataRequest(null, null, json).execute(Values.PUSH);
+                } else {
+                }
+            }
+        }.execute();
     }
 }
