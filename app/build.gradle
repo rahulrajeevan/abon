@@ -41,6 +41,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile 'org.apache.httpcomponents:httpmime:4.3.5'
     compile 'ch.acra:acra:4.5.0'
+    compile 'com.google.android.gms:play-services:7.5.+'
     compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
     compile(name:'ulogin-sdk-v1.1', ext:'aar')
 
