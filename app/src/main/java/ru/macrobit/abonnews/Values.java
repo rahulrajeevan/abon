@@ -1,5 +1,7 @@
 package ru.macrobit.abonnews;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 public class Values {
     public static final String URL = "http://abon-news.ru/";
     public static final String GET_POST = URL + "wp-json/posts?filter[posts_per_page]=-1";
@@ -8,7 +10,7 @@ public class Values {
     public static final String MEDIA_ADD = URL + "wp-json/media";
     public static final String MEDIA = URL + "wp-json/media?filter[posts_per_page]=-1";
     public static final String COMMENTS = "/comments";
-    public static final String PUSH = URL + "/push";
+    public static final String PUSH = URL + "wp-json/push";
     public static final String MY_COMMENTS = URL + "/wp-json/comments/my";
     public static final String SEARCH = URL + "wp-json/postsnew?filter[s]=";
     public static final String GET_PAGE_POSTS = URL + "/wp-json/postsnew?filter[posts_per_page]=10&page=";
@@ -40,6 +42,9 @@ public class Values {
     public static final String ABON_LOGO = "http://abon-news.ru/wp-content/themes/abon/images/logo.png";
     public static final String ADS_PREF = "ads";
     public static final String SENDER_ID = "221731321249";
+    public static final String PREF_DEVICE_TOKEN = "DeviceToken";
+    public static final String PREF_DEVICE_TOKEN_SENT = "DeviceTokenSent";
+    public final static String SCOPE = GoogleCloudMessaging.INSTANCE_ID_SCOPE;
     public static final int AD_TOP = 5;
     public static final int AD_LIST = 6;
     public static final int AD_DETAIL = 7;
