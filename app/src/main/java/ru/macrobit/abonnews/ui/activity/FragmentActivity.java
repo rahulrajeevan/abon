@@ -55,12 +55,26 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
         initNavigationView();
-        add(getFragment(getTag()), getTag());
+        mExtras = getIntent().getExtras();
+        String tag = null;
+        try {
+            tag = mExtras.getString(Values.PUSH_TAG);
+        } catch (Exception e) {
+
+        }
+        if (tag != null) {
+            if (tag.equals(Values.PUSH_TAG)) {
+                Bundle bundle = new Bundle();
+                bundle.putString(Values.POST_ID, mExtras.getString("id"));
+                add(getFragment(getTag()), bundle, getTag());
+            }
+        } else {
+            add(getFragment(getTag()), getTag());
+        }
     }
 
     private String getTag() {
         String value = null;
-        mExtras = getIntent().getExtras();
         if (mExtras != null) {
             value = mExtras.getString(Values.TAG);
         }
