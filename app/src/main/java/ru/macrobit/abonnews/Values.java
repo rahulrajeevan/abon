@@ -41,7 +41,7 @@ public class Values {
     public static final String TWITTER = "http://twitter.com/share?text=";
     public static final String ABON_LOGO = "http://abon-news.ru/wp-content/themes/abon/images/logo.png";
     public static final String ADS_PREF = "ads";
-    public static final String SENDER_ID = "221731321249";
+    public static final String SENDER_ID = "456402649226";
     public static final String PREF_DEVICE_TOKEN = "DeviceToken";
     public static final String PREF_DEVICE_TOKEN_SENT = "DeviceTokenSent";
     public final static String SCOPE = GoogleCloudMessaging.INSTANCE_ID_SCOPE;
