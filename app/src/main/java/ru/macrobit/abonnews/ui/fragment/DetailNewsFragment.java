@@ -29,6 +29,7 @@ import android.widget.Toast;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -36,6 +37,7 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
+import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
@@ -43,6 +45,8 @@ import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
+import ru.macrobit.abonnews.model.News;
+import ru.macrobit.abonnews.model.ShortNews;
 import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 import ru.macrobit.abonnews.ui.view.DynamicImageView;
 
@@ -187,8 +191,29 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void setData() {
-        String s = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
-        mNews = GsonUtils.fromJson(s, FullNews.class);
+        Bundle bundle = getArguments();
+        String json = null;
+        String id = null;
+        try {
+            id = bundle.getString(Values.POST_ID);
+        } catch (NullPointerException e) {
+        }
+        if (id != null) {
+            try {
+                json = new GetRequest(null).execute(Values.POSTS + id).get();
+                News news = GsonUtils.fromJson(json, News.class);
+                ShortNews shortNews = NewsUtils.generateShortNews(news);
+                mNews = new FullNews(shortNews, news.getContent(), news.getLink());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        } else {
+            json = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
+            mNews = GsonUtils.fromJson(json, FullNews.class);
+        }
+
         if (mNews.getBody() != null) {
             if (mNews.getBody().contains(mNews.getImageUrl())) {
                 mImage.setVisibility(View.GONE);
