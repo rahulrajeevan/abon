@@ -154,7 +154,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     }
                     String json = GsonUtils.toJson(comments);
                     new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                            Utils.getPrefs(getActivity())), json)
+                            Utils.getPrefs(getActivity())), json, null)
                             .execute(Values.POSTS + mNews.getId() + "/comments/");
                     commentEdit.setText("");
                     initComments(mNews.getId() + "/comments/");

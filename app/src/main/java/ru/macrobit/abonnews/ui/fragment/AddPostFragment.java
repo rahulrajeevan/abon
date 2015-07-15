@@ -100,7 +100,7 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
                         String json = GsonUtils.toJson(news);
                         if (Utils.isConnected(getActivity())) {
                             new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                                    Utils.getPrefs(getActivity())), json).execute(Values.POSTS);
+                                    Utils.getPrefs(getActivity())), json, null).execute(Values.POSTS);
                             showDialog(getString(R.string.loading_add));
                         }
                     } else {

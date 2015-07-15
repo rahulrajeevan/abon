@@ -103,9 +103,10 @@ public class AddDataRequest extends AsyncTask<String, String, String> {
             PushReg pushReg = GsonUtils.fromJson(s, PushReg.class);
             Utils.setDeviceTokenSend(mContext, true);
         } catch(Exception e) {
-            if (callback != null) {
-                callback.onTaskCompleted(result);
-            }
+
+        }
+        if (callback != null) {
+            callback.onTaskCompleted(result);
         }
         super.onPostExecute(result);
     }
