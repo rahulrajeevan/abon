@@ -51,6 +51,7 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
     class ViewHolder {
         TextView title;
         TextView date;
+        TextView commentsCount;
         ImageView image;
     }
 
@@ -113,11 +114,16 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         viewHolder.title = ((TextView) convertView.findViewById(R.id.textBody));
         viewHolder.date = ((TextView) convertView.findViewById(R.id.det_date));
         viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
+        viewHolder.commentsCount = ((TextView) convertView.findViewById(R.id.comments_count));
         if (!mNews.get(position).isAd()) {
             Spanned span = Html.fromHtml(mNews.get(position - ad_count).getTitle());
             viewHolder.title.setText(span);
             viewHolder.date.setText(mNews.get(position - ad_count).getDate());
             viewHolder.date.setTextColor(Color.parseColor("#ffff8800"));
+            String s = mNews.get(position - ad_count).getCommentCount();
+            if (!s.equals("0")) {
+                viewHolder.commentsCount.setText(mContext.getString(R.string.comments) + "(" + s + ")");
+            }
         }
         viewHolder.image.setImageBitmap(null);
         ImageUtils.getUIL(mContext).displayImage(mNews.get(position - ad_count).getImageUrl(), viewHolder.image);

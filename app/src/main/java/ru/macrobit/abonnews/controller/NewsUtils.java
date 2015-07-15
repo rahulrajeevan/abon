@@ -21,7 +21,7 @@ public class NewsUtils {
         ShortNews shortNews;
         for (News n : news) {
             if (!n.isAdv()) {
-                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
+                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
             } else {
                 shortNews = new ShortNews(n.getAdUrl(), n.getUrl());
             }
@@ -31,7 +31,7 @@ public class NewsUtils {
     }
 
     public static ShortNews generateShortNews(News n) {
-        ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky());
+        ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
         return shortNews;
     }
 
