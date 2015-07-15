@@ -64,6 +64,15 @@ public class Env extends AppCompatActivity {
             mTransaction.commit();
     }
 
+    void add(Fragment fragment, Bundle bundle, String tag) {
+        mTransaction = mManager.beginTransaction();
+        mTransaction.add(R.id.fragment_container, fragment, tag);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragment.setArguments(bundle);
+        mTransaction.addToBackStack(tag);
+        mTransaction.commit();
+    }
+
     void add(Fragment fragment, String tag) {
         if (!isFragmentExist(tag)) {
             mTransaction = mManager.beginTransaction();
