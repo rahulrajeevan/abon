@@ -1,5 +1,6 @@
 package ru.macrobit.abonnews.loader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import org.apache.http.HttpHost;
@@ -24,6 +25,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
+import ru.macrobit.abonnews.controller.GsonUtils;
+import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.model.PushReg;
 
 public class AddDataRequest extends AsyncTask<String, String, String> {
 
@@ -31,9 +35,11 @@ public class AddDataRequest extends AsyncTask<String, String, String> {
     private OnTaskCompleted callback;
     private CookieStore mCookies;
     private String mJson;
+    private Context mContext;
 
-    public AddDataRequest(OnTaskCompleted callback, BasicClientCookie[] basicClientCookies, String json) {
+    public AddDataRequest(OnTaskCompleted callback, BasicClientCookie[] basicClientCookies, String json, Context context) {
         this.callback = callback;
+        mContext = context;
         this.mJson = json;
         if (basicClientCookies != null && basicClientCookies.length > 0) {
             mCookies = new BasicCookieStore();
@@ -93,8 +99,13 @@ public class AddDataRequest extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        if (callback != null) {
-            callback.onTaskCompleted(result);
+        try {
+            PushReg pushReg = GsonUtils.fromJson(s, PushReg.class);
+            Utils.setDeviceTokenSend(mContext, true);
+        } catch(Exception e) {
+            if (callback != null) {
+                callback.onTaskCompleted(result);
+            }
         }
         super.onPostExecute(result);
     }
