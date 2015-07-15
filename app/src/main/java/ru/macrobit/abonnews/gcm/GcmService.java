@@ -22,8 +22,6 @@ public class GcmService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         sendNotification(data);
-        String s = data.getString("message");
-        s = data.getString("title");
     }
 
     @Override
@@ -55,11 +53,9 @@ public class GcmService extends GcmListenerService {
         NotificationManager mNotificationManager;
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         mNotifyBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(msg.getString("title"))
-                .setContentText(msg.getString("message"))
-                .setSmallIcon(R.mipmap.ic_launcher);
+                .setSmallIcon(R.drawable.ic_notification);
 //        mNotifyBuilder.setContentIntent(resultPendingIntent);
 
         int defaults = 0;
@@ -68,7 +64,7 @@ public class GcmService extends GcmListenerService {
         defaults = defaults | Notification.DEFAULT_SOUND;
 
         mNotifyBuilder.setDefaults(defaults);
-        mNotifyBuilder.setContentText("New message from Server");
+        mNotifyBuilder.setContentText(msg.getString("message"));
         mNotifyBuilder.setAutoCancel(true);
         mNotificationManager.notify(notifyID, mNotifyBuilder.build());
     }
