@@ -265,8 +265,7 @@ public class Utils {
                 if (s != null) {
                     PushReg pushReg = new PushReg(s);
                     String json = GsonUtils.toJson(pushReg);
-                    new AddDataRequest(null, null, json).execute(Values.PUSH);
-                } else {
+                    new AddDataRequest(null, null, json, context).execute(Values.PUSH);
                 }
             }
         }.execute();
