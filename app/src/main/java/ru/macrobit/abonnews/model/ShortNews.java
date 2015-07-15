@@ -11,14 +11,16 @@ public class ShortNews implements Parcelable{
     String redirectUrl;
     boolean sticky;
     boolean isAd;
+    String commentCount;
 
-    public ShortNews(String title, String date, String imageUrl, String id, boolean sticky) {
+    public ShortNews(String title, String date, String imageUrl, String id, boolean sticky, String commentCount) {
         this.title = title;
         this.date = date;
         this.imageUrl = imageUrl;
         this.id = id;
         this.sticky = sticky;
         this.isAd = false;
+        this.commentCount = commentCount;
     }
 
     public ShortNews(Parcel in) {
@@ -29,6 +31,7 @@ public class ShortNews implements Parcelable{
         this.sticky = in.readByte() != 0;
         this.isAd = in.readByte() != 0;
         this.redirectUrl = in.readString();
+        this.commentCount = in.readString();
     }
 
     public ShortNews(String imageUrl, String url) {
@@ -37,6 +40,22 @@ public class ShortNews implements Parcelable{
         this.isAd = true;
     }
 
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(String commentCount) {
+        this.commentCount = commentCount;
+    }
 
     public String getUrl() {
         return redirectUrl;
@@ -107,6 +126,7 @@ public class ShortNews implements Parcelable{
         dest.writeByte((byte) (sticky ? 1 : 0));
         dest.writeByte((byte) (isAd ? 1 : 0));
         dest.writeString(redirectUrl);
+        dest.writeString(commentCount);
     }
 
 

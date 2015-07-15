@@ -7,14 +7,14 @@ public class FullNews extends ShortNews implements Parcelable {
     private String body;
     private String url;
 
-    public FullNews(String title, String date, String imageUrl, String id, String body, boolean sticky, String url) {
-        super(title, date, imageUrl, id, sticky);
+    public FullNews(String title, String date, String imageUrl, String id, String body, boolean sticky, String url, String commentCount) {
+        super(title, date, imageUrl, id, sticky, commentCount);
         this.body = body;
         this.url = url;
     }
 
     public FullNews(ShortNews news, String body, String url){
-        super(news.getTitle(), news.getDate(), news.getImageUrl(), news.getId(), news.isSticky());
+        super(news.getTitle(), news.getDate(), news.getImageUrl(), news.getId(), news.isSticky(), news.getCommentCount());
         this.body = body;
         this.url = url;
     }

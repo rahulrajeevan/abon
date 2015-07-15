@@ -40,6 +40,8 @@ public class News {
     @SerializedName("featured_image")
     private FeaturedImage featuredImage;
     private Terms terms;
+    @SerializedName("comment_count")
+    private String commentCount;
     private transient String adUrl;
     private transient String url;
     private transient boolean isAdv;
@@ -58,6 +60,14 @@ public class News {
         this.url = url;
         this.adUrl = adUrl;
         this.isAdv = isAdv;
+    }
+
+    public String getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(String commentCount) {
+        this.commentCount = commentCount;
     }
 
     public String getUrl() {
