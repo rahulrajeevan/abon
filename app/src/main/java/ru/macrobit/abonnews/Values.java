@@ -45,6 +45,8 @@ public class Values {
     public static final String PREF_DEVICE_TOKEN = "DeviceToken";
     public static final String PREF_DEVICE_TOKEN_SENT = "DeviceTokenSent";
     public final static String SCOPE = GoogleCloudMessaging.INSTANCE_ID_SCOPE;
+    public final static String PUSH_TAG = "push tag";
+    public final static String POST_ID = "postid";
     public static final int AD_TOP = 5;
     public static final int AD_LIST = 6;
     public static final int AD_DETAIL = 7;
