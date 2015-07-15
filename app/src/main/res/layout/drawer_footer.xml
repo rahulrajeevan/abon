@@ -4,27 +4,12 @@
     android:layout_height="wrap_content"
     android:clickable="false"
     android:orientation="vertical">
-    <ImageView
+    <ru.macrobit.abonnews.ui.view.DynamicImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/title_abon"
-        android:scaleType="centerCrop"
+        android:background="@drawable/navigation_bottom"
         android:id="@+id/profile_avatar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"/>
-    <TextView
-        style="@style/TextAppearance.AppCompat.Subhead"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:textSize="14sp"
-        android:text="@string/info_abon"
-        android:textColor="@color/primary"
-        android:layout_below="@+id/profile_avatar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="23dp"
-        android:layout_marginTop="10dp"
-        />
 </RelativeLayout>
