@@ -30,6 +30,16 @@ public class NewsUtils {
         return arrayList;
     }
 
+    public static ShortNews generateShortNews(News n, Context context) {
+        ShortNews shortNews;
+            if (!n.isAdv()) {
+                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
+            } else {
+                shortNews = new ShortNews(n.getAdUrl(), n.getUrl());
+            }
+        return shortNews;
+    }
+
     public static ShortNews generateShortNews(News n) {
         ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
         return shortNews;
