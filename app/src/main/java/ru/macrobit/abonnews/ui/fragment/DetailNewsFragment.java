@@ -287,7 +287,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 if (comments.length > 0) {
                     final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
                     ArrayList<String> group = new ArrayList<>();
-                    group.add(getActivity().getString(R.string.comments));
+                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
                     mAdapter = new MyExpandableAdapter(group, arrayList);
                     mAdapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
                     mListView.setAdapter(mAdapter);
