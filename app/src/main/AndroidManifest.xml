@@ -13,6 +13,7 @@
     <permission android:name="ru.macrobit.abonnews.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
     <uses-permission android:name="ru.macrobit.abonnews.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
 
     <application
@@ -48,6 +49,8 @@
         <activity
             android:name=".ui.activity.FragmentActivity"
             android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".ui.activity.MainActivity"
             android:screenOrientation="portrait" >
