@@ -21,7 +21,7 @@
     <string name="enter_comment">Введите комментарий</string>
     <string name="title">Заголовок</string>
     <string name="content">Текст новости</string>
-    <string name="add_news">Добавить новость</string>
+    <string name="add_news">Добавить новость/фотографию</string>
     <string name="authorization">Авторизация</string>
     <string name="social_authorization">Авторизация через соц. сеть</string>
     <string name="about">О программе</string>
@@ -48,7 +48,7 @@
     <string name="loading_comments">Комментарии загружаются... </string>
     <string name="added_news">Новость будет добавлена после модерации</string>
     <string name="add_media">Добавить фотографию</string>
-    <string name="crash_toast_text">Произошла ошибка. Приложение будет перезапущено</string>
+    <string name="crash_toast_text">Произошла ошибка. Приложение будет закрыто</string>
     <string name="no_comments">Вы ещё не оставляли комментариев</string>
     <string name="loading_add">Новость добавляется...</string>
     <string name="need_title">Заголовок не может быть пустым</string>

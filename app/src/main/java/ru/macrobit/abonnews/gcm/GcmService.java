@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -48,33 +49,38 @@ public class GcmService extends GcmListenerService {
     // This is just one simple example of what you might choose to do with
     // a GCM message.
     private void sendNotification(Bundle msg) {
-        Intent resultIntent = new Intent(this, FragmentActivity.class);
-        PushIncome pushIncome = GsonUtils.fromJson(msg.getString("message"), PushIncome.class);
-        resultIntent.putExtra(Values.TAG, Values.DETAIL_TAG);
-        resultIntent.putExtra("id", pushIncome.getPostid());
-        resultIntent.putExtra(Values.PUSH_TAG, Values.PUSH_TAG);
-        resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
-                resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        try {
+            Intent resultIntent = new Intent(this, FragmentActivity.class);
+            PushIncome pushIncome = GsonUtils.fromJson(msg.getString("message"), PushIncome.class);
+            resultIntent.putExtra(Values.TAG, Values.DETAIL_TAG);
+            resultIntent.putExtra("id", pushIncome.getPostid());
+            resultIntent.putExtra(Values.PUSH_TAG, Values.PUSH_TAG);
+            resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
+                    resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
-        NotificationCompat.Builder mNotifyBuilder;
-        NotificationManager mNotificationManager;
+            NotificationCompat.Builder mNotifyBuilder;
+            NotificationManager mNotificationManager;
 
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.app_name))
-                .setSmallIcon(R.drawable.ic_notification);
-        mNotifyBuilder.setContentIntent(resultPendingIntent);
+            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotifyBuilder = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setSmallIcon(R.drawable.ic_notification);
+            mNotifyBuilder.setContentIntent(resultPendingIntent);
 
-        int defaults = 0;
-        defaults = defaults | Notification.DEFAULT_LIGHTS;
-        defaults = defaults | Notification.DEFAULT_VIBRATE;
-        defaults = defaults | Notification.DEFAULT_SOUND;
+            int defaults = 0;
+            defaults = defaults | Notification.DEFAULT_LIGHTS;
+            defaults = defaults | Notification.DEFAULT_VIBRATE;
+            defaults = defaults | Notification.DEFAULT_SOUND;
 
-        mNotifyBuilder.setDefaults(defaults);
-        mNotifyBuilder.setContentText(pushIncome.getText());
-        mNotifyBuilder.setAutoCancel(true);
-        mNotificationManager.notify(notifyID, mNotifyBuilder.build());
+            mNotifyBuilder.setDefaults(defaults);
+            mNotifyBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification));
+            mNotifyBuilder.setContentText(pushIncome.getText());
+            mNotifyBuilder.setAutoCancel(true);
+            mNotificationManager.notify(notifyID, mNotifyBuilder.build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
