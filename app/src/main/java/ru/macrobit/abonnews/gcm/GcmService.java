@@ -103,6 +103,7 @@ public class GcmService extends GcmListenerService {
             mNotifyBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification));
             mNotifyBuilder.setContentText(pushIncome.getText());
             mNotifyBuilder.setAutoCancel(true);
+            mNotifyBuilder.setColor(R.color.secondary_text);
             mNotificationManager.notify(notifyID, mNotifyBuilder.build());
         } catch (Exception e) {
             e.printStackTrace();
