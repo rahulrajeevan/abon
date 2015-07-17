@@ -21,7 +21,8 @@
     <string name="enter_comment">Введите комментарий</string>
     <string name="title">Заголовок</string>
     <string name="content">Текст новости</string>
-    <string name="add_news">Добавить новость/фотографию</string>
+    <string name="add_news_menu">Добавить новость/фотографию</string>
+    <string name="add_news">Добавить новость</string>
     <string name="authorization">Авторизация</string>
     <string name="social_authorization">Авторизация через соц. сеть</string>
     <string name="about">О программе</string>
