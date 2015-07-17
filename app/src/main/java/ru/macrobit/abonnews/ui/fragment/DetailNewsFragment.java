@@ -208,6 +208,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                makeText(getString(R.string.server_error));
             }
         } else {
             json = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
