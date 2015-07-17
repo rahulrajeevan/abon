@@ -137,7 +137,7 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
             try {
                 Media media = GsonUtils.fromJson(result, Media.class);
                 String url = media.getGuid();
-                mImages += url + "\n";
+                mImages += "<img src=\"" + url + "\" alt=\"\" />" + "\n";
                 makeText(getString(R.string.image_attached));
             } catch (Exception e1) {
                 makeText(getString(R.string.server_error));
