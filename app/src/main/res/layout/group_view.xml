@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@drawable/border"
     android:orientation="vertical">
 
     <TextView
@@ -10,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
 
