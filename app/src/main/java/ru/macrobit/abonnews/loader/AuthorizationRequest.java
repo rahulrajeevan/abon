@@ -73,7 +73,7 @@ public class AuthorizationRequest extends AsyncTask<String, String, CookieStore>
             }
 
             post.setHeader("Content-type",
-                    "application/x-www-form-urlencoded; charset=UTF-8");
+                    "application/json");
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             if (mLogin != null && mPass != null) {
                 nameValuePairs.add(new BasicNameValuePair("log", mLogin));

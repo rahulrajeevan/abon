@@ -63,7 +63,7 @@ public class RegistrationRequest extends AsyncTask<String, String, String> {
             client.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
                     System.getProperty("http.agent"));
             post.setHeader("Content-type",
-                    "application/x-www-form-urlencoded; charset=UTF-8");
+                    "application/json");
             post.setHeader("Accept", "*/*");
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("user_login", mLogin));

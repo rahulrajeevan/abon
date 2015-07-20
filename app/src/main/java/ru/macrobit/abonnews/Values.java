@@ -5,7 +5,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 public class Values {
     public static final String URL = "http://abon-news.ru/";
     public static final String GET_POST = URL + "wp-json/posts?filter[posts_per_page]=-1";
-    public static final String AUTHORIZATION = URL + "wp-login.php";
+    public static final String AUTHORIZATION = URL + "wp-json/users/auth";
     public static final String POSTS = URL + "wp-json/posts/";
     public static final String MEDIA_ADD = URL + "wp-json/media";
     public static final String MEDIA = URL + "wp-json/media?filter[posts_per_page]=-1";
@@ -14,7 +14,7 @@ public class Values {
     public static final String MY_COMMENTS = URL + "/wp-json/comments/my";
     public static final String SEARCH = URL + "wp-json/postsnew?filter[s]=";
     public static final String GET_PAGE_POSTS = URL + "/wp-json/postsnew?filter[posts_per_page]=10&page=";
-    public static final String REGISTRY = URL + "wp-login.php?action=register";
+    public static final String REGISTRY = URL + "wp-json/users/register";
     public static final String PREF = "Abon news preferences";
     public static final String COOKIES = "cookies";
     public static final String PROFILE = URL + "wp-json/users/me";
