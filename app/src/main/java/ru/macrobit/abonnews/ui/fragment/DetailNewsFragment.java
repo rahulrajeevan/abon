@@ -280,12 +280,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private void initComments(String result) {
         try {
             if (result != null) {
-                boolean isExpand = false;
-                try {
-                    isExpand = mListView.isGroupExpanded(0);
-                } catch (NullPointerException nullPointer) {
-                    nullPointer.printStackTrace();
-                }
                 Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
                 if (comments.length > 0) {
                     final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
@@ -311,9 +305,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                             return false;
                         }
                     });
-                    if (isExpand) {
-                        mListView.expandGroup(0);
-                    }
+                    mListView.expandGroup(0);
                 }
             }
         } catch (Exception e) {
