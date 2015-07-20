@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -100,7 +99,7 @@ public class GcmService extends GcmListenerService {
             defaults = defaults | Notification.DEFAULT_SOUND;
 
             mNotifyBuilder.setDefaults(defaults);
-            mNotifyBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification));
+//            mNotifyBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_drawer));
             mNotifyBuilder.setContentText(pushIncome.getText());
             mNotifyBuilder.setAutoCancel(true);
             mNotifyBuilder.setColor(R.color.secondary_text);
