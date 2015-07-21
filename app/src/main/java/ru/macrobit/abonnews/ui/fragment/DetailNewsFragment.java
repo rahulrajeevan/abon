@@ -81,7 +81,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         if (container == null) {
             return null;
         }
-        showDialog(getString(R.string.loading_detail));
+        showProgressDialog(getString(R.string.loading_detail));
         View view = inflater.inflate(R.layout.fragment_detail,
                 container, false);
         initFragment(view);
@@ -157,8 +157,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                         comments = new AddComment(commentEdit.getText().toString(), mCommentId);
                     }
                     String json = GsonUtils.toJson(comments);
-                    new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                            Utils.getPrefs(getActivity())), json, null)
+                    new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null)
                             .execute(Values.POSTS + mNews.getId() + "/comments/");
                     commentEdit.setText("");
                     initComments(mNews.getId() + "/comments/");
@@ -213,7 +212,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 makeText(getString(R.string.server_error));
             }
         } else {
-            json = Utils.loadFromSharedPreferences(Values.FULL_NEWS, Utils.getPrefs(getActivity()));
+            json = Utils.loadFromSharedPreferences(Values.FULL_NEWS, getActivity());
             mNews = GsonUtils.fromJson(json, FullNews.class);
         }
 
@@ -241,19 +240,21 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     private void initAdv(DynamicImageView imageView) {
         final Ads ad = Utils.getAd(Values.AD_DETAIL, getActivity());
-        ImageUtils.getUIL(getActivity()).displayImage(ad.getAdImg(), imageView);
-        if (ad.getAdTarget() != null) {
-            if (!ad.getAdTarget().equals("")) {
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String url = ad.getAdTarget();
-                        if (!url.startsWith("http://") && !url.startsWith("https://"))
-                            url = "http://" + url;
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(browserIntent);
-                    }
-                });
+        if (ad != null) {
+            ImageUtils.getUIL(getActivity()).displayImage(ad.getAdImg(), imageView);
+            if (ad.getAdTarget() != null) {
+                if (!ad.getAdTarget().equals("")) {
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String url = ad.getAdTarget();
+                            if (!url.startsWith("http://") && !url.startsWith("https://"))
+                                url = "http://" + url;
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivity(browserIntent);
+                        }
+                    });
+                }
             }
         }
     }
@@ -475,7 +476,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 mFooter.setVisibility(View.VISIBLE);
                 mListView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
-                hideDialog();
+                hideProgressDialog();
             }
         });
 

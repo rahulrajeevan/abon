@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
@@ -74,14 +75,17 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private void initFragment(View parent) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) parent.findViewById(R.id.refresh);
         createFooter();
-        createHeader();
-        mListView = (ListView) parent.findViewById(R.id.listView);
         Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
-        final String link = ad.getAdTarget();
-        if (link != null) {
-            mListView.addHeaderView(mHeader, null, true);
-        } else {
-            mListView.addHeaderView(mHeader, null, false);
+        createFooter();
+        mListView = (ListView) parent.findViewById(R.id.listView);
+        if (ad != null) {
+            if (ad.getAdTarget() != null) {
+                String link = ad.getAdTarget();
+                createHeader(link);
+                mListView.addHeaderView(mHeader, null, true);
+            } else {
+                mListView.addHeaderView(mHeader, null, false);
+            }
         }
         mSearchResults = (TextView) parent.findViewById(R.id.searchResults);
         mListView.addFooterView(mFooter, null, false);
@@ -179,14 +183,15 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!mNews.get(position - 1).isAdv()) {
+                int x =  mListView.getHeaderViewsCount();
+                if (!mNews.get(position - x).isAdv()) {
                     ShortNews shortNews = (ShortNews) mListView.getAdapter().getItem(position);
-                    News news = mNews.get(position - 1);
+                    News news = mNews.get(position - mListView.getHeaderViewsCount());
                     FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
                     Bundle bundle = new Bundle();
                     bundle.putString(Values.TAG, Values.DETAIL_TAG);
                     Intent intent = new Intent(getActivity(), FragmentActivity.class);
-                    Utils.saveToSharedPreferences(Values.FULL_NEWS, GsonUtils.toJson(fullNews), Utils.getPrefs(getActivity()));
+                    Utils.saveToSharedPreferences(Values.FULL_NEWS, GsonUtils.toJson(fullNews), getActivity());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 } else {
@@ -254,9 +259,9 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         super.onCreate(arg0);
     }
 
-    private View createHeader() {
-        Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
-        final String link = ad.getAdTarget();
+    private View createHeader(final String link) {
+
+//
         mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
         mHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,15 +279,20 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private ArrayList<News> addToNewsArray(News[] news, ArrayList<News> arrayList) {
-        for (int i = 0; i < news.length; i++) {
-            if ((mNews.size()) % 6 == adCount && mNews.size() > 0) {
-                adCount++;
-                Ads ad = Utils.getAd(Values.AD_LIST, getActivity());
-                arrayList.add(new News(ad.getAdImg(), ad.getAdTarget(), true));
-                mNews.add(new News(ad.getAdImg(), ad.getAdTarget(), true));
+        Ads ad = Utils.getAd(Values.AD_LIST, getActivity());
+        if (ad != null) {
+            for (int i = 0; i < news.length; i++) {
+                if ((mNews.size()) % 6 == adCount && mNews.size() > 0) {
+                    adCount++;
+                    arrayList.add(new News(ad.getAdImg(), ad.getAdTarget(), true));
+                    mNews.add(new News(ad.getAdImg(), ad.getAdTarget(), true));
+                }
+                arrayList.add(news[i]);
+                mNews.add(news[i]);
             }
-            arrayList.add(news[i]);
-            mNews.add(news[i]);
+        } else {
+            arrayList.addAll(Arrays.asList(news));
+            mNews.addAll(arrayList);
         }
         return arrayList;
     }
