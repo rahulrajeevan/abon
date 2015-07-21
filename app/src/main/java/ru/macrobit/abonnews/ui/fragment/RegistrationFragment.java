@@ -31,7 +31,7 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(getString(R.string.loading_request));
+                showProgressDialog(getString(R.string.loading_request));
                 new RegistrationRequest(RegistrationFragment.this, mEmail.getText().toString(), mLogin.getText().toString()).execute(Values.REGISTRY);
             }
         });
@@ -40,12 +40,12 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
 
     @Override
     public void onTaskCompleted(String result) {
-        hideDialog();
-        if (result.equals(getString(R.string.success_reg))) {
+        hideProgressDialog();
+//        if (result.equals(getString(R.string.success_reg))) {
             makeText(getString(R.string.reg_message));
-        } else {
-            makeText(getString(R.string.reg_error));
-        }
+//        } else {
+//            makeText(getString(R.string.reg_error));
+//        }
         getActivity().finish();
     }
  }
