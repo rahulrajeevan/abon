@@ -222,14 +222,14 @@ public class MainActivity extends Env implements
 
     @Override
     public void onAuthorizationTaskCompleted(CookieStore result) {
-        Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
+        Utils.saveCookieToSharedPreferences(result, this);
         remove(Values.PROFILE_TAG);
         add(new ProfileFragment(), Values.PROFILE_TAG);
     }
 
     @Override
     public void onTaskCompleted(String result) {
-        Utils.saveToSharedPreferences(Values.ADS_PREF, result, Utils.getPrefs(this));
+        Utils.saveToSharedPreferences(Values.ADS_PREF, result, this);
         if (!isFragmentExist(Values.NEWS_TAG)) {
             add(new NewsFragment(), Values.NEWS_TAG);
         }
