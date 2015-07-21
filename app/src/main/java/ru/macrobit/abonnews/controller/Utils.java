@@ -45,20 +45,21 @@ public class Utils {
 
 
     public static void saveToSharedPreferences(String key, String value,
-                                               SharedPreferences pref) {
+                                               Context context) {
+        SharedPreferences pref = getPrefs(context);
         SharedPreferences.Editor edit = pref.edit();
         edit.putString(key, value);
         edit.commit();
     }
 
-    public static String loadFromSharedPreferences(String key,
-                                                   SharedPreferences pref) {
+    public static String loadFromSharedPreferences(String key, Context context) {
+        SharedPreferences pref = getPrefs(context);
         String s = pref.getString(key, null);
         return s;
     }
 
     public static String[] loadSetFromSharedPreferences(String key,
-                                                   SharedPreferences pref) {
+                                                        SharedPreferences pref) {
         Set<String> mySet = pref.getStringSet(key, null);
         String[] s = mySet.toArray(new String[mySet.size()]);
         return s;
@@ -70,43 +71,29 @@ public class Utils {
 
     public static boolean isCookiesExist(Context context) {
         SharedPreferences prefs = getPrefs(context);
-        if (loadCookieFromSharedPreferences(Values.COOKIES, prefs) != null) {
+        if (loadCookieFromSharedPreferences(context) != null) {
             return true;
         } else {
             return false;
         }
     }
 
-    /**
-     * Saving cookies in SharedPreferences
-     * @param key
-     * @param cookieStore
-     * @param pref
-     */
-
-    public static void saveCookieToSharedPreferences(String key, CookieStore cookieStore,
-                                                          SharedPreferences pref) {
+    public static void saveCookieToSharedPreferences(CookieStore cookieStore, Context context) {
+        SharedPreferences pref = getPrefs(context);
         List<Cookie> list = cookieStore.getCookies();
         Set<ShortCookie> cookies = new HashSet<>();
-        for (Cookie c:list) {
+        for (Cookie c : list) {
             cookies.add(new ShortCookie(c.getName(), c.getValue(), c.getDomain(), c.getExpiryDate()));
         }
         SharedPreferences.Editor edit = pref.edit();
         String s = GsonUtils.toJson(cookies);
-        edit.putString(key, s);
+        edit.putString(Values.COOKIES, s);
         edit.commit();
     }
 
-    /**
-     * Load cookies from SharedPreferences
-     * @param key key in SharedPreferences
-     * @param pref SharedPreferences
-     * @return cookies
-     */
-
-    public static BasicClientCookie[] loadCookieFromSharedPreferences(String key,
-                                                     SharedPreferences pref) {
-        String s = pref.getString(key, null);
+    public static BasicClientCookie[] loadCookieFromSharedPreferences(Context context) {
+        SharedPreferences pref = getPrefs(context);
+        String s = pref.getString(Values.COOKIES, null);
         if (s != null) {
             ShortCookie[] cookies = GsonUtils.fromJson(s, ShortCookie[].class);
             BasicClientCookie[] basicClientCookies = new BasicClientCookie[cookies.length];
@@ -115,7 +102,10 @@ public class Utils {
                 basicClientCookies[i].setDomain(cookies[i].getDomain());
                 basicClientCookies[i].setExpiryDate(cookies[i].getExpiryDate());
             }
-            return basicClientCookies;
+            if (s.equals("[]"))
+                return null;
+            else
+                return basicClientCookies;
         } else {
             return null;
         }
@@ -123,6 +113,7 @@ public class Utils {
 
     /**
      * Delete cookies from SharedPreferences
+     *
      * @param context
      */
 
@@ -136,6 +127,7 @@ public class Utils {
 
     /**
      * Checking internet state
+     *
      * @param context
      * @return true if connected
      */
@@ -146,10 +138,10 @@ public class Utils {
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (null != activeNetwork) {
-            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
                 return true;
 
-            if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
                 return true;
         }
         Toast.makeText(context, context.getString(R.string.not_connect), Toast.LENGTH_LONG).show();
@@ -166,16 +158,16 @@ public class Utils {
     }
 
     public static String getHtmlData(String bodyHTML, Activity activity) {
-        int width = (int)(getScreenWidth(activity) - convertDpToPixel(20, activity));
-        int heigth = (int)(width*0.45);
+        int width = (int) (getScreenWidth(activity) - convertDpToPixel(20, activity));
+        int heigth = (int) (width * 0.45);
         String head = "<html><head> " +
                 "<style> " +
 //                "p {text-align: justify !important;}" +
                 "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
-                ".wp-video {height:"+ heigth + "px  !important; width:100%% !important; visibility: visible !important;} " +
+                ".wp-video {height:" + heigth + "px  !important; width:100%% !important; visibility: visible !important;} " +
                 ".wp-video-shortcode {height:" + heigth + "px  !important; width:100% !important; visibility: visible !important;} " +
                 "audio {visibility: visible !important;} " +
-                "iframe {height:"+ heigth + "px !important; width:100%% !important; visibility: visible !important;} " +
+                "iframe {height:" + heigth + "px !important; width:100%% !important; visibility: visible !important;} " +
                 "</style>" +
                 "</head><body style='margin:0; '>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
@@ -188,7 +180,7 @@ public class Utils {
         return size.x;
     }
 
-    public static float convertDpToPixel(float dp, Context context){
+    public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
@@ -196,17 +188,20 @@ public class Utils {
     }
 
     public static Ads getAd(int pid, Context context) {
-        String json = Utils.loadFromSharedPreferences(Values.ADS_PREF, getPrefs(context));
+        String json = Utils.loadFromSharedPreferences(Values.ADS_PREF, context);
         Ads[] ads = GsonUtils.fromJson(json, Ads[].class);
         ArrayList<Ads> arrayList = new ArrayList<>();
-        for (Ads a:ads) {
-            if (a.getPid() == pid) {
-                arrayList.add(a);
+        if (arrayList.size() > 0) {
+            for (Ads a : ads) {
+                if (a.getPid() == pid) {
+                    arrayList.add(a);
+                }
             }
+            Random rnd = new Random();
+            int idx = rnd.nextInt(arrayList.size());
+            return arrayList.get(idx);
         }
-        Random rnd = new Random();
-        int idx = rnd.nextInt(arrayList.size());
-        return arrayList.get(idx);
+        return null;
     }
 
     public static void setDeviceToken(Context context, String deviceToken) {
@@ -235,15 +230,15 @@ public class Utils {
 
     public static String createDeviceToken(Context context) throws IOException {
         String token = getDeviceToken(context);
-        if(token == null) {
-                token = InstanceID.getInstance(context).getToken(Values.SENDER_ID, Values.SCOPE, null);
+        if (token == null) {
+            token = InstanceID.getInstance(context).getToken(Values.SENDER_ID, Values.SCOPE, null);
             setDeviceToken(context, token);
         }
         return token;
     }
 
     public static void createAndSendDeviceToken(final Context context) {
-        if(isDeviceTokenSent(context)) {
+        if (isDeviceTokenSent(context)) {
             return;
         }
 

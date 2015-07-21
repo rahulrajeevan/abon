@@ -99,9 +99,8 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
                         NewsAdd news = new NewsAdd(title, content);
                         String json = GsonUtils.toJson(news);
                         if (Utils.isConnected(getActivity())) {
-                            new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                                    Utils.getPrefs(getActivity())), json, null).execute(Values.POSTS);
-                            showDialog(getString(R.string.loading_add));
+                            new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null).execute(Values.POSTS);
+                            showProgressDialog(getString(R.string.loading_add));
                         }
                     } else {
                         makeText(getString(R.string.need_content));
@@ -131,7 +130,7 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
             if (news.getStatus().equals("pending")) {
                 makeText(getString(R.string.added_news));
             }
-            hideDialog();
+            hideProgressDialog();
             getActivity().onBackPressed();
         } catch (Exception e) {
             try {

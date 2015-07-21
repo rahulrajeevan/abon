@@ -43,10 +43,9 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
                 container, false);
         mListView = (ListView) view.findViewById(R.id.mycom_listview);
         mText = (TextView) view.findViewById(R.id.mycom_text);
-        showDialog(getString(R.string.loading_comments));
+        showProgressDialog(getString(R.string.loading_comments));
         if (Utils.isConnected(getActivity())) {
-            new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                    Utils.getPrefs(getActivity()))).execute(Values.MY_COMMENTS);
+            new GetRequest(this, Utils.loadCookieFromSharedPreferences(getActivity())).execute(Values.MY_COMMENTS);
         }
         return view;
     }
@@ -61,8 +60,7 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
                 String s = null;
                 try {
                     s = new GetRequest(null,
-                            Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                                    Utils.getPrefs(getActivity())))
+                            Utils.loadCookieFromSharedPreferences(getActivity()))
                             .execute(Values.POSTS + mComments.get(position).getPost().getId()).get();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -94,7 +92,7 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
         } catch (Exception e) {
             Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
-        hideDialog();
+        hideProgressDialog();
 
     }
 }
