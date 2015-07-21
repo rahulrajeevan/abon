@@ -66,8 +66,8 @@ public class RegistrationRequest extends AsyncTask<String, String, String> {
                     "application/json");
             post.setHeader("Accept", "*/*");
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                nameValuePairs.add(new BasicNameValuePair("user_login", mLogin));
-                nameValuePairs.add(new BasicNameValuePair("user_email", mEmail));
+                nameValuePairs.add(new BasicNameValuePair("log", mLogin));
+                nameValuePairs.add(new BasicNameValuePair("email", mEmail));
 
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = client.execute(post);
