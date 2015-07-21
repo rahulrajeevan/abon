@@ -21,7 +21,10 @@ public class NewsUtils {
         ShortNews shortNews;
         for (News n : news) {
             if (!n.isAdv()) {
-                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
+                if (n.getFeaturedImage() != null)
+                    shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
+                else
+                    shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), null, String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
             } else {
                 shortNews = new ShortNews(n.getAdUrl(), n.getUrl());
             }
