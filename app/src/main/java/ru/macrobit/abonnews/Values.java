@@ -19,6 +19,7 @@ public class Values {
     public static final String COOKIES = "cookies";
     public static final String PROFILE = URL + "wp-json/users/me";
     public static final String ADS = URL +  "/wp-json/ads";
+    public static final String CHANGE_PASS = URL + "wp-json/users/changepass";
     public static final int REQUEST_ULOGIN = 1;
     public static final String TOKEN = "token";
     public static final String EMAIL = "email";
@@ -33,6 +34,7 @@ public class Values {
     public static final String ABOUT_TAG = "about";
     public static final String REGISTRATION_TAG = "registry";
     public static final String MY_COMMENTS_TAG = "my comments";
+    public static final String DIALOG_TAG = "dialog tag";
     public static final String TAG = "tag";
     public static final String FULL_NEWS = "full";
     public static final String FACEBOOK = "http://www.facebook.com/sharer/sharer.php?u=";

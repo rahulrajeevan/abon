@@ -62,5 +62,9 @@
     <string name="image_attached">Изображение автоматически прикрепится к Вашей новости</string>
     <string name="searching">Идет поиск новостей...</string>
     <string name="no_result">По Вашему запросу ничего не найдено</string>
+    <string name="yes">Ок</string>
+    <string name="no">Отмена</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="need_reauthorize">Ваш пароль успешо изменен. Вы можете авторизоваться повторно, используя новые данные</string>
 </resources>
 
