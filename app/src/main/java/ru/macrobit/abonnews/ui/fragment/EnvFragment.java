@@ -3,6 +3,7 @@ package ru.macrobit.abonnews.ui.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,7 +32,7 @@ public class EnvFragment extends Fragment {
         mManager = getActivity().getSupportFragmentManager();
     }
 
-    void showDialog(String message) {
+    void showProgressDialog(String message) {
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(message);
         mProgressDialog.setCancelable(false);
@@ -40,9 +41,10 @@ public class EnvFragment extends Fragment {
         mProgressDialog.show();
     }
 
-    void hideDialog() {
+    void hideProgressDialog() {
         mProgressDialog.hide();
     }
+
     void add(Fragment fragment, String tag) {
 //        if (!Values.isDisplayHomeEnabled) {
 //            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -89,7 +91,12 @@ public class EnvFragment extends Fragment {
         mTransaction.commit();
     }
 
-    void popBackStack () {
+   public void showDialog(DialogFragment frag, String tag) {
+        frag.show(mManager, tag);
+    }
+
+
+    void popBackStack() {
         mManager.popBackStack();
     }
 
@@ -110,7 +117,7 @@ public class EnvFragment extends Fragment {
     }
 
     public void addListenerToEditText(View view, final Activity activity) {
-        if(!(view instanceof EditText)) {
+        if (!(view instanceof EditText)) {
             view.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     hideSoftKeyboard(activity);
@@ -134,6 +141,6 @@ public class EnvFragment extends Fragment {
     }
 
     boolean isFragmentExist(String tag) {
-        return (getFragmentByTag(tag) != null)? true: false;
+        return (getFragmentByTag(tag) != null) ? true : false;
     }
 }
