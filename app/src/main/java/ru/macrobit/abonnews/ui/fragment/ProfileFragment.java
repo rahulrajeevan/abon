@@ -36,6 +36,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
     private Button mAuthorization;
     private Button mSocAuthorization;
     private Button mRegistration;
+    private Button mChangePass;
     private boolean isCookieExist;
     View mParentView;
 
@@ -49,9 +50,8 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         mParentView = inflater.inflate(R.layout.fragment_profile,
                 container, false);
         if (Utils.isConnected(getActivity()) && isCookieExist) {
-            showDialog(getString(R.string.loading_profile));
-            new GetRequest(this, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                    Utils.getPrefs(getActivity()))).execute(Values.PROFILE);
+            showProgressDialog(getString(R.string.loading_profile));
+            new GetRequest(this, Utils.loadCookieFromSharedPreferences(getActivity())).execute(Values.PROFILE);
         }
         initFragment(mParentView);
         return mParentView;
@@ -72,12 +72,14 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
 //                remove(Values.PROFILE_TAG);
             }
         });
+        mChangePass = (Button) v.findViewById(R.id.profile_change_pass);
         mAuthorization = (Button) v.findViewById(R.id.profile_authorization);
         mSocAuthorization = (Button) v.findViewById(R.id.profile_soc_auto);
         mRegistration = (Button) v.findViewById(R.id.profile_reg);
         mAuthorization.setOnClickListener(this);
         mSocAuthorization.setOnClickListener(this);
         mRegistration.setOnClickListener(this);
+        mChangePass.setOnClickListener(this);
     }
 
     private void setVisibility(View v) {
@@ -114,7 +116,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         } catch (Exception e) {
             Toast.makeText(getActivity(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
         }
-        hideDialog();
+        hideProgressDialog();
     }
 
     @Override
@@ -132,7 +134,9 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
             case R.id.profile_reg:
                 popBackStack();
                 add(new RegistrationFragment(), Values.REGISTRATION_TAG);
-
+                break;
+            case R.id.profile_change_pass:
+                showDialog(new DialogChangePasswordFragment(), Values.DIALOG_TAG);
                 break;
         }
     }

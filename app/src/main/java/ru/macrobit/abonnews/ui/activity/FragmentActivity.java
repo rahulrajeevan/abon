@@ -27,7 +27,7 @@ import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddMediaRequest;
-import ru.macrobit.abonnews.loader.AuthorizationRequest;
+import ru.macrobit.abonnews.loader.SocialAuthorizationRequest;
 import ru.macrobit.abonnews.ui.fragment.AboutFragment;
 import ru.macrobit.abonnews.ui.fragment.AddPostFragment;
 import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
@@ -254,8 +254,8 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             switch (resultCode) {
                 case RESULT_OK:
                     String token = userdata.get(Values.TOKEN).toString();
-                    Utils.saveToSharedPreferences(Values.TOKEN, token, Utils.getPrefs(this));
-                    new AuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
+                    Utils.saveToSharedPreferences(Values.TOKEN, token, this);
+                    new SocialAuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
                     break;
                 case RESULT_CANCELED:
 //                    popBackStack();
@@ -277,8 +277,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             String filePath = cursor.getString(columnIndex);
             cursor.close();
             AddPostFragment frag = (AddPostFragment)getFragmentByTag(Values.ADD_TAG);
-            new AddMediaRequest(frag, Utils.loadCookieFromSharedPreferences(Values.COOKIES,
-                    Utils.getPrefs(this)), filePath).execute(Values.MEDIA_ADD);
+            new AddMediaRequest(frag, Utils.loadCookieFromSharedPreferences(this), filePath).execute(Values.MEDIA_ADD);
         }
     }
 
@@ -298,7 +297,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
 
     @Override
     public void onAuthorizationTaskCompleted(CookieStore result) {
-        Utils.saveCookieToSharedPreferences(Values.COOKIES, result, Utils.getPrefs(this));
+        Utils.saveCookieToSharedPreferences(result, this);
 
         popBackStack();
         finish();

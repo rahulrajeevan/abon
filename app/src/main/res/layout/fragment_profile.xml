@@ -101,6 +101,17 @@
                 android:background="@color/primary_dark"
                 android:text="@string/logout"
                 android:textColor="@color/primary" />
+
+            <Button
+                android:id="@+id/profile_change_pass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/primary_dark"
+                android:text="@string/change_password"
+                android:textColor="@color/primary"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
         </RelativeLayout>
 
     </ScrollView>
