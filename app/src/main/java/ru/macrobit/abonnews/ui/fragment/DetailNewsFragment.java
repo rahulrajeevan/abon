@@ -307,6 +307,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                         }
                     });
                     mListView.expandGroup(0);
+                    setListViewHeight(mListView, 0);
                 }
             }
         } catch (Exception e) {

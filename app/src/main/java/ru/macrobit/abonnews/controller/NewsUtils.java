@@ -22,7 +22,7 @@ public class NewsUtils {
         for (News n : news) {
             if (!n.isAdv()) {
                 if (n.getFeaturedImage() != null)
-                    shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
+                    shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
                 else
                     shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), null, String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
             } else {
@@ -36,7 +36,7 @@ public class NewsUtils {
     public static ShortNews generateShortNews(News n, Context context) {
         ShortNews shortNews;
             if (!n.isAdv()) {
-                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
+                shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
             } else {
                 shortNews = new ShortNews(n.getAdUrl(), n.getUrl());
             }
@@ -44,7 +44,7 @@ public class NewsUtils {
     }
 
     public static ShortNews generateShortNews(News n) {
-        ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage().getGuid(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
+        ShortNews shortNews = new ShortNews(n.getTitle(), parseDate(n.getDate()), n.getFeaturedImage(), String.valueOf(n.getId()), n.isSticky(), n.getCommentCount());
         return shortNews;
     }
 

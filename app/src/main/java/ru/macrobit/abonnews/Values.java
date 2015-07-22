@@ -12,8 +12,8 @@ public class Values {
     public static final String COMMENTS = "/comments";
     public static final String PUSH = URL + "wp-json/push";
     public static final String MY_COMMENTS = URL + "/wp-json/comments/my";
-    public static final String SEARCH = URL + "wp-json/postsnew?filter[s]=";
-    public static final String GET_PAGE_POSTS = URL + "/wp-json/postsnew?filter[posts_per_page]=10&page=";
+    public static final String SEARCH = URL + "wp-json/posts?filter[s]=";
+    public static final String GET_PAGE_POSTS = URL + "/wp-json/posts?filter[posts_per_page]=10&page=";
     public static final String REGISTRY = URL + "wp-json/users/register";
     public static final String PREF = "Abon news preferences";
     public static final String COOKIES = "cookies";
@@ -24,7 +24,6 @@ public class Values {
     public static final String TOKEN = "token";
     public static final String EMAIL = "email";
     public static final String ULOGIN = URL + "?ulogin=token&backurl=http://abon-news.ru/wp-login.php?loggedout=true";
-//    public static final String SOC_AUTORIZATION = URL + "?ulogin=token&backurl=http://abon-news.ru/wp-login.php";
     public static final String SOC_AUTORIZATION = "http://abon-news.ru/?ulogin=token&backurl=http%3A%2F%2Fabon-news.ru%2Fwp-login.php%3Fredirect_to%3Dhttp%253A%252F%252Fabon-news.ru%252Fwp-admin%252F%26reauth%3D1";
     public static final String DETAIL_TAG = "detail";
     public static final String AUTHORIZATION_TAG = "authorization";
