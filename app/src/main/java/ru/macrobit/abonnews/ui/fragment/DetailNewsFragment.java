@@ -1,6 +1,5 @@
 package ru.macrobit.abonnews.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -18,10 +17,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.adapter.MyExpandableAdapter;
+import ru.macrobit.abonnews.adapter.CommentsAdapter;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
@@ -56,7 +55,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private TextView mTitle;
     private TextView mDate;
     private ImageView mImage;
-    private ExpandableListView mListView;
+//    private ExpandableListView mListView;
+    private ListView mListView;
     private ProgressBar mCommentProgressBar;
     private String mId;
     private WebView webView;
@@ -72,7 +72,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
-    private MyExpandableAdapter mAdapter;
+//    private MyExpandableAdapter mAdapter;
+    private CommentsAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -121,7 +122,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mDate = (TextView) parent.findViewById(R.id.det_date);
         mImage = (ImageView) parent.findViewById(R.id.det_imageView);
         mFooter = parent.findViewById(R.id.det_footer);
-        mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
+//        mListView = (ExpandableListView) parent.findViewById(R.id.det_listView);
+        mListView = (ListView) parent.findViewById(R.id.det_listView);
     }
 
     private void setVisibilities() {
@@ -284,30 +286,14 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
                 if (comments.length > 0) {
                     final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
-                    ArrayList<String> group = new ArrayList<>();
-                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
-                    mAdapter = new MyExpandableAdapter(group, arrayList);
-                    mAdapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+                    ArrayList<Comments> group = new ArrayList<>();
+                    group.addAll(Arrays.asList(comments));
+//                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
+                    mAdapter = new CommentsAdapter(getActivity(), R.layout.comments_item, group);
                     mListView.setAdapter(mAdapter);
                     mListView.setVisibility(View.VISIBLE);
-                    mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-                        @Override
-                        public boolean onGroupClick(ExpandableListView parent, View v,
-                                                    int groupPosition, long id) {
-                            setListViewHeight(parent, groupPosition);
-                            return false;
-                        }
-                    });
-                    mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                        @Override
-                        public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
-                            mCommentId = arrayList.get(childId).getId();
-                            return false;
-                        }
-                    });
-                    mListView.expandGroup(0);
-                    setListViewHeight(mListView, 0);
+                    mAdapter.notifyDataSetChanged();
+                    setListViewHeight(mListView);
                 }
             }
         } catch (Exception e) {
@@ -321,6 +307,57 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
         mSwipeRefreshLayout.setRefreshing(false);
     }
+
+//    private void initComments(String result) {
+//        try {
+//            if (result != null) {
+//                Comments[] comments = GsonUtils.fromJson(result, Comments[].class);
+//                if (comments.length > 0) {
+//                    final ArrayList<Comments> arrayList = new ArrayList<Comments>(Arrays.asList(comments));
+//                    ArrayList<String> group = new ArrayList<>();
+//                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
+//                    mAdapter = new MyExpandableAdapter(group, arrayList);
+//                    mAdapter.setInflater((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), getActivity());
+//                    mListView.setAdapter(mAdapter);
+//
+//                    mListView.setVisibility(View.VISIBLE);
+//                    mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+//                        @Override
+//                        public void onGroupExpand(int groupPosition) {
+//                            setListViewHeight(mListView, groupPosition);
+//                        }
+//                    });
+//                    mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+//
+//                        @Override
+//                        public boolean onGroupClick(ExpandableListView parent, View v,
+//                                                    int groupPosition, long id) {
+//                            setListViewHeight(parent, groupPosition);
+//                            return false;
+//                        }
+//                    });
+//                    mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//                        @Override
+//                        public boolean onChildClick(ExpandableListView expandableListView, View view, int parentId, int childId, long l) {
+//                            mCommentId = arrayList.get(childId).getId();
+//                            return false;
+//                        }
+//                    });
+//                    mListView.expandGroup(0);
+//                    setListViewHeight(mListView, 0);
+//                }
+//            }
+//        } catch (Exception e) {
+//            try {
+//                Comments comment = GsonUtils.fromJson(result, Comments.class);
+//                getComments();
+//            } catch (Exception e1) {
+//
+//            }
+////            makeText(getString(R.string.server_error));
+//        }
+//        mSwipeRefreshLayout.setRefreshing(false);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -367,39 +404,62 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
     }
 
-    private void setListViewHeight(ExpandableListView listView,
-                                   int group) {
-        MyExpandableAdapter listAdapter = (MyExpandableAdapter) listView.getExpandableListAdapter();
+    private void setListViewHeight(ListView listView) {
+        CommentsAdapter listAdapter = (CommentsAdapter) listView.getAdapter();
         int totalHeight = 0;
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
                 View.MeasureSpec.EXACTLY);
-        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
-            View groupItem = listAdapter.getGroupView(i, false, null, listView);
-            groupItem.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
-            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
-            totalHeight += groupItem.getMeasuredHeight();
-
-            if (((listView.isGroupExpanded(i)) && (i != group))
-                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
-                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
-                    View listItem = listAdapter.getChildView(i, j, false, null,
-                            listView);
-                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
                     totalHeight += listItem.getMeasuredHeight();
 
-                }
-            }
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         int height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+                + (listView.getDividerHeight() - 1);
         if (height < 10)
             height = 200;
         params.height = height;
         listView.setLayoutParams(params);
         listView.requestLayout();
     }
+
+//    private void setListViewHeight(ExpandableListView listView,
+//                                   int group) {
+//        MyExpandableAdapter listAdapter = (MyExpandableAdapter) listView.getExpandableListAdapter();
+//        int totalHeight = 0;
+//        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+//                View.MeasureSpec.EXACTLY);
+//        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+//            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+//            groupItem.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
+//            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+//
+//            totalHeight += groupItem.getMeasuredHeight();
+//
+//            if (((listView.isGroupExpanded(i)) && (i != group))
+//                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+//                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+//                    View listItem = listAdapter.getChildView(i, j, false, null,
+//                            listView);
+//                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+//                    totalHeight += listItem.getMeasuredHeight();
+//
+//                }
+//            }
+//        }
+//        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        int height = totalHeight
+//                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+//        if (height < 10)
+//            height = 200;
+//        params.height = height;
+//        listView.setLayoutParams(params);
+//        listView.requestLayout();
+//    }
 
     public void hide() {
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

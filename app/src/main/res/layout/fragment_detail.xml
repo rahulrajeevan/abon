@@ -127,7 +127,16 @@
                         android:src="@drawable/tw" />
                 </LinearLayout>
 
-                <ExpandableListView
+                <!--<ExpandableListView-->
+                    <!--android:id="@+id/det_listView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignLeft="@+id/social_layout"-->
+                    <!--android:layout_alignStart="@+id/social_layout"-->
+                    <!--android:layout_below="@+id/social_layout"-->
+                    <!--android:layout_marginTop="10dp" />-->
+
+                <ListView
                     android:id="@+id/det_listView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
