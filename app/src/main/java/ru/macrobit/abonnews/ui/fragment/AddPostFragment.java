@@ -2,6 +2,7 @@ package ru.macrobit.abonnews.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +15,19 @@ import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.Utils;
 import ru.macrobit.abonnews.loader.AddDataRequest;
-import ru.macrobit.abonnews.model.Media;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.NewsAdd;
+import ru.macrobit.abonnews.model.UploadedMedia;
 
-public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
+public class AddPostFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
 
     private EditText mTitle;
     private EditText mContent;
     private Button mPostButton;
-    private Button mPickMedia;
+    private Button mPickImage;
+    private Button mPickVideo;
     String mImages;
+    String mVideos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,50 +46,6 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
     private void initFragment(View parent) {
         mTitle = (EditText) parent.findViewById(R.id.addTitle);
         mContent = (EditText) parent.findViewById(R.id.addContent);
-//        final  TextInputLayout titleInputLayout = (TextInputLayout) parent.findViewById(R.id.input_add_title);
-//        titleInputLayout.setError(getString(R.string.need_title));
-//        final TextInputLayout contentInputLayout = (TextInputLayout) parent.findViewById(R.id.input_content);
-//        contentInputLayout.setError(getString(R.string.need_content));
-//        mContent.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (s.toString().length() == 0) {
-//                    contentInputLayout.setErrorEnabled(true);
-//                } else {
-//                    contentInputLayout.setErrorEnabled(false);
-//                }
-//            }
-//        });
-//        mTitle.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (s.toString().length() == 0) {
-//                    titleInputLayout.setErrorEnabled(true);
-//                } else {
-//                    titleInputLayout.setErrorEnabled(false);
-//                }
-//            }
-//        });
         mPostButton = (Button) parent.findViewById(R.id.addNewsButton);
 
         mPostButton.setOnClickListener(new View.OnClickListener() {
@@ -110,17 +69,10 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
                 }
             }
         });
-        mPickMedia = (Button) parent.findViewById(R.id.button2);
-        mPickMedia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                photoPickerIntent.setType("image/*");
-                if (Utils.isConnected(getActivity())) {
-                    getActivity().startActivityForResult(photoPickerIntent, Values.MEDIA_RESULT);
-                }
-            }
-        });
+        mPickImage = (Button) parent.findViewById(R.id.addImageButton);
+        mPickVideo = (Button) parent.findViewById(R.id.addVideoButton);
+        mPickImage.setOnClickListener(this);
+        mPickVideo.setOnClickListener(this);
     }
 
     @Override
@@ -134,14 +86,35 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted {
             getActivity().onBackPressed();
         } catch (Exception e) {
             try {
-                Media media = GsonUtils.fromJson(result, Media.class);
-                String url = media.getGuid();
-                mImages += "<img src=\"" + url + "\" alt=\"\" />" + "\n";
+                UploadedMedia media = GsonUtils.fromJson(result, UploadedMedia.class);
+                String url = media.getPath();
+                if (url.contains(".jpg") || url.contains(".png")) {
+                    mImages += "<img src=\"" + url + "\" alt=\"\" />" + "\n";
+                } else {
+                    mVideos += url + "\n";
+                }
                 makeText(getString(R.string.image_attached));
             } catch (Exception e1) {
                 makeText(getString(R.string.server_error));
             }
         }
+        hideProgressDialog();
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent pickerIntent = new Intent();
+        switch (v.getId()) {
+            case R.id.addImageButton:
+                pickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                break;
+            case R.id.addVideoButton:
+                pickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                break;
+        }
+        if (Utils.isConnected(getActivity())) {
+            getActivity().startActivityForResult(pickerIntent, Values.MEDIA_RESULT);
+        }
     }
 }

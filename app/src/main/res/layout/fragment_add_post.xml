@@ -1,90 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24dp"
-        android:text="@string/add_news_menu"
-        android:id="@+id/textView3"
-        android:textColor="@color/secondary_text"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="43dp" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_add_title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp">
+        android:layout_height="match_parent"
+        android:background="@color/primary"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="39dp"
+            android:layout_marginTop="43dp"
+            android:text="@string/add_news_menu"
+            android:textColor="@color/secondary_text"
+            android:textSize="24dp" />
 
-        <EditText
-            android:id="@+id/addTitle"
-            android:textCursorDrawable="@drawable/cursor_drawable"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_add_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_below="@+id/textView3"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/input_add_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp">
 
-        <EditText
-            android:id="@+id/addContent"
-            android:textCursorDrawable="@drawable/cursor_drawable"
+            <EditText
+                android:id="@+id/addTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars = "vertical"
-            android:ems="10"
-            android:hint="@string/content"
-            android:inputType="textMultiLine"
-            android:lines="5" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_below="@+id/input_add_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp">
 
-    <Button
-        android:id="@+id/addNewsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/input_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/primary_dark"
-        android:text="@string/add_news"
-        android:textColor="@color/primary" />
+            <EditText
+                android:id="@+id/addContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/content"
+                android:inputType="textMultiLine"
+                android:lines="4"
+                android:scrollbars="vertical"
+                android:textCursorDrawable="@drawable/cursor_drawable" />
+        </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/addNewsButton"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/add_media"
-        android:background="@color/primary_dark"
-        android:textColor="@color/primary"
-        android:visibility="visible" />
+        <Button
+            android:id="@+id/addNewsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/primary_dark"
+            android:text="@string/add_news"
+            android:textColor="@color/primary" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/addImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/addNewsButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/primary_dark"
+            android:text="@string/add_media"
+            android:textColor="@color/primary"
+            android:visibility="visible" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/addVideoButton"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/addImageButton"
+            android:background="@color/primary_dark"
+            android:text="@string/add_video"
+            android:textColor="@color/primary"
+            />
+
+    </RelativeLayout>
+</ScrollView>
