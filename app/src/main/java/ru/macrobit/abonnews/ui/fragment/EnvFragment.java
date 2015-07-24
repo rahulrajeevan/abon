@@ -32,7 +32,7 @@ public class EnvFragment extends Fragment {
         mManager = getActivity().getSupportFragmentManager();
     }
 
-    void showProgressDialog(String message) {
+    public void showProgressDialog(String message) {
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(message);
         mProgressDialog.setCancelable(false);

@@ -277,6 +277,7 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             String filePath = cursor.getString(columnIndex);
             cursor.close();
             AddPostFragment frag = (AddPostFragment)getFragmentByTag(Values.ADD_TAG);
+            frag.showProgressDialog(getString(R.string.file_loading));
             new AddMediaRequest(frag, Utils.loadCookieFromSharedPreferences(this), filePath).execute(Values.MEDIA_ADD);
         }
     }
