@@ -21,7 +21,7 @@
     <string name="enter_comment">Введите комментарий</string>
     <string name="title">Заголовок</string>
     <string name="content">Текст новости</string>
-    <string name="add_news_menu">Добавить новость/фотографию</string>
+    <string name="add_news_menu">Добавить новость/файл</string>
     <string name="add_news">Добавить новость</string>
     <string name="authorization">Авторизация</string>
     <string name="social_authorization">Авторизация через соц. сеть</string>
@@ -59,7 +59,7 @@
     <string name="success_reg">Регистрация завершена. Проверьте вашу почту.</string>
     <string name="reg_error">Во время регистрации произошла ошибка. Повторите попытку позднее</string>
     <string name="loading_picture">Изображение загружается...</string>
-    <string name="image_attached">Изображение автоматически прикрепится к Вашей новости</string>
+    <string name="image_attached">Файл автоматически прикрепится к Вашей новости</string>
     <string name="searching">Идет поиск новостей...</string>
     <string name="no_result">По Вашему запросу ничего не найдено</string>
     <string name="yes">Ок</string>
