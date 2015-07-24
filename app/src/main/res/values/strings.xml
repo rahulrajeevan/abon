@@ -66,5 +66,7 @@
     <string name="no">Отмена</string>
     <string name="change_password">Сменить пароль</string>
     <string name="need_reauthorize">Ваш пароль успешо изменен. Вы можете авторизоваться повторно, используя новые данные</string>
+    <string name="add_video">Добавить видео</string>
+    <string name="file_loading">Файл загружается...</string>
 </resources>
 
