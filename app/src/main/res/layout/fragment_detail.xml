@@ -136,31 +136,37 @@
                     <!--android:layout_below="@+id/social_layout"-->
                     <!--android:layout_marginTop="10dp" />-->
 
-                <ListView
-                    android:id="@+id/det_listView"
-                    android:layout_width="match_parent"
+                <RelativeLayout
+                    android:id="@+id/det_list"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/social_layout"
                     android:layout_alignStart="@+id/social_layout"
                     android:layout_below="@+id/social_layout"
-                    android:layout_marginTop="10dp" />
+                    android:layout_width="match_parent">
+                    <ListView
+                        android:id="@+id/det_listView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp" />
 
-                <ProgressBar
-                    android:id="@+id/det_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/social_layout"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp" />
+                    <ProgressBar
+                        android:id="@+id/det_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp" />
+                </RelativeLayout>
+
+
 
                 <LinearLayout
                     android:id="@+id/det_footer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/det_listView"
-                    android:layout_alignStart="@+id/det_listView"
-                    android:layout_below="@+id/det_listView">
+                    android:layout_alignLeft="@+id/det_list"
+                    android:layout_alignStart="@+id/det_list"
+                    android:layout_below="@+id/det_list">
 
                     <RelativeLayout
                         android:layout_width="match_parent"

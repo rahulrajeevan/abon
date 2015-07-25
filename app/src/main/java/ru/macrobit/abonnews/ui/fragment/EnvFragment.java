@@ -33,16 +33,24 @@ public class EnvFragment extends Fragment {
     }
 
     public void showProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setMessage(message);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.show();
+        try {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(message);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     void hideProgressDialog() {
-        mProgressDialog.hide();
+        try {
+            mProgressDialog.hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     void add(Fragment fragment, String tag) {
