@@ -143,8 +143,8 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         fb.setOnClickListener(this);
         tw.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mImageLayout.setOnClickListener(this);
-        mWebImage.setOnClickListener(this);
+//        mImageLayout.setOnClickListener(this);
+//        mWebImage.setOnClickListener(this);
         Button addComment = (Button) parent.findViewById(R.id.addComment);
         final EditText commentEdit = (EditText) parent.findViewById(R.id.comment);
         addListenerToEditText(commentEdit, getActivity());
