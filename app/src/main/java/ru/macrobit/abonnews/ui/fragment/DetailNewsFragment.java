@@ -59,7 +59,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private ListView mListView;
     private ProgressBar mCommentProgressBar;
     private String mId;
-    private WebView webView;
+    private WebView mWebView;
     private FullNews mNews;
     private View mFooter;
     private int mCommentId = -999;
@@ -96,7 +96,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         try {
             Class.forName("android.webkit.WebView")
                     .getMethod("onPause", (Class[]) null)
-                    .invoke(webView, (Object[]) null);
+                    .invoke(mWebView, (Object[]) null);
 
         } catch (ClassNotFoundException cnfe) {
         } catch (NoSuchMethodException nsme) {
@@ -106,7 +106,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void initUI(View parent) {
-        webView = (WebView) parent.findViewById(R.id.webView);
+        mWebView = (WebView) parent.findViewById(R.id.webView);
         DynamicImageView adHeader = (DynamicImageView) parent.findViewById(R.id.ad_header);
         initAdv(adHeader);
         DynamicImageView adFooter = (DynamicImageView) parent.findViewById(R.id.ad_footer);
@@ -176,12 +176,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 
     private void setWebViews() {
         mWebViewClient = new myWebViewClient();
-        webView.setWebViewClient(mWebViewClient);
+        mWebView.setWebViewClient(mWebViewClient);
         mWebChromeClient = new myWebChromeClient();
-        webView.setWebChromeClient(mWebChromeClient);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.getSettings().setSaveFormData(true);
+        mWebView.setWebChromeClient(mWebChromeClient);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setAppCacheEnabled(true);
+        mWebView.getSettings().setSaveFormData(true);
 
 
         mShareWebView.getSettings().setUserAgentString(System.getProperty("http.agent"));
@@ -222,7 +222,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             if (mNews.getBody().contains(mNews.getImageUrl())) {
                 mImage.setVisibility(View.GONE);
             }
-            webView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
+            mWebView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
         }
         Spanned span = Html.fromHtml(mNews.getTitle());
         mTitle.setText(span);
@@ -470,7 +470,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mLayout.setVisibility(View.VISIBLE);
         if (mCustomView == null)
             return;
-        webView.setVisibility(View.VISIBLE);
+        mWebView.setVisibility(View.VISIBLE);
         mCustomViewContainer.setVisibility(View.GONE);
         mCustomView.setVisibility(View.GONE);
         mCustomViewContainer.removeView(mCustomView);
@@ -501,7 +501,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 return;
             }
             mCustomView = view;
-//            webView.setVisibility(View.GONE);
+//            mWebView.setVisibility(View.GONE);
             mCustomViewContainer.setVisibility(View.VISIBLE);
             mCustomViewContainer.addView(view);
             customViewCallback = callback;
@@ -532,7 +532,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                webView.setVisibility(View.VISIBLE);
+                mWebView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
                 mFooter.setVisibility(View.VISIBLE);
                 mListView.setVisibility(View.VISIBLE);

@@ -163,7 +163,8 @@ public class Utils {
         String head = "<html><head> " +
                 "<style> " +
 //                "p {text-align: justify !important;}" +
-                "img {max-width:100%%; height:auto !important;width:auto !important; visibility: visible !important;} " +
+//                "img {max-width:100%% !important; height:auto !important;width:auto !important; visibility: visible !important;} " +
+                "img{display: inline !important ;height: auto !important ;max-width: 100% !important ;}" +
                 ".wp-video {height:" + heigth + "px  !important; width:100%% !important; visibility: visible !important;} " +
                 ".wp-video-shortcode {height:" + heigth + "px  !important; width:100% !important; visibility: visible !important;} " +
                 "audio {visibility: visible !important;} " +
