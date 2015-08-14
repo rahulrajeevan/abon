@@ -222,11 +222,15 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 }
                 if ((lastInScreen >= totalItemCount - 10) && isEndNewsList) {
                     if (!isLastItemVisible) {
-                        isLastItemVisible = true;
-                        if (!isSearchList)
-                            makeText(getActivity().getString(R.string.list_end));
-                        mListView.removeFooterView(mFooter);
-                        mAdapter.notifyDataSetChanged();
+                        try {
+                            isLastItemVisible = true;
+                            if (!isSearchList)
+                                makeText(getActivity().getString(R.string.list_end));
+                            mListView.removeFooterView(mFooter);
+                            mAdapter.notifyDataSetChanged();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

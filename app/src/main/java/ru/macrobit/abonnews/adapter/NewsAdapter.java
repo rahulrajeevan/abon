@@ -115,6 +115,7 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
         viewHolder.date = ((TextView) convertView.findViewById(R.id.det_date));
         viewHolder.image = ((ImageView) convertView.findViewById(R.id.det_imageView));
         viewHolder.commentsCount = ((TextView) convertView.findViewById(R.id.comments_count));
+        viewHolder.commentsCount.setText("");
         if (!mNews.get(position).isAd()) {
             Spanned span = Html.fromHtml(mNews.get(position - ad_count).getTitle());
             viewHolder.title.setText(span);

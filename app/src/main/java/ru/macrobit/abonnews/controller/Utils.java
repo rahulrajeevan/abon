@@ -168,7 +168,9 @@ public class Utils {
                 ".wp-video {height:" + heigth + "px  !important; width:100%% !important; visibility: visible !important;} " +
                 ".wp-video-shortcode {height:" + heigth + "px  !important; width:100% !important; visibility: visible !important;} " +
                 "audio {visibility: visible !important;} " +
-                "iframe {height:" + heigth + "px !important; width:100%% !important; visibility: visible !important;} " +
+//                "iframe {display: inline-block !important; height:" + heigth + "px !important; width:100% !important; visibility: visible !important;} " +
+                "iframe{height:" + heigth + "px !important ;max-width: 100% !important ;}" +
+//                "iframe {display: inline !important; height: auto !important ;max-width: 100% !important ; visibility: visible !important;} " +
                 "</style>" +
                 "</head><body style='margin:0; '>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
