@@ -55,7 +55,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private TextView mTitle;
     private TextView mDate;
     private ImageView mImage;
-//    private ExpandableListView mListView;
+    //    private ExpandableListView mListView;
     private ListView mListView;
     private ProgressBar mCommentProgressBar;
     private String mId;
@@ -72,9 +72,11 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
-//    private MyExpandableAdapter mAdapter;
+    //    private MyExpandableAdapter mAdapter;
     private CommentsAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private View mView;
+    private boolean isProgressShowing = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,26 +85,41 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             return null;
         }
         showProgressDialog(getString(R.string.loading_detail));
-        View view = inflater.inflate(R.layout.fragment_detail,
+        isProgressShowing = true;
+        mView = inflater.inflate(R.layout.fragment_detail,
                 container, false);
-        initFragment(view);
-        return view;
+        initFragment(mView);
+        return mView;
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onResume() {
+        mWebView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
+        super.onResume();
+    }
 
+
+
+    @Override
+    public void onPause() {
+        mWebView.loadData("", "text/html; charset=UTF-8", null);
         try {
             Class.forName("android.webkit.WebView")
                     .getMethod("onPause", (Class[]) null)
                     .invoke(mWebView, (Object[]) null);
+
 
         } catch (ClassNotFoundException cnfe) {
         } catch (NoSuchMethodException nsme) {
         } catch (InvocationTargetException ite) {
         } catch (IllegalAccessException iae) {
         }
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private void initUI(View parent) {
@@ -414,7 +431,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             listItem.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
             listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
-                    totalHeight += listItem.getMeasuredHeight();
+            totalHeight += listItem.getMeasuredHeight();
 
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
@@ -538,6 +555,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                 mListView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
                 hideProgressDialog();
+                isProgressShowing = false;
             }
         });
 
