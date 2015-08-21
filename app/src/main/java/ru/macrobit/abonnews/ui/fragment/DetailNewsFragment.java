@@ -76,7 +76,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private CommentsAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View mView;
-    private boolean isProgressShowing = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +84,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
             return null;
         }
         showProgressDialog(getString(R.string.loading_detail));
-        isProgressShowing = true;
         mView = inflater.inflate(R.layout.fragment_detail,
                 container, false);
         initFragment(mView);
@@ -546,18 +544,17 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     }
 
     private void onPageLoaded() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
                 mWebView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
                 mFooter.setVisibility(View.VISIBLE);
                 mListView.setVisibility(View.VISIBLE);
                 mLayout.setVisibility(View.VISIBLE);
                 hideProgressDialog();
-                isProgressShowing = false;
-            }
-        });
+//            }
+//        });
 
     }
 
