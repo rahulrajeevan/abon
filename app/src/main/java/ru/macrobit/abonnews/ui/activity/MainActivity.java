@@ -207,12 +207,6 @@ public class MainActivity extends Env implements
     }
 
     @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(NAV_ITEM_ID, mNavItemId);
-    }
-
-    @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         if (getActiveFragments().size() > 1) {

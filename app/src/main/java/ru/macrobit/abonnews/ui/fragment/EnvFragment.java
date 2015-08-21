@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -23,34 +24,36 @@ public class EnvFragment extends Fragment {
     private static FragmentTransaction mTransaction;
     private FragmentManager mManager;
     private ProgressDialog mProgressDialog;
+    private FragmentActivity mActivity;
 
 
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
+        mActivity = getActivity();
         Values.isDisplayHomeEnabled = false;
-        mManager = getActivity().getSupportFragmentManager();
+        mManager = mActivity.getSupportFragmentManager();
     }
 
-    public void showProgressDialog(String message) {
-        try {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(message);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void showProgressDialog(final String message) {
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                mProgressDialog = new ProgressDialog(mActivity);
+                mProgressDialog.setMessage(message);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressDialog.setIndeterminate(true);
+                mProgressDialog.show();
+            }
+        });
     }
 
     void hideProgressDialog() {
-        try {
-            mProgressDialog.hide();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                mProgressDialog.dismiss();
+            }
+        });
     }
 
     void add(Fragment fragment, String tag) {
@@ -67,7 +70,7 @@ public class EnvFragment extends Fragment {
 
     void add(Fragment fragment, Bundle bundle, String tag) {
         if (!Values.isDisplayHomeEnabled) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) mActivity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             Values.isDisplayHomeEnabled = true;
         }
         mTransaction = mManager.beginTransaction();
@@ -121,7 +124,9 @@ public class EnvFragment extends Fragment {
     }
 
     void makeText(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        if (isAdded()) {
+            Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
+        }
     }
 
     public void addListenerToEditText(View view, final Activity activity) {

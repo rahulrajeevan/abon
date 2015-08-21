@@ -191,18 +191,22 @@ public class Utils {
     }
 
     public static Ads getAd(int pid, Context context) {
-        String json = Utils.loadFromSharedPreferences(Values.ADS_PREF, context);
-        Ads[] ads = GsonUtils.fromJson(json, Ads[].class);
-        ArrayList<Ads> arrayList = new ArrayList<>();
-        if (arrayList.size() > 0) {
-            for (Ads a : ads) {
-                if (a.getPid() == pid) {
-                    arrayList.add(a);
+        try {
+            String json = Utils.loadFromSharedPreferences(Values.ADS_PREF, context);
+            Ads[] ads = GsonUtils.fromJson(json, Ads[].class);
+            ArrayList<Ads> arrayList = new ArrayList<>();
+            if (arrayList.size() > 0) {
+                for (Ads a : ads) {
+                    if (a.getPid() == pid) {
+                        arrayList.add(a);
+                    }
                 }
+                Random rnd = new Random();
+                int idx = rnd.nextInt(arrayList.size());
+                return arrayList.get(idx);
             }
-            Random rnd = new Random();
-            int idx = rnd.nextInt(arrayList.size());
-            return arrayList.get(idx);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
