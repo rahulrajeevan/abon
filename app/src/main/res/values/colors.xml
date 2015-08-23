@@ -3,7 +3,8 @@
     <color name="primary">#FFFFFF</color>
     <color name="primary_dark">#4A4A4A</color>
     <color name="primary_light">#FFFFFF</color>
-    <color name="accent">#F8F8F8</color>
+    <color name="accent">#009688</color>
+    <color name="toolbar_color">#F8F8F8</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="icons">#212121</color>
