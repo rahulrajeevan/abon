@@ -225,7 +225,11 @@ public class MainActivity extends Env implements
     public void onTaskCompleted(String result) {
         Utils.saveToSharedPreferences(Values.ADS_PREF, result, this);
         if (!isFragmentExist(Values.NEWS_TAG)) {
-            add(new NewsFragment(), Values.NEWS_TAG);
+            new Handler().post(new Runnable() {
+                public void run() {
+                    add(new NewsFragment(), Values.NEWS_TAG);
+                }
+            });
         }
     }
 }

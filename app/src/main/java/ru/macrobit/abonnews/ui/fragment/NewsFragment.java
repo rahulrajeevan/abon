@@ -316,7 +316,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 } else {
                     mSearchResults.setVisibility(View.GONE);
                     mListView.setVisibility(View.VISIBLE);
-                    mNews.clear();
+//                    mNews.clear();
                 }
                 mProgressBar.setVisibility(View.GONE);
             }

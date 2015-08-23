@@ -124,8 +124,12 @@ public class EnvFragment extends Fragment {
     }
 
     void makeText(String message) {
-        if (isAdded()) {
-            Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
+        try {
+            if (isAdded() && mActivity != null) {
+                Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
