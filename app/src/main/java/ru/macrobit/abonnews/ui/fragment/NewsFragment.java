@@ -1,6 +1,5 @@
 package ru.macrobit.abonnews.ui.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -55,7 +54,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private View mFooter;
     private View mHeader;
     private int adCount = 0;
-    private ProgressDialog mProgressDialog;
     private ProgressBar mProgressBar;
     private TextView mSearchResults;
 
@@ -89,12 +87,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         }
         mSearchResults = (TextView) parent.findViewById(R.id.searchResults);
         mListView.addFooterView(mFooter, null, false);
-        mProgressBar = (ProgressBar) parent.findViewById(R.id.searchProgressBar);
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setMessage(getString(R.string.loading));
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.show();
+        showProgressDialog(getString(R.string.loading));
         FloatingActionButton button = (FloatingActionButton) parent.findViewById(R.id.float_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,7 +321,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 isEndNewsList = true;
                 mListView.removeFooterView(mFooter);
             }
-            mProgressDialog.hide();
+            hideProgressDialog();
         } catch (Exception e) {
             mListView.removeFooterView(mFooter);
             makeText(getString(R.string.server_error));

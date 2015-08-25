@@ -199,11 +199,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mWebView.getSettings().setSaveFormData(true);
 
 
-        mShareWebView.getSettings().setUserAgentString(System.getProperty("http.agent"));
+//        mShareWebView.getSettings().setUserAgentString(System.getProperty("http.agent"));
         mShareWebView.getSettings().setJavaScriptEnabled(true);
-        mShareWebView.setWebChromeClient(mWebChromeClient);
-        mShareWebView.getSettings().setSupportMultipleWindows(true);
-        mShareWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+//        mShareWebView.setWebChromeClient(mWebChromeClient);
+//        mShareWebView.getSettings().setSupportMultipleWindows(true);
+        mShareWebView.getSettings().setUseWideViewPort(true);
+//        mShareWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
     }
 
     private void setData() {

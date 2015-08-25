@@ -165,8 +165,8 @@ public class Utils {
 //                "p {text-align: justify !important;}" +
 //                "img {max-width:100%% !important; height:auto !important;width:auto !important; visibility: visible !important;} " +
                 "img{display: inline !important ;height: auto !important ;max-width: 100% !important ;}" +
-                ".wp-video {height:" + heigth + "px !important ;max-width: 100% !important ;visibility: visible !important;} " +
-                ".wp-video-shortcode {height:" + heigth + "px !important ;max-width: 100% !important ; visibility: visible !important;} " +
+                ".wp-video {height:" + heigth + "px !important ;max-width: 100% !important ;} " +
+                ".wp-video-shortcode {height:" + heigth + "px !important ;max-width: 100% !important ; } " +
                 "audio {visibility: visible !important;} " +
 //                "iframe {display: inline-block !important; height:" + heigth + "px !important; width:100% !important; visibility: visible !important;} " +
                 "iframe{height:" + heigth + "px !important ;max-width: 100% !important ;}" +
