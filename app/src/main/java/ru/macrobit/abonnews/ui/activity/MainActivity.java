@@ -15,14 +15,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import org.apache.http.client.CookieStore;
 
+import java.util.List;
+
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.controller.API;
+import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.GetRequest;
+import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.ui.fragment.NewsFragment;
 import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
 
@@ -54,10 +63,39 @@ public class MainActivity extends Env implements
     }
 
     private void getAds() {
-        if (Utils.isConnected(this)) {
-            new GetRequest(this).execute(Values.ADS);
-        }
+        OkHttpClient client = new OkHttpClient();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Values.URL)
+                .setClient(new OkClient(client))
+                .build();
+        API.IGetAds getAds = restAdapter.create(API.IGetAds.class);
+        getAds.getAds(new retrofit.Callback<List<Ads>>() {
+            @Override
+            public void success(List<Ads> adses, retrofit.client.Response response) {
+                String result = GsonUtils.toJson(adses);
+                Utils.saveToSharedPreferences(Values.ADS_PREF, result, MainActivity.this);
+                if (!isFragmentExist(Values.NEWS_TAG)) {
+                            add(new NewsFragment(), Values.NEWS_TAG);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (!isFragmentExist(Values.NEWS_TAG)) {
+                    new Handler().post(new Runnable() {
+                        public void run() {
+                            add(new NewsFragment(), Values.NEWS_TAG);
+                        }
+                    });
+                }
+            }
+        });
+//        if (Utils.isConnected(this)) {
+//            new GetRequest(this).execute(Values.ADS);
+//        }
     }
+
+
 
     private void initNavigationView() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -1,8 +1,8 @@
 package ru.macrobit.abonnews.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -21,19 +21,27 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.NewsAdapter;
+import ru.macrobit.abonnews.controller.API;
 import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.controller.NewsUtils;
 import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
@@ -54,8 +62,14 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private View mFooter;
     private View mHeader;
     private int adCount = 0;
+    private ProgressDialog mProgressDialog;
     private ProgressBar mProgressBar;
     private TextView mSearchResults;
+    private OkHttpClient client = new OkHttpClient();
+    private RestAdapter restAdapter = new RestAdapter.Builder()
+            .setEndpoint(Values.URL)
+            .setClient(new OkClient(client))
+            .build();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +80,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         View view = inflater.inflate(R.layout.fragment_newslist,
                 container, false);
         initFragment(view);
-        getNewsFromServer();
+        getStickyNews();
+
         return view;
     }
 
@@ -76,7 +91,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
         createFooter();
         mListView = (ListView) parent.findViewById(R.id.listView);
-        mProgressBar = (ProgressBar) parent.findViewById(R.id.searchProgressBar);
         if (ad != null) {
             if (ad.getAdTarget() != null) {
                 String link = ad.getAdTarget();
@@ -88,7 +102,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         }
         mSearchResults = (TextView) parent.findViewById(R.id.searchResults);
         mListView.addFooterView(mFooter, null, false);
-        showProgressDialog(getString(R.string.loading));
+        mProgressBar = (ProgressBar) parent.findViewById(R.id.searchProgressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
+//        mProgressDialog = new ProgressDialog(getActivity());
+//        mProgressDialog.setMessage(getString(R.string.loading));
+//        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        mProgressDialog.setIndeterminate(true);
+//        mProgressDialog.show();
         FloatingActionButton button = (FloatingActionButton) parent.findViewById(R.id.float_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,14 +257,55 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
     private void searchNews(String searchWord) {
         isSearchList = true;
-        new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + Utils.convertToHex(searchWord));
+        API.ISearchNews searchNews = restAdapter.create(API.ISearchNews.class);
+        searchNews.searchNews(searchWord, new Callback<List<News>>() {
+            @Override
+            public void success(List<News> newses, Response response) {
+                initNewsList(newses.toArray(new News[newses.size()]));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+//        new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + Utils.convertToHex(searchWord));
+    }
+
+    private void getStickyNews() {
+        API.IGetNews getNews = restAdapter.create(API.IGetNews.class);
+        getNews.getNews(-1, 1, new Callback<List<News>>() {
+            @Override
+            public void success(List<News> newses, Response response) {
+                initNewsList(newses.toArray(new News[newses.size()]));
+                getNewsFromServer();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     private void getNewsFromServer() {
         if (Utils.isConnected(getActivity())) {
             if (!isEndNewsList && !isSearchList) {
                 mPage++;
-                new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
+                API.IGetNews getNews = restAdapter.create(API.IGetNews.class);
+                getNews.getNews(mPage, 0, new Callback<List<News>>() {
+                    @Override
+                    public void success(List<News> newses, Response response) {
+                        initNewsList(newses.toArray(new News[newses.size()]));
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
+//                new GetRequest(NewsFragment.this).execute(Values.GET_PAGE_POSTS + mPage);
             } else {
 
             }
@@ -295,6 +356,31 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         return arrayList;
     }
 
+    private void initNewsList(News[] newses) {
+        ArrayList<News> news = new ArrayList<>();
+        if (!isSearchList) {
+            news = addToNewsArray(newses, news);
+        } else {
+            news = addToNewsArray(newses, news);
+            if (news.size() == 0) {
+                mSearchResults.setVisibility(View.VISIBLE);
+                mListView.setAdapter(null);
+            } else {
+                mSearchResults.setVisibility(View.GONE);
+                mListView.setVisibility(View.VISIBLE);
+            }
+            mProgressBar.setVisibility(View.GONE);
+        }
+        if (news.size() > 0) {
+            ArrayList<ShortNews> newsList = NewsUtils.generateShortNews(news, getActivity());
+            listViewInit(newsList);
+            mSwipeRefreshLayout.setRefreshing(false);
+        } else {
+            isEndNewsList = true;
+            mListView.removeFooterView(mFooter);
+        }
+    }
+
     @Override
     public void onTaskCompleted(String result) {
         try {
@@ -322,7 +408,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 isEndNewsList = true;
                 mListView.removeFooterView(mFooter);
             }
-            hideProgressDialog();
+            mProgressDialog.hide();
         } catch (Exception e) {
             mListView.removeFooterView(mFooter);
             makeText(getString(R.string.server_error));
