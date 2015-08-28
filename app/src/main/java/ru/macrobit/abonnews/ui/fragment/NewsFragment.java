@@ -76,6 +76,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
         createFooter();
         mListView = (ListView) parent.findViewById(R.id.listView);
+        mProgressBar = (ProgressBar) parent.findViewById(R.id.searchProgressBar);
         if (ad != null) {
             if (ad.getAdTarget() != null) {
                 String link = ad.getAdTarget();
