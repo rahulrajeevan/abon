@@ -3,6 +3,8 @@ package ru.macrobit.abonnews.ui.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
@@ -25,7 +26,7 @@ public class EnvFragment extends Fragment {
     private FragmentManager mManager;
     private ProgressDialog mProgressDialog;
     private FragmentActivity mActivity;
-
+    CoordinatorLayout mCoordinatorLayout;
 
     @Override
     public void onCreate(Bundle arg0) {
@@ -123,14 +124,22 @@ public class EnvFragment extends Fragment {
         mTransaction.commit();
     }
 
-    void makeText(String message) {
-        try {
-            if (isAdded() && mActivity != null) {
-                Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//    void makeText(String message) {
+//        try {
+//            if (isAdded() && mActivity != null) {
+//                Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void makeText(String message) {
+        mCoordinatorLayout = (CoordinatorLayout) mActivity.findViewById(R.id
+                .coordinatorLayout);
+        Snackbar snackbar = Snackbar
+                .make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     public void addListenerToEditText(View view, final Activity activity) {

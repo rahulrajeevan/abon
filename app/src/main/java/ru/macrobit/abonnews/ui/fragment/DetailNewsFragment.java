@@ -5,10 +5,15 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -72,10 +77,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     private View mCustomView;
     private myWebChromeClient mWebChromeClient;
     private myWebViewClient mWebViewClient;
+    private ShareActionProvider mShareActionProvider;
     //    private MyExpandableAdapter mAdapter;
     private CommentsAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View mView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,8 +102,6 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         mWebView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
         super.onResume();
     }
-
-
 
     @Override
     public void onPause() {
@@ -118,6 +123,19 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.share_menu, menu);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, mNews.getTitle() + "\n" + mNews.getUrl());
+        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider)
+                MenuItemCompat.getActionProvider(shareItem);
+        mShareActionProvider.setShareIntent(intent);
     }
 
     private void initUI(View parent) {
