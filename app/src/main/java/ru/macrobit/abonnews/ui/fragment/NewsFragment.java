@@ -27,6 +27,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -65,8 +67,11 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private ProgressDialog mProgressDialog;
     private ProgressBar mProgressBar;
     private TextView mSearchResults;
+//    private boolean isNewsLoading = false;
     private OkHttpClient client = new OkHttpClient();
+    Executor executor = Executors.newSingleThreadExecutor();
     private RestAdapter restAdapter = new RestAdapter.Builder()
+            .setExecutors(executor, executor)
             .setEndpoint(Values.URL)
             .setClient(new OkClient(client))
             .build();
@@ -81,7 +86,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 container, false);
         initFragment(view);
         getStickyNews();
-
         return view;
     }
 
@@ -230,11 +234,11 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                if ((lastInScreen == totalItemCount) && !(isEndNewsList)) {
+                if ((lastInScreen == totalItemCount-10) && !(isEndNewsList)) {
                     isLastItemVisible = false;
                     getNewsFromServer();
                 }
-                if ((lastInScreen >= totalItemCount - 10) && isEndNewsList) {
+                if ((lastInScreen >= totalItemCount) && isEndNewsList) {
                     if (!isLastItemVisible) {
                         try {
                             isLastItemVisible = true;
@@ -276,9 +280,15 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         API.IGetNews getNews = restAdapter.create(API.IGetNews.class);
         getNews.getNews(-1, 1, new Callback<List<News>>() {
             @Override
-            public void success(List<News> newses, Response response) {
-                initNewsList(newses.toArray(new News[newses.size()]));
-                getNewsFromServer();
+            public void success(final List<News> newses, Response response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initNewsList(newses.toArray(new News[newses.size()]));
+                        getNewsFromServer();
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
             }
 
             @Override
@@ -289,15 +299,22 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void getNewsFromServer() {
+//        isNewsLoading = true;
         if (Utils.isConnected(getActivity())) {
             if (!isEndNewsList && !isSearchList) {
-                mPage++;
                 API.IGetNews getNews = restAdapter.create(API.IGetNews.class);
+                mPage++;
                 getNews.getNews(mPage, 0, new Callback<List<News>>() {
                     @Override
-                    public void success(List<News> newses, Response response) {
-                        initNewsList(newses.toArray(new News[newses.size()]));
-                        mProgressBar.setVisibility(View.GONE);
+                    public void success(final List<News> newses, Response response) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                initNewsList(newses.toArray(new News[newses.size()]));
+//                                isNewsLoading = false;
+                                mProgressBar.setVisibility(View.GONE);
+                            }
+                        });
                     }
 
                     @Override

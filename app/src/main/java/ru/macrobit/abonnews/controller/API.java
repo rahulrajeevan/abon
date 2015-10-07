@@ -32,7 +32,7 @@ public class API {
     }
 
     public interface IGetNews {
-        @GET("/wp-json/posts?filter[posts_per_page]=10")
+        @GET("/wp-json/posts?filter[posts_per_page]=30")
         void getNews(@Query("page") int page, @Query("filter[sticky]") int sticky, retrofit.Callback<List<News>>callback);
     }
 
