@@ -10,7 +10,9 @@ import android.widget.EditText;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.controller.GsonUtils;
 import ru.macrobit.abonnews.loader.RegistrationRequest;
+import ru.macrobit.abonnews.model.Message;
 
 public class RegistrationFragment extends EnvFragment implements OnTaskCompleted {
     private EditText mLogin;
@@ -41,11 +43,13 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
     @Override
     public void onTaskCompleted(String result) {
         hideProgressDialog();
-//        if (result.equals(getString(R.string.success_reg))) {
+        try {
+            Message[] message = GsonUtils.fromJson(result, Message[].class);
+            String s = "<strong>ОШИБКА</strong>: ";
+            makeText(message[0].getMessage().replace(s, ""));
+        } catch (Exception e) {
             makeText(getString(R.string.reg_message));
-//        } else {
-//            makeText(getString(R.string.reg_error));
-//        }
-        getActivity().finish();
+            getActivity().finish();
+        }
     }
  }

@@ -147,7 +147,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                getNewNewsList();
+                getStickyNews();
                 return false;
             }
         });
@@ -264,8 +264,13 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         API.ISearchNews searchNews = restAdapter.create(API.ISearchNews.class);
         searchNews.searchNews(searchWord, new Callback<List<News>>() {
             @Override
-            public void success(List<News> newses, Response response) {
-                initNewsList(newses.toArray(new News[newses.size()]));
+            public void success(final List<News> newses, Response response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initNewsList(newses.toArray(new News[newses.size()]));
+                    }
+                });
             }
 
             @Override
@@ -443,7 +448,8 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         isLastItemVisible = false;
         isEndNewsList = false;
         mSwipeRefreshLayout.setRefreshing(true);
-        getNewsFromServer();
+        getStickyNews();
+//        getNewsFromServer();
     }
 
     @Override

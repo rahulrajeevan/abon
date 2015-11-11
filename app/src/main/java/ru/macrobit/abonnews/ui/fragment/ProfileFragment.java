@@ -144,8 +144,9 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
     public void runUlogin() {
         Intent intent = new Intent(getActivity(), UloginAuthActivity.class);
 
-        String[] providers = getResources()
-                .getStringArray(ru.ulogin.sdk.R.array.ulogin_providers);
+        String[] providers = {"vkontakte", "facebook", "odnoklassniki", "yandex", "google"};
+//                getResources()
+//                .getStringArray(ru.ulogin.sdk.R.array.ulogin_providers);
         String[] mandatory_fields = new String[]{"first_name", "last_name", "email"};
         String[] optional_fields = new String[]{"nickname", "photo", "email"};
 

@@ -9,7 +9,7 @@ import org.acra.annotation.ReportsCrashes;
 @ReportsCrashes(formKey="",
         formUri = "http://abon-news.ru/test/test.php",
         mode = ReportingInteractionMode.TOAST,
-        forceCloseDialogAfterToast = true, // optional, default false
+        forceCloseDialogAfterToast = true,
         resToastText = R.string.crash_toast_text)
 public class AbonApplication extends Application {
     @Override

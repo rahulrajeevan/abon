@@ -3,7 +3,6 @@ package ru.macrobit.abonnews.ui.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ScrollView;
 
 /**
@@ -23,12 +22,12 @@ public class CustomScrollView extends ScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void requestChildFocus(View child, View focused) {
-        if (focused instanceof View)
-            return;
-        super.requestChildFocus(child, focused);
-    }
+//    @Override
+//    public void requestChildFocus(View child, View focused) {
+//        if (focused instanceof View)
+//            return;
+//        super.requestChildFocus(child, focused);
+//    }
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
