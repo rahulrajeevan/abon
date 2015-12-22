@@ -14,8 +14,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.controller.ImageUtils;
 import ru.macrobit.abonnews.model.ShortNews;
+import ru.macrobit.abonnews.utils.ImageUtils;
 
 public class NewsAdapter extends ArrayAdapter<ShortNews> {
 
@@ -74,8 +74,7 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
                 if (!mNews.get(position).getUrl().equals(""))
                     return true;
                 else return false;
-            }
-            else
+            } else
                 return false;
         } else
             return true;
@@ -94,13 +93,13 @@ public class NewsAdapter extends ArrayAdapter<ShortNews> {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             switch (getItemViewType(position)) {
                 case HEADER:
-                    convertView = inflater.inflate(R.layout.main_news_item, parent, false);
+                    convertView = inflater.inflate(R.layout.item_main_news, parent, false);
                     break;
                 case ITEM:
-                    convertView = inflater.inflate(R.layout.news_item, parent, false);
+                    convertView = inflater.inflate(R.layout.item_news, parent, false);
                     break;
                 case AD: {
-                    convertView = inflater.inflate(R.layout.ad_item, parent, false);
+                    convertView = inflater.inflate(R.layout.item_ad, parent, false);
 //                    ad_count++;
 //                    View v = inflater.inflate(R.layout.header, parent, false);
 //                    ImageView image = ((ImageView) v.findViewById(R.id.imageAd));

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.controller.NewsUtils;
+import ru.macrobit.abonnews.utils.NewsUtils;
 import ru.macrobit.abonnews.model.MyComment;
 
 /**
@@ -57,7 +57,7 @@ public class MyCommentsAdapter extends ArrayAdapter<MyComment> {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.my_comments_item, parent, false);
+            convertView = inflater.inflate(R.layout.item_my_comments, parent, false);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

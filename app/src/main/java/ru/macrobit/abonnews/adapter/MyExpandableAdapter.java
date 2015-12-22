@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.controller.NewsUtils;
+import ru.macrobit.abonnews.utils.NewsUtils;
 import ru.macrobit.abonnews.model.Comments;
 
 public class MyExpandableAdapter extends BaseExpandableListAdapter {
@@ -48,7 +48,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.comments_item, parent, false);
+            convertView = inflater.inflate(R.layout.item_comments, parent, false);
             viewHolder.title = ((TextView) convertView.findViewById(R.id.com_author));
             viewHolder.body = ((TextView) convertView.findViewById(R.id.com_body));
             viewHolder.date = ((TextView) convertView.findViewById(R.id.com_date));

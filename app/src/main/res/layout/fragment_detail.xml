@@ -40,8 +40,9 @@
                     android:layout_alignLeft="@+id/ad_header"
                     android:layout_alignStart="@+id/ad_header"
                     android:layout_below="@+id/ad_header"
+                    android:textColor="@android:color/black"
                     android:layout_marginTop="10dp"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/det_date"
@@ -204,6 +205,7 @@
                             android:layout_alignTop="@+id/addComment"
                             android:layout_toLeftOf="@+id/addComment"
                             android:layout_toStartOf="@+id/addComment"
+                            android:padding="8dp"
                             android:background="@drawable/border"
                             android:ems="10"
                             android:hint="@string/enter_comment"

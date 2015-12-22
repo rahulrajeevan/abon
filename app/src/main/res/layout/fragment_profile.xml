@@ -109,6 +109,7 @@
                 android:background="@color/primary_dark"
                 android:text="@string/change_password"
                 android:textColor="@color/primary"
+                android:padding="8dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
@@ -136,23 +137,10 @@
             android:textColor="@color/primary" />
 
         <Button
-            android:id="@+id/profile_soc_auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/profile_authorization"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/primary_dark"
-            android:text="@string/social_authorization"
-            android:textColor="@color/primary" />
-
-        <Button
             android:id="@+id/profile_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/profile_soc_auto"
+            android:layout_below="@+id/profile_authorization"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"

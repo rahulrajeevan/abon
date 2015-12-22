@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -39,16 +39,16 @@ import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.NewsAdapter;
-import ru.macrobit.abonnews.controller.API;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.ImageUtils;
-import ru.macrobit.abonnews.controller.NewsUtils;
-import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.ImageUtils;
+import ru.macrobit.abonnews.utils.NewsUtils;
+import ru.macrobit.abonnews.utils.Utils;
 import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
-import ru.macrobit.abonnews.ui.activity.FragmentActivity;
+import ru.macrobit.abonnews.activity.FragmentActivity;
 
 
 public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
@@ -183,7 +183,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(R.color.primary_dark, R.color.accent);
         if (mAdapter == null) {
-            mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
+            mAdapter = new NewsAdapter(getActivity(), R.layout.item_news, newsList);
 //            if (mListView.getFooterViewsCount() == 0) {
 //
 //            }
@@ -194,7 +194,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         }
         if (isSearchList) {
             mListView.removeFooterView(mFooter);
-            mAdapter = new NewsAdapter(getActivity(), R.layout.news_item, newsList);
+            mAdapter = new NewsAdapter(getActivity(), R.layout.item_news, newsList);
             mListView.setAdapter(mAdapter);
         }
         mAdapter.notifyDataSetChanged();
@@ -298,6 +298,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 
             @Override
             public void failure(RetrofitError error) {
+                error.printStackTrace();
 
             }
         });

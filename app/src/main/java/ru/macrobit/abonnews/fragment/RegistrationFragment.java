@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,12 +7,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.loader.RegistrationRequest;
 import ru.macrobit.abonnews.model.Message;
+import ru.macrobit.abonnews.model.Reg;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
 
 public class RegistrationFragment extends EnvFragment implements OnTaskCompleted {
     private EditText mLogin;
@@ -34,7 +37,21 @@ public class RegistrationFragment extends EnvFragment implements OnTaskCompleted
             @Override
             public void onClick(View v) {
                 showProgressDialog(getString(R.string.loading_request));
-                new RegistrationRequest(RegistrationFragment.this, mEmail.getText().toString(), mLogin.getText().toString()).execute(Values.REGISTRY);
+                API.IRegistration registration = API.getRestAdapter().create(API.IRegistration.class);
+                registration.reg(new Reg(mLogin.getText().toString(), mEmail.getText().toString()), new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        hideProgressDialog();
+                        makeText(getString(R.string.reg_message));
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
+//                new RegistrationRequest(RegistrationFragment.this, mEmail.getText().toString(), mLogin.getText().toString()).execute(Values.REGISTRY);
             }
         });
         return view;

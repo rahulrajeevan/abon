@@ -12,7 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import ru.macrobit.abonnews.R;
-import ru.macrobit.abonnews.ui.activity.FragmentActivity;
+import ru.macrobit.abonnews.activity.FragmentActivity;
 
 /**
  * Created by Comp on 14.07.2015.

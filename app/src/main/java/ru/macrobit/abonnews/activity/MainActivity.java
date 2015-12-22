@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.activity;
+package ru.macrobit.abonnews.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,27 +17,23 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.squareup.okhttp.OkHttpClient;
 
-import org.apache.http.client.CookieStore;
-
 import java.util.List;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.OkClient;
-import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.API;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.fragment.NewsFragment;
 import ru.macrobit.abonnews.model.Ads;
-import ru.macrobit.abonnews.ui.fragment.NewsFragment;
-import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.Utils;
 
 
 public class MainActivity extends Env implements
-        NavigationView.OnNavigationItemSelectedListener, OnAuthorizationTaskCompleted, OnTaskCompleted {
+        NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
@@ -250,13 +246,6 @@ public class MainActivity extends Env implements
         if (getActiveFragments().size() > 1) {
             mDrawerToggle.setDrawerIndicatorEnabled(false);
         }
-    }
-
-    @Override
-    public void onAuthorizationTaskCompleted(CookieStore result) {
-        Utils.saveCookieToSharedPreferences(result, this);
-        remove(Values.PROFILE_TAG);
-        add(new ProfileFragment(), Values.PROFILE_TAG);
     }
 
     @Override

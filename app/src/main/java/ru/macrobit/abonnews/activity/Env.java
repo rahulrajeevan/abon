@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.activity;
+package ru.macrobit.abonnews.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;

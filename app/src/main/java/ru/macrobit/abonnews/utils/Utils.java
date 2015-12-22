@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.controller;
+package ru.macrobit.abonnews.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,17 +20,25 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.model.Ads;
 import ru.macrobit.abonnews.model.PushReg;
 import ru.macrobit.abonnews.model.ShortCookie;
@@ -70,15 +78,73 @@ public class Utils {
     }
 
     public static boolean isCookiesExist(Context context) {
-        SharedPreferences prefs = getPrefs(context);
-        if (loadCookieFromSharedPreferences(context) != null) {
-            return true;
-        } else {
+        loadCookies(context);
+        Map<String, List<String>> map = new HashMap();
+        try {
+            URI uri = URI.create("http://abon-news.ru");
+            map = CookieHandler.getDefault().get(uri, map);
+            String s11 = GsonUtils.toJson(map);
+            List<String> s = map.get("Cookie");
+            boolean b = s.contains("wordpress_logged_in");
+            for (String str : s) {
+                b = str.contains("wordpress_logged_in");
+            }
+            return b;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
+//    public static boolean isCookiesExist(Context context) {
+//        SharedPreferences prefs = getPrefs(context);
+//        if (loadCookieFromSharedPreferences(context) != null) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+
+    public static Map<String, List<String>> loadCookies(Context context) {
+        SharedPreferences pref = getPrefs(context);
+        String s = pref.getString(Values.COOKIES, null);
+        s = s.replace("Cookie", "Set-cookie");
+        Map<String, List<String>> map = GsonUtils.fromJson(s,  HashMap.class);
+        List<String> list = map.get("Set-cookie");
+        for (String s1:list) {
+            map = new HashMap<>();
+            map.put("Set-cookie", Arrays.asList(s1.split(" ")));
+        }
+        URI uri = URI.create("http://abon-news.ru");
+        try {
+            CookieManager manager = new CookieManager();
+            manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+            manager.put(uri, map);
+            CookieHandler.setDefault(manager);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
+
+    }
+
+    public static void saveCookieToSharedPreferences(Context context) {
+        Map<String, List<String>> map = new HashMap();
+        try {
+            URI uri = URI.create("http://abon-news.ru");
+            map = CookieHandler.getDefault().get(uri, map);
+            String cookies = GsonUtils.toJson(map);
+            SharedPreferences pref = getPrefs(context);
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putString(Values.COOKIES, cookies);
+            edit.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void saveCookieToSharedPreferences(CookieStore cookieStore, Context context) {
+        CookieHandler handler = CookieHandler.getDefault();
         SharedPreferences pref = getPrefs(context);
         List<Cookie> list = cookieStore.getCookies();
         Set<ShortCookie> cookies = new HashSet<>();
@@ -266,8 +332,19 @@ public class Utils {
 
                 if (s != null) {
                     PushReg pushReg = new PushReg(s);
-                    String json = GsonUtils.toJson(pushReg);
-                    new AddDataRequest(null, null, json, context).execute(Values.PUSH);
+                    API.ISendPushID sendPushID = API.getRestAdapter().create(API.ISendPushID.class);
+                    sendPushID.sendPushId(pushReg, new Callback<String>() {
+                        @Override
+                        public void success(String o, Response response) {
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+//                    new AddDataRequest(null, null, json, context).execute(Values.PUSH);
                 }
             }
         }.execute();

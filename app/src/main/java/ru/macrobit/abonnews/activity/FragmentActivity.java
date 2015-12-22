@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.activity;
+package ru.macrobit.abonnews.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -18,27 +18,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import org.apache.http.client.CookieStore;
-
+import java.io.File;
 import java.util.HashMap;
 
-import ru.macrobit.abonnews.OnAuthorizationTaskCompleted;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.AddMediaRequest;
-import ru.macrobit.abonnews.loader.SocialAuthorizationRequest;
-import ru.macrobit.abonnews.ui.fragment.AboutFragment;
-import ru.macrobit.abonnews.ui.fragment.AddPostFragment;
-import ru.macrobit.abonnews.ui.fragment.AuthorizationFragment;
-import ru.macrobit.abonnews.ui.fragment.DetailNewsFragment;
-import ru.macrobit.abonnews.ui.fragment.EnvFragment;
-import ru.macrobit.abonnews.ui.fragment.MyCommentFragment;
-import ru.macrobit.abonnews.ui.fragment.ProfileFragment;
-import ru.macrobit.abonnews.ui.fragment.RegistrationFragment;
+import ru.macrobit.abonnews.fragment.AboutFragment;
+import ru.macrobit.abonnews.fragment.AddPostFragment;
+import ru.macrobit.abonnews.fragment.AuthorizationFragment;
+import ru.macrobit.abonnews.fragment.DetailNewsFragment;
+import ru.macrobit.abonnews.fragment.EnvFragment;
+import ru.macrobit.abonnews.fragment.MyCommentFragment;
+import ru.macrobit.abonnews.fragment.ProfileFragment;
+import ru.macrobit.abonnews.fragment.RegistrationFragment;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.Utils;
 import ru.ulogin.sdk.UloginAuthActivity;
 
-public class FragmentActivity extends Env implements NavigationView.OnNavigationItemSelectedListener, OnAuthorizationTaskCompleted {
+public class FragmentActivity extends Env implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
@@ -255,7 +256,19 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
                 case RESULT_OK:
                     String token = userdata.get(Values.TOKEN).toString();
                     Utils.saveToSharedPreferences(Values.TOKEN, token, this);
-                    new SocialAuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
+//                    new SocialAuthorizationRequest(FragmentActivity.this, token).execute(Values.SOC_AUTORIZATION);
+                    API.ISocAuthorization socAuthorization = API.getRestAdapter().create(API.ISocAuthorization.class);
+                    socAuthorization.auth(token, new Callback<Response>() {
+                        @Override
+                        public void success(Response response, Response response2) {
+                            Utils.saveCookieToSharedPreferences(FragmentActivity.this);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            error.printStackTrace();
+                        }
+                    });
                     break;
                 case RESULT_CANCELED:
 //                    popBackStack();
@@ -278,7 +291,11 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
             cursor.close();
             AddPostFragment frag = (AddPostFragment)getFragmentByTag(Values.ADD_TAG);
             frag.showProgressDialog(getString(R.string.file_loading));
-            new AddMediaRequest(frag, Utils.loadCookieFromSharedPreferences(this), filePath).execute(Values.MEDIA_ADD);
+//            new AddMediaRequest(frag, Utils.loadCookieFromSharedPreferences(this), filePath).execute(Values.MEDIA_ADD);
+            File file = new File(filePath);
+            TypedFile typedFile = new TypedFile("multipart/form-data", file);
+            API.IPostFile postFile = API.getRestAdapter().create(API.IPostFile.class);
+            postFile.sendFile(typedFile, frag);
         }
     }
 
@@ -296,12 +313,4 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         return true;
     }
 
-    @Override
-    public void onAuthorizationTaskCompleted(CookieStore result) {
-        Utils.saveCookieToSharedPreferences(result, this);
-
-        popBackStack();
-        finish();
-//        add(new ProfileFragment(), Values.PROFILE_TAG);
-    }
 }

@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.controller;
+package ru.macrobit.abonnews.utils;
 
 import android.content.Context;
 

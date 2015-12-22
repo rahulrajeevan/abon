@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Abon</string>
-    <string name="menu_profile">Профиль</string>
+    <string name="menu_profile">Профиль (логин)</string>
     <string name="menu_comments">Мои комментарии</string>
     <string name="menu_about">О программе</string>
     <string name="comments">Комментарии</string>
@@ -68,5 +68,7 @@
     <string name="need_reauthorize">Ваш пароль успешо изменен. Вы можете авторизоваться повторно, используя новые данные</string>
     <string name="add_video">Добавить видео</string>
     <string name="file_loading">Файл загружается...</string>
+    <string name="success_authorization">Вы успешно авторизовались</string>
+    <string name="error_authorization">Вы ввели неправильный логин или пароль</string>
 </resources>
 

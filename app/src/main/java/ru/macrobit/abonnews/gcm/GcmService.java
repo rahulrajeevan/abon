@@ -16,9 +16,9 @@ import java.util.List;
 
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.GsonUtils;
+import ru.macrobit.abonnews.utils.GsonUtils;
 import ru.macrobit.abonnews.model.PushIncome;
-import ru.macrobit.abonnews.ui.activity.FragmentActivity;
+import ru.macrobit.abonnews.activity.FragmentActivity;
 
 public class GcmService extends GcmListenerService {
 

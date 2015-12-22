@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -140,6 +140,10 @@ public class EnvFragment extends Fragment {
         Snackbar snackbar = Snackbar
                 .make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+
+    public void makeText(int res) {
+        makeText(getString(res));
     }
 
     public void addListenerToEditText(View view, final Activity activity) {

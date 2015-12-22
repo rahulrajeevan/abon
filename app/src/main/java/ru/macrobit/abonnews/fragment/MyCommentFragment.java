@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,20 +11,23 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
 import ru.macrobit.abonnews.adapter.MyCommentsAdapter;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.NewsUtils;
-import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.MyComment;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.NewsUtils;
+import ru.macrobit.abonnews.utils.Utils;
 
 public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
 
@@ -45,34 +48,59 @@ public class MyCommentFragment extends EnvFragment implements OnTaskCompleted {
         mText = (TextView) view.findViewById(R.id.mycom_text);
         showProgressDialog(getString(R.string.loading_comments));
         if (Utils.isConnected(getActivity())) {
-            new GetRequest(this, Utils.loadCookieFromSharedPreferences(getActivity())).execute(Values.MY_COMMENTS);
+            API.IGetMyComments getMyComments = API.getRestAdapter().create(API.IGetMyComments.class);
+            getMyComments.getMyComments(new Callback<List<MyComment>>() {
+                @Override
+                public void success(List<MyComment> commentses, Response response) {
+                    mComments = new ArrayList<>();
+                    mComments.addAll(commentses);
+                    initComments();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                }
+            });
+//            new GetRequest(this, Utils.loadCookieFromSharedPreferences(getActivity())).execute(Values.MY_COMMENTS);
         }
         return view;
     }
 
+    private void initComments() {
+        if (mComments.size() > 0) {
+            initListView();
+        } else {
+            mText.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
+        }
+        hideProgressDialog();
+    }
+
     private void initListView() {
-        mAdapter = new MyCommentsAdapter(getActivity(), R.layout.my_comments_item, mComments);
+        mAdapter = new MyCommentsAdapter(getActivity(), R.layout.item_my_comments, mComments);
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String s = null;
-                try {
-                    s = new GetRequest(null,
-                            Utils.loadCookieFromSharedPreferences(getActivity()))
-                            .execute(Values.POSTS + mComments.get(position).getPost().getId()).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                News news = GsonUtils.fromJson(s, News.class);
-                ShortNews shortNews = NewsUtils.generateShortNews(news);
-                FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("data", fullNews);
-                add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
+                API.IGetPost getPost = API.getRestAdapter().create(API.IGetPost.class);
+                getPost.getPost(String.valueOf(mComments.get(position).getPost().getId()), new Callback<News>() {
+                    @Override
+                    public void success(News news, Response response) {
+                        ShortNews shortNews = NewsUtils.generateShortNews(news);
+                        FullNews fullNews = new FullNews(shortNews, news.getContent(), news.getLink());
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("data", fullNews);
+                        add(new DetailNewsFragment(), bundle, Values.DETAIL_TAG);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
             }
         });
     }

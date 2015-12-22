@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,17 +9,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.NewsAdd;
 import ru.macrobit.abonnews.model.UploadedMedia;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.Utils;
 
-public class AddPostFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
+public class AddPostFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener, Callback<UploadedMedia> {
 
     private EditText mTitle;
     private EditText mContent;
@@ -58,7 +61,23 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted, Vie
                         NewsAdd news = new NewsAdd(title, content);
                         String json = GsonUtils.toJson(news);
                         if (Utils.isConnected(getActivity())) {
-                            new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null).execute(Values.POSTS);
+                            API.IAddPost addPost = API.getRestAdapter().create(API.IAddPost.class);
+                            addPost.addPost(news, new Callback<News>() {
+                                @Override
+                                public void success(News news, Response response) {
+                                    if (news.getStatus().equals("pending")) {
+                                        makeText(getString(R.string.added_news));
+                                    }
+                                    hideProgressDialog();
+                                    getActivity().onBackPressed();
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    makeText(getString(R.string.server_error));
+                                }
+                            });
+//                            new AddDataRequest(AddPostFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null).execute(Values.POSTS);
                             showProgressDialog(getString(R.string.loading_add));
                         }
                     } else {
@@ -116,5 +135,23 @@ public class AddPostFragment extends EnvFragment implements OnTaskCompleted, Vie
         if (Utils.isConnected(getActivity())) {
             getActivity().startActivityForResult(pickerIntent, Values.MEDIA_RESULT);
         }
+    }
+
+    @Override
+    public void success(UploadedMedia media, Response response) {
+        String url = media.getPath();
+        if (url.contains(".jpg") || url.contains(".png")) {
+            mImages += "<img src=\"" + url + "\" alt=\"\" />" + "\n";
+        } else {
+            mVideos += url + "\n";
+        }
+        makeText(getString(R.string.image_attached));
+        hideProgressDialog();
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        makeText(getString(R.string.server_error));
+        hideProgressDialog();
     }
 }

@@ -25,8 +25,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import ru.macrobit.abonnews.OnTaskCompleted;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.Utils;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.Utils;
 import ru.macrobit.abonnews.model.PushReg;
 
 public class AddDataRequest extends AsyncTask<String, String, String> {

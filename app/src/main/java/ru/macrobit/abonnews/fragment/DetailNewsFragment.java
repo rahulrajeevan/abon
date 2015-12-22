@@ -1,4 +1,4 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -33,17 +33,17 @@ import android.widget.Toast;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.activity.FragmentActivity;
 import ru.macrobit.abonnews.adapter.CommentsAdapter;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.ImageUtils;
-import ru.macrobit.abonnews.controller.NewsUtils;
-import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.AddDataRequest;
 import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.AddComment;
 import ru.macrobit.abonnews.model.Ads;
@@ -51,8 +51,12 @@ import ru.macrobit.abonnews.model.Comments;
 import ru.macrobit.abonnews.model.FullNews;
 import ru.macrobit.abonnews.model.News;
 import ru.macrobit.abonnews.model.ShortNews;
-import ru.macrobit.abonnews.ui.activity.FragmentActivity;
 import ru.macrobit.abonnews.ui.view.DynamicImageView;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.ImageUtils;
+import ru.macrobit.abonnews.utils.NewsUtils;
+import ru.macrobit.abonnews.utils.Utils;
 
 
 public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -192,10 +196,22 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                         comments = new AddComment(commentEdit.getText().toString(), mCommentId);
                     }
                     String json = GsonUtils.toJson(comments);
-                    new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null)
-                            .execute(Values.POSTS + mNews.getId() + "/comments/");
-                    commentEdit.setText("");
-                    initComments(mNews.getId() + "/comments/");
+                    API.IAddComment addComment = API.getRestAdapter().create(API.IAddComment.class);
+                    addComment.addComment(comments, new Callback<List<Comments>>() {
+                        @Override
+                        public void success(List<Comments> commentses, Response response) {
+                            initComments(commentses);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+//                    new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null)
+//                            .execute(Values.POSTS + mNews.getId() + "/comments/");
+//                    commentEdit.setText("");
+//                    initComments(mNews.getId() + "/comments/");
                     Toast.makeText(getActivity(), getString(R.string.comment_added), Toast.LENGTH_LONG).show();
                 } else {
                     add(new ProfileFragment(), Values.PROFILE_TAG);
@@ -295,12 +311,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
     }
 
-    private void getComments() {
-        if (Utils.isConnected(getActivity())) {
-            mCommentProgressBar.setVisibility(View.VISIBLE);
-            new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + mNews.getId() + "/comments/");
-        }
-    }
+//    private void getComments() {
+//        if (Utils.isConnected(getActivity())) {
+//            mCommentProgressBar.setVisibility(View.VISIBLE);
+//            new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + mNews.getId() + "/comments/");
+//        }
+//    }
 
     @Override
     public void onCreate(Bundle arg0) {
@@ -314,6 +330,36 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         initComments(result);
     }
 
+    private void initComments(List<Comments> commentses) {
+        ArrayList<Comments> group = new ArrayList<>(commentses);
+//                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
+        mAdapter = new CommentsAdapter(getActivity(), R.layout.item_comments, group);
+        mListView.setAdapter(mAdapter);
+        mListView.setVisibility(View.VISIBLE);
+        mAdapter.notifyDataSetChanged();
+        setListViewHeight(mListView);
+    }
+
+    private void getComments() {
+        if (Utils.isConnected(getActivity())) {
+            mCommentProgressBar.setVisibility(View.VISIBLE);
+            API.IGetPostComments getPostComments = API.getRestAdapter().create(API.IGetPostComments.class);
+            getPostComments.getPostComments(mNews.getId(), new Callback<List<Comments>>() {
+                @Override
+                public void success(List<Comments> commentses, Response response) {
+                    mCommentProgressBar.setVisibility(View.GONE);
+                    initComments(commentses);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    mCommentProgressBar.setVisibility(View.GONE);
+                }
+            });
+//            new GetRequest(DetailNewsFragment.this).execute(Values.POSTS + mNews.getId() + "/comments/");
+        }
+    }
+
     private void initComments(String result) {
         try {
             if (result != null) {
@@ -323,7 +369,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     ArrayList<Comments> group = new ArrayList<>();
                     group.addAll(Arrays.asList(comments));
 //                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
-                    mAdapter = new CommentsAdapter(getActivity(), R.layout.comments_item, group);
+                    mAdapter = new CommentsAdapter(getActivity(), R.layout.item_comments, group);
                     mListView.setAdapter(mAdapter);
                     mListView.setVisibility(View.VISIBLE);
                     mAdapter.notifyDataSetChanged();

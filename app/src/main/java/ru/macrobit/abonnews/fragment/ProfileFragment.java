@@ -1,6 +1,5 @@
-package ru.macrobit.abonnews.ui.fragment;
+package ru.macrobit.abonnews.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +11,21 @@ import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
-import ru.macrobit.abonnews.controller.GsonUtils;
-import ru.macrobit.abonnews.controller.ImageUtils;
-import ru.macrobit.abonnews.controller.Utils;
-import ru.macrobit.abonnews.loader.GetRequest;
 import ru.macrobit.abonnews.model.Author;
 import ru.macrobit.abonnews.model.ErrorJson;
-import ru.ulogin.sdk.UloginAuthActivity;
+import ru.macrobit.abonnews.utils.API;
+import ru.macrobit.abonnews.utils.GsonUtils;
+import ru.macrobit.abonnews.utils.ImageUtils;
+import ru.macrobit.abonnews.utils.Utils;
 
 public class ProfileFragment extends EnvFragment implements OnTaskCompleted, View.OnClickListener {
 
@@ -34,7 +35,7 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
     private TextView mEmail;
     private Button mLogout;
     private Button mAuthorization;
-    private Button mSocAuthorization;
+//    private Button mSocAuthorization;
     private Button mRegistration;
     private Button mChangePass;
     private boolean isCookieExist;
@@ -49,12 +50,34 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         isCookieExist = Utils.isCookiesExist(getActivity());
         mParentView = inflater.inflate(R.layout.fragment_profile,
                 container, false);
-        if (Utils.isConnected(getActivity()) && isCookieExist) {
+        if (Utils.isConnected(getActivity())) {
             showProgressDialog(getString(R.string.loading_profile));
-            new GetRequest(this, Utils.loadCookieFromSharedPreferences(getActivity())).execute(Values.PROFILE);
+            API.IGetProfileInfo getProfileInfo = API.getRestAdapter().create(API.IGetProfileInfo.class);
+            getProfileInfo.getProfileInfo(new Callback<Author>() {
+                @Override
+                public void success(Author author, Response response) {
+                    initProfile(author);
+                    initFragment(mParentView);
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                    hideProgressDialog();
+                    setVisibility(mParentView);
+                }
+            });
+//            new GetRequest(this, Utils.loadCookieFromSharedPreferences(getActivity())).execute(Values.PROFILE);
         }
         initFragment(mParentView);
         return mParentView;
+    }
+
+    private void initProfile(Author author) {
+        ImageUtils.getUIL(getActivity()).displayImage(author.getAvatar(), mAvatar);
+        mName.setText(author.getFirstName());
+        mUrl.setText(author.getUrl());
+        mEmail.setText(author.getEmail());
+        hideProgressDialog();
     }
 
     private void initFragment(View v) {
@@ -68,16 +91,17 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
             @Override
             public void onClick(View v) {
                 Utils.deleteCookies(getActivity());
+                CookieHandler.setDefault(new CookieManager());
                 getActivity().finish();
 //                remove(Values.PROFILE_TAG);
             }
         });
         mChangePass = (Button) v.findViewById(R.id.profile_change_pass);
         mAuthorization = (Button) v.findViewById(R.id.profile_authorization);
-        mSocAuthorization = (Button) v.findViewById(R.id.profile_soc_auto);
+//        mSocAuthorization = (Button) v.findViewById(R.id.profile_soc_auto);
         mRegistration = (Button) v.findViewById(R.id.profile_reg);
         mAuthorization.setOnClickListener(this);
-        mSocAuthorization.setOnClickListener(this);
+//        mSocAuthorization.setOnClickListener(this);
         mRegistration.setOnClickListener(this);
         mChangePass.setOnClickListener(this);
     }
@@ -126,11 +150,10 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
                 popBackStack();
                 add(new AuthorizationFragment(), Values.AUTHORIZATION_TAG);
                 break;
-            case R.id.profile_soc_auto:
-//                hide(this.getTag());
-                runUlogin();
-                popBackStack();
-                break;
+//            case R.id.profile_soc_auto:
+////                hide(this.getTag());
+//                popBackStack();
+//                break;
             case R.id.profile_reg:
                 popBackStack();
                 add(new RegistrationFragment(), Values.REGISTRATION_TAG);
@@ -141,29 +164,6 @@ public class ProfileFragment extends EnvFragment implements OnTaskCompleted, Vie
         }
     }
 
-    public void runUlogin() {
-        Intent intent = new Intent(getActivity(), UloginAuthActivity.class);
 
-        String[] providers = {"vkontakte", "facebook", "odnoklassniki", "yandex", "google"};
-//                getResources()
-//                .getStringArray(ru.ulogin.sdk.R.array.ulogin_providers);
-        String[] mandatory_fields = new String[]{"first_name", "last_name", "email"};
-        String[] optional_fields = new String[]{"nickname", "photo", "email"};
-
-        intent.putExtra(
-                UloginAuthActivity.PROVIDERS,
-                new ArrayList(Arrays.asList(providers))
-        );
-        intent.putExtra(
-                UloginAuthActivity.FIELDS,
-                new ArrayList(Arrays.asList(mandatory_fields))
-        );
-        intent.putExtra(
-                UloginAuthActivity.OPTIONAL,
-                new ArrayList(Arrays.asList(optional_fields))
-        );
-        getActivity().startActivityForResult(intent, Values.REQUEST_ULOGIN);
-//        remove(Values.PROFILE_TAG);
-    }
 
 }
