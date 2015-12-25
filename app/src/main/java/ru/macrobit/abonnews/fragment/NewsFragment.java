@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -22,11 +23,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.okhttp.OkHttpClient;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -38,17 +42,18 @@ import retrofit.client.Response;
 import ru.macrobit.abonnews.OnTaskCompleted;
 import ru.macrobit.abonnews.R;
 import ru.macrobit.abonnews.Values;
+import ru.macrobit.abonnews.activity.FragmentActivity;
+import ru.macrobit.abonnews.adapter.CustomPagerAdapter;
 import ru.macrobit.abonnews.adapter.NewsAdapter;
+import ru.macrobit.abonnews.model.Ads;
+import ru.macrobit.abonnews.model.FullNews;
+import ru.macrobit.abonnews.model.News;
+import ru.macrobit.abonnews.model.ShortNews;
 import ru.macrobit.abonnews.utils.API;
 import ru.macrobit.abonnews.utils.GsonUtils;
 import ru.macrobit.abonnews.utils.ImageUtils;
 import ru.macrobit.abonnews.utils.NewsUtils;
 import ru.macrobit.abonnews.utils.Utils;
-import ru.macrobit.abonnews.model.Ads;
-import ru.macrobit.abonnews.model.FullNews;
-import ru.macrobit.abonnews.model.News;
-import ru.macrobit.abonnews.model.ShortNews;
-import ru.macrobit.abonnews.activity.FragmentActivity;
 
 
 public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
@@ -67,6 +72,11 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private ProgressDialog mProgressDialog;
     private ProgressBar mProgressBar;
     private TextView mSearchResults;
+    private ViewPager mViewPager;
+    private CirclePageIndicator mIndicator;
+    private CustomPagerAdapter mPagerAdapter;
+//    private ArrayList<ShortNews> mNews;
+
 //    private boolean isNewsLoading = false;
     private OkHttpClient client = new OkHttpClient();
     Executor executor = Executors.newSingleThreadExecutor();
@@ -95,6 +105,11 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
         Ads ad = Utils.getAd(Values.AD_TOP, getActivity());
         createFooter();
         mListView = (ListView) parent.findViewById(R.id.listView);
+
+//        CustomPagerAdapter adapter = new CustomPagerAdapter(getActivity(), arrayList);
+//        viewPager.setAdapter(adapter);
+//        indicator.setViewPager(viewPager);
+//        viewPager.setCurrentItem(0);
         if (ad != null) {
             if (ad.getAdTarget() != null) {
                 String link = ad.getAdTarget();
@@ -281,6 +296,31 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
 //        new GetRequest(NewsFragment.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, Values.SEARCH + Utils.convertToHex(searchWord));
     }
 
+    private void createPager(ArrayList<ShortNews> arrayList, ArrayList<News> news) {
+        View v = getActivity().getLayoutInflater().inflate(R.layout.item_viewpager, null, false);
+        CirclePageIndicator indicator = (CirclePageIndicator) v.findViewById(R.id.indicator);
+        final ViewPager viewPager = (ViewPager) v.findViewById(R.id.viewPager);
+        CustomPagerAdapter adapter = new CustomPagerAdapter(getActivity(), arrayList, news);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
+        indicator.setViewPager(viewPager);
+        mListView.addHeaderView(v);
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int current = viewPager.getCurrentItem() + 1 > viewPager.getAdapter().getCount()-1 ? 0 : viewPager.getCurrentItem() + 1;
+                        viewPager.setCurrentItem(current);
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 5000, 5000);
+    }
+
     private void getStickyNews() {
         API.IGetNews getNews = restAdapter.create(API.IGetNews.class);
         getNews.getNews(-1, 1, new Callback<List<News>>() {
@@ -289,7 +329,17 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initNewsList(newses.toArray(new News[newses.size()]));
+//                        initNewsList(newses.toArray(new News[newses.size()]));
+                        ArrayList<ShortNews> news = NewsUtils.generateShortNews(new ArrayList<>(newses), getActivity());
+                        createPager(news, new ArrayList<News>(newses));
+//                        Fragment fragment = new VewPagerFragment(news);
+//                        FragmentManager mManager = getActivity().getSupportFragmentManager();
+//                        FragmentTransaction mTransaction = mManager.beginTransaction();
+//                        mTransaction.add(R.id.fragment_container_viewPager, fragment, "tag");
+//                        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//                        mTransaction.addToBackStack("tag");
+//                        mTransaction.commit();
+
                         getNewsFromServer();
                         mProgressBar.setVisibility(View.GONE);
                     }
@@ -342,8 +392,6 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private View createHeader(final String link) {
-
-//
         mHeader = getActivity().getLayoutInflater().inflate(R.layout.header, null, false);
         mHeader.setOnClickListener(new View.OnClickListener() {
             @Override

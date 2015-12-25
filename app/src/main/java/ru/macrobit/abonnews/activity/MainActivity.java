@@ -227,16 +227,16 @@ public class MainActivity extends Env implements
                 initNavigationView();
                 popBackStack();
             }
-//            List<Fragment> fragments = getActiveFragments();
-//            replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
-//            if (fragments.size() == 1) {
-//                super.onBackPressed();
-//            } else {
-//                for (Fragment f : fragments) {
-//                    if (!f.getTag().equals(Values.NEWS_TAG))
-//                        remove(f.getTag());
-//                }
-//            }
+            List<Fragment> fragments = getActiveFragments();
+            replace(getFragmentByTag(Values.NEWS_TAG), Values.NEWS_TAG);
+            if (fragments.size() == 1) {
+                super.onBackPressed();
+            } else {
+                for (Fragment f : fragments) {
+                    if (!f.getTag().equals(Values.NEWS_TAG))
+                        remove(f.getTag());
+                }
+            }
         }
     }
 

@@ -128,4 +128,9 @@ public class API {
         void reg(@Body Reg reg, retrofit.Callback callback);
     }
 
+    public interface IGetPageId {
+        @GET("/posts/{two}/{three}")
+        void getPageId(@Path("two") String razdel, @Path("three") String newsName, Callback<Response> callback);
+    }
+
 }

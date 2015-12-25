@@ -70,5 +70,8 @@
     <string name="file_loading">Файл загружается...</string>
     <string name="success_authorization">Вы успешно авторизовались</string>
     <string name="error_authorization">Вы ввели неправильный логин или пароль</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 

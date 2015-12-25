@@ -251,6 +251,31 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         }
         if (id != null) {
             try {
+                API.IGetPost getPost = API.getRestAdapter().create(API.IGetPost.class);
+                getPost.getPost(id, new Callback<News>() {
+                    @Override
+                    public void success(News news, Response response) {
+                        ShortNews shortNews = NewsUtils.generateShortNews(news);
+                        mNews = new FullNews(shortNews, news.getContent(), news.getLink());
+                        if (mNews.getBody() != null) {
+                            if (mNews.getBody().contains(mNews.getImageUrl())) {
+                                mImage.setVisibility(View.GONE);
+                            }
+                            mWebView.loadData(Utils.getHtmlData(mNews.getBody(), getActivity()), "text/html; charset=UTF-8", null);
+                        }
+                        Spanned span = Html.fromHtml(mNews.getTitle());
+                        mTitle.setText(span);
+                        mDate.setText(mNews.getDate());
+                        mId = mNews.getId();
+                        getComments();
+                        ImageUtils.getUIL(getActivity()).displayImage(mNews.getImageUrl(), mImage);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
                 json = new GetRequest(null).execute(Values.POSTS + id).get();
                 News news = GsonUtils.fromJson(json, News.class);
                 ShortNews shortNews = NewsUtils.generateShortNews(news);

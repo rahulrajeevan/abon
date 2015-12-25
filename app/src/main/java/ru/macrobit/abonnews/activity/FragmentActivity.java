@@ -18,8 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -57,20 +61,66 @@ public class FragmentActivity extends Env implements NavigationView.OnNavigation
         setContentView(R.layout.activity_fragment);
         initNavigationView();
         mExtras = getIntent().getExtras();
-        String tag = null;
-        try {
-            tag = mExtras.getString(Values.PUSH_TAG);
-        } catch (Exception e) {
+        String action = getIntent().getAction();
+        if (Intent.ACTION_VIEW.equals(action)) {
+            final List<String> segments = getIntent().getData().getPathSegments();
+            try {
+                final API.IGetPageId getPageId = API.getRestAdapter().create(API.IGetPageId.class);
+                getPageId.getPageId(segments.get(1), segments.get(2), new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        BufferedReader reader = null;
+                        StringBuilder sb = new StringBuilder();
+                        try {
+                            reader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                            String line;
+                            try {
+                                while ((line = reader.readLine()) != null) {
+                                    sb.append(line);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        String result = sb.toString();
+                        int x = result.indexOf("?p=");
+                        result = result.substring(x+3, x+10);
+                        result = result.replaceAll("\\D+","");
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Values.POST_ID, result);
+                        add(getFragment(Values.DETAIL_TAG), bundle, Values.DETAIL_TAG);
+                    }
 
-        }
-        if (tag != null) {
-            if (tag.equals(Values.PUSH_TAG)) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Values.POST_ID, mExtras.getString("id"));
-                add(getFragment(getTag()), bundle, getTag());
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+                    }
+                    });
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+//            if (segments.size() > 1) {
+//                action = segments.get(1);
+//            }
         } else {
-            add(getFragment(getTag()), getTag());
+            String tag = null;
+            try {
+                tag = mExtras.getString(Values.PUSH_TAG);
+            } catch (Exception e) {
+
+            }
+            if (tag != null) {
+                if (tag.equals(Values.PUSH_TAG)) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Values.POST_ID, mExtras.getString("id"));
+                    add(getFragment(getTag()), bundle, getTag());
+                }
+            } else {
+                add(getFragment(getTag()), getTag());
+            }
         }
     }
 

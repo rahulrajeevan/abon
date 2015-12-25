@@ -42,6 +42,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<data android:scheme="http"-->
+                    <!--android:host="abon-news.ru"-->
+                    <!--android:pathPrefix="/"/>-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name="ru.ulogin.sdk.UloginAuthActivity"
@@ -58,6 +66,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http"
+                    android:host="abon-news.ru"
+                    android:pathPrefix="/posts"/>
+            </intent-filter>
         </activity>
     </application>
 

@@ -4,39 +4,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ru.macrobit.abonnews.ui.view.DynamicImageView
+    <ImageView
         android:id="@+id/det_imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp" />
+        android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/textBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/det_imageView"
-        android:layout_alignStart="@+id/det_imageView"
-        android:layout_below="@+id/det_imageView"
-        android:layout_marginRight="10dp"
-        android:textSize="16sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignBottom="@id/det_imageView"
+        android:background="#DD000000"
+        android:clickable="false"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-    <TextView
-        android:id="@+id/det_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textBody"
-        android:layout_below="@+id/textBody"
-        android:layout_marginRight="10dp"
-        android:text="asdasdadasd"
-        android:textColor="@android:color/holo_orange_dark"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/textBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="ADDQWEQEQE"
+            android:layout_marginLeft="16dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_weight="0.25"
+            android:layout_above="@+id/det_date"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/det_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.75"
+            android:text="asdasdadasd"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/comments_count"
@@ -44,9 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textBody"
         android:layout_marginEnd="38dp"
         android:layout_marginRight="38dp"
         android:textColor="@android:color/holo_blue_light"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 </RelativeLayout>
