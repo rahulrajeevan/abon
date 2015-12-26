@@ -3,6 +3,7 @@ package ru.macrobit.abonnews.utils;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.net.CookieHandler;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -72,7 +73,7 @@ public class API {
 
     public interface IGetPostComments {
         @GET("/wp-json/posts/{id}/comments")
-        void getPostComments(@Path("id") String newsId, retrofit.Callback<List<Comments>> callback);
+        void getPostComments(@Path("id") String newsId, retrofit.Callback<ArrayList<Comments>> callback);
     }
 
     public interface IGetProfileInfo {
@@ -102,8 +103,10 @@ public class API {
     }
 
     public interface IAddComment {
-        @POST("/wp-json/posts/")
-        void addComment(@Body AddComment addComment, retrofit.Callback<List<Comments>> callback);
+        @POST("/wp-json/posts/{id}/comments")
+        void addComment(@Body AddComment addComment, @Path("id") String id, retrofit.Callback<Comments> callback);
+        @POST("/wp-json/posts/{id}/comments")
+        void addCommentResp(@Body AddComment addComment, @Path("id") String id, retrofit.Callback<Response> callback);
     }
 
     public interface IPostFile {

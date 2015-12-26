@@ -2,9 +2,6 @@ package ru.macrobit.abonnews.model;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Ghost Surfer on 26.06.2015.
- */
 public class AddComment {
     private String content;
     @SerializedName("parent_id")

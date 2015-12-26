@@ -21,7 +21,6 @@ public class Comments {
     private String dateTz;
     @SerializedName("date_gmt")
     private String dateGmt;
-    private Meta meta;
 
     public Comments(String content) {
         this.content = content;
@@ -107,11 +106,4 @@ public class Comments {
         this.dateGmt = dateGmt;
     }
 
-    public Meta getMeta() {
-        return meta;
-    }
-
-    public void setMeta(Meta meta) {
-        this.meta = meta;
-    }
 }

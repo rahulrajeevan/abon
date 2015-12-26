@@ -75,6 +75,7 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     private ViewPager mViewPager;
     private CirclePageIndicator mIndicator;
     private CustomPagerAdapter mPagerAdapter;
+    private View mViewPagerHeader;
 //    private ArrayList<ShortNews> mNews;
 
 //    private boolean isNewsLoading = false;
@@ -297,14 +298,15 @@ public class NewsFragment extends EnvFragment implements OnTaskCompleted, SwipeR
     }
 
     private void createPager(ArrayList<ShortNews> arrayList, ArrayList<News> news) {
-        View v = getActivity().getLayoutInflater().inflate(R.layout.item_viewpager, null, false);
-        CirclePageIndicator indicator = (CirclePageIndicator) v.findViewById(R.id.indicator);
-        final ViewPager viewPager = (ViewPager) v.findViewById(R.id.viewPager);
+        mListView.removeHeaderView(mViewPagerHeader);
+        mViewPagerHeader = getActivity().getLayoutInflater().inflate(R.layout.item_viewpager, null, false);
+        CirclePageIndicator indicator = (CirclePageIndicator) mViewPagerHeader.findViewById(R.id.indicator);
+        final ViewPager viewPager = (ViewPager) mViewPagerHeader.findViewById(R.id.viewPager);
         CustomPagerAdapter adapter = new CustomPagerAdapter(getActivity(), arrayList, news);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
         indicator.setViewPager(viewPager);
-        mListView.addHeaderView(v);
+        mListView.addHeaderView(mViewPagerHeader);
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override

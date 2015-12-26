@@ -33,7 +33,6 @@ import android.widget.Toast;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import retrofit.Callback;
@@ -197,22 +196,48 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
                     }
                     String json = GsonUtils.toJson(comments);
                     API.IAddComment addComment = API.getRestAdapter().create(API.IAddComment.class);
-                    addComment.addComment(comments, new Callback<List<Comments>>() {
+//                    addComment.addCommentResp(comments, mNews.getId(), new Callback<Response>() {
+//                        @Override
+//                        public void success(Response response, Response response2) {
+//                            BufferedReader reader = null;
+//                            StringBuilder sb = new StringBuilder();
+//                            try {
+//                                reader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+//                                String line;
+//                                try {
+//                                    while ((line = reader.readLine()) != null) {
+//                                        sb.append(line);
+//                                    }
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                            String result = sb.toString();
+//                            Toast.makeText(getActivity(), getString(R.string.comment_added), Toast.LENGTH_LONG).show();
+//                        }
+//
+//                        @Override
+//                        public void failure(RetrofitError error) {
+//                            error.printStackTrace();
+//                        }
+//                    });
+                    addComment.addComment(comments, mNews.getId(), new Callback<Comments>() {
                         @Override
-                        public void success(List<Comments> commentses, Response response) {
-                            initComments(commentses);
+                        public void success(Comments comments, Response response) {
+                            Toast.makeText(getActivity(), getString(R.string.comment_added), Toast.LENGTH_LONG).show();
+                            commentEdit.setText("");
+                            getComments();
+//                            initComments(commentses);
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-
+                            error.printStackTrace();
                         }
                     });
-//                    new AddDataRequest(DetailNewsFragment.this, Utils.loadCookieFromSharedPreferences(getActivity()), json, null)
-//                            .execute(Values.POSTS + mNews.getId() + "/comments/");
-//                    commentEdit.setText("");
-//                    initComments(mNews.getId() + "/comments/");
-                    Toast.makeText(getActivity(), getString(R.string.comment_added), Toast.LENGTH_LONG).show();
+
                 } else {
                     add(new ProfileFragment(), Values.PROFILE_TAG);
 //                    Intent intent = new Intent(getActivity(), FragmentActivity.class);
@@ -355,7 +380,7 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         initComments(result);
     }
 
-    private void initComments(List<Comments> commentses) {
+    private void initComments(ArrayList<Comments> commentses) {
         ArrayList<Comments> group = new ArrayList<>(commentses);
 //                    group.add(getActivity().getString(R.string.comments) + " (" + comments.length + ")");
         mAdapter = new CommentsAdapter(getActivity(), R.layout.item_comments, group);
@@ -369,9 +394,9 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
         if (Utils.isConnected(getActivity())) {
             mCommentProgressBar.setVisibility(View.VISIBLE);
             API.IGetPostComments getPostComments = API.getRestAdapter().create(API.IGetPostComments.class);
-            getPostComments.getPostComments(mNews.getId(), new Callback<List<Comments>>() {
+            getPostComments.getPostComments(mNews.getId(), new Callback<ArrayList<Comments>>() {
                 @Override
-                public void success(List<Comments> commentses, Response response) {
+                public void success(ArrayList<Comments> commentses, Response response) {
                     mCommentProgressBar.setVisibility(View.GONE);
                     initComments(commentses);
                 }
@@ -637,12 +662,12 @@ public class DetailNewsFragment extends EnvFragment implements OnTaskCompleted, 
 //        getActivity().runOnUiThread(new Runnable() {
 //            @Override
 //            public void run() {
-                mWebView.setVisibility(View.VISIBLE);
-                mLayout.setVisibility(View.VISIBLE);
-                mFooter.setVisibility(View.VISIBLE);
-                mListView.setVisibility(View.VISIBLE);
-                mLayout.setVisibility(View.VISIBLE);
-                hideProgressDialog();
+        mWebView.setVisibility(View.VISIBLE);
+        mLayout.setVisibility(View.VISIBLE);
+        mFooter.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.VISIBLE);
+        mLayout.setVisibility(View.VISIBLE);
+        hideProgressDialog();
 //            }
 //        });
 
